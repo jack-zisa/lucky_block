@@ -13,21 +13,33 @@ import java.util.function.Function;
 public abstract class Outcome {
     public static final Codec<Outcome> CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
     private final OutcomeType type;
+    private final int luck;
+    private final float chance;
     private final Optional<Integer> delay;
     private final Optional<String> pos;
 
     public Outcome(OutcomeType type) {
-        this(type, Optional.of(0), Optional.empty());
+        this(type, 0, 1f, Optional.of(0), Optional.empty());
     }
 
-    public Outcome(OutcomeType type, Optional<Integer> delay, Optional<String> pos) {
+    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<String> pos) {
         this.type = type;
+        this.luck = luck;
+        this.chance = chance;
         this.delay = delay;
         this.pos = pos;
     }
 
     public OutcomeType getType() {
         return type;
+    }
+
+    public int getLuck() {
+        return luck;
+    }
+
+    public float getChance() {
+        return chance;
     }
 
     public Optional<Integer> getDelay() {
@@ -44,6 +56,14 @@ public abstract class Outcome {
 
     public Vec3d getVec(OutcomeContext context) {
         return getPos().isPresent() ? context.parseVec3d(getPos().get()) : context.pos().toCenterPos();
+    }
+
+    public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
+        return Codec.INT.fieldOf("luck").orElse(0).forGetter(getter);
+    }
+
+    public static <O> RecordCodecBuilder<O, Float> createGlobalChanceField(Function<O, Float> getter) {
+        return Codec.FLOAT.fieldOf("chance").orElse(1f).forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Optional<Integer>> createGlobalDelayField(Function<O, Optional<Integer>> getter) {

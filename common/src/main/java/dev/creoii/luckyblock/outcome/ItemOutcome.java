@@ -13,7 +13,9 @@ import java.util.Optional;
 
 public class ItemOutcome extends Outcome {
     public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.ITEMSTACK.fieldOf("item").forGetter(outcome -> outcome.stack),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count)
@@ -22,8 +24,8 @@ public class ItemOutcome extends Outcome {
     private final ItemStack stack;
     private final IntProvider count;
 
-    public ItemOutcome(Optional<Integer> delay, Optional<String> pos, ItemStack stack, IntProvider count) {
-        super(OutcomeType.ITEM, delay, pos);
+    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, ItemStack stack, IntProvider count) {
+        super(OutcomeType.ITEM, luck, chance, delay, pos);
         this.stack = stack;
         this.count = count;
     }

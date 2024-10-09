@@ -8,14 +8,16 @@ import java.util.Optional;
 
 public class RandomOutcome extends Outcome {
     public static final MapCodec<RandomOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes)
         ).apply(instance, RandomOutcome::new);
     });
     private final List<Outcome> outcomes;
 
-    public RandomOutcome(Optional<Integer> delay, List<Outcome> outcomes) {
-        super(OutcomeType.RANDOM, delay, Optional.empty());
+    public RandomOutcome(int luck, float chance, Optional<Integer> delay, List<Outcome> outcomes) {
+        super(OutcomeType.RANDOM, luck, chance, delay, Optional.empty());
         this.outcomes = outcomes;
     }
 

@@ -9,14 +9,16 @@ import java.util.Optional;
 
 public class MessageOutcome extends Outcome {
     public static final MapCodec<MessageOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 TextCodecs.CODEC.fieldOf("message").forGetter(outcome -> outcome.message)
         ).apply(instance, MessageOutcome::new);
     });
     private final Text message;
 
-    public MessageOutcome(Optional<Integer> delay, Text message) {
-        super(OutcomeType.MESSAGE, delay, Optional.empty());
+    public MessageOutcome(int luck, float chance, Optional<Integer> delay, Text message) {
+        super(OutcomeType.MESSAGE, luck, chance, delay, Optional.empty());
         this.message = message;
     }
 

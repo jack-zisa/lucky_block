@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public class BlockOutcome extends Outcome {
     public static final MapCodec<BlockOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
                 Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape)
@@ -19,8 +21,8 @@ public class BlockOutcome extends Outcome {
     private final BlockStateProvider stateProvider;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(Optional<Integer> delay, Optional<String> pos, BlockStateProvider stateProvider, Optional<Shape> shape) {
-        super(OutcomeType.BLOCK, delay, pos);
+    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, BlockStateProvider stateProvider, Optional<Shape> shape) {
+        super(OutcomeType.BLOCK, luck, chance, delay, pos);
         this.stateProvider = stateProvider;
         this.shape = shape;
     }

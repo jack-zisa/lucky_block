@@ -10,15 +10,17 @@ import java.util.Optional;
 
 public class CommandOutcome extends Outcome {
     public static final MapCodec<CommandOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 Codec.STRING.fieldOf("command").forGetter(outcome -> outcome.command)
         ).apply(instance, CommandOutcome::new);
     });
     private final String command;
 
-    public CommandOutcome(Optional<Integer> delay, Optional<String> pos, String command) {
-        super(OutcomeType.COMMAND, delay, pos);
+    public CommandOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String command) {
+        super(OutcomeType.COMMAND, luck, chance, delay, pos);
         this.command = command;
     }
 

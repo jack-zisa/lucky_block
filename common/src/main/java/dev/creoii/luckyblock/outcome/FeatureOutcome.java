@@ -18,7 +18,9 @@ import java.util.Optional;
 
 public class FeatureOutcome extends Outcome {
     public static final MapCodec<FeatureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.IDENTIFIER.fieldOf("feature").forGetter(outcome -> outcome.featureId),
                 PlacementModifier.CODEC.listOf().fieldOf("placement").orElse(List.of()).forGetter(outcome -> outcome.placementModifiers)
@@ -27,8 +29,8 @@ public class FeatureOutcome extends Outcome {
     private final List<Identifier> featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(Optional<Integer> delay, Optional<String> pos, List<Identifier> featureId, List<PlacementModifier> placementModifiers) {
-        super(OutcomeType.RANDOM, delay, pos);
+    public FeatureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, List<Identifier> featureId, List<PlacementModifier> placementModifiers) {
+        super(OutcomeType.RANDOM, luck, chance, delay, pos);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;
     }

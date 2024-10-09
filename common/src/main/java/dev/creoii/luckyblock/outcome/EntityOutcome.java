@@ -16,7 +16,9 @@ import java.util.Optional;
 
 public class EntityOutcome extends Outcome {
     public static final MapCodec<EntityOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
@@ -27,8 +29,8 @@ public class EntityOutcome extends Outcome {
     private final IntProvider count;
     private final Optional<NbtCompound> nbt;
 
-    public EntityOutcome(Optional<Integer> delay, Optional<String> pos, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
-        super(OutcomeType.ENTITY, delay, pos);
+    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
+        super(OutcomeType.ENTITY, luck, chance, delay, pos);
         this.entityTypeId = entityTypeId;
         this.count = count;
         this.nbt = nbt;

@@ -4,13 +4,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import io.netty.handler.codec.CodecException;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.structure.Structure;
@@ -20,15 +18,17 @@ import java.util.Optional;
 
 public class StructureOutcome extends Outcome {
     public static final MapCodec<StructureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalDelayField(Outcome::getDelay),
+        return instance.group(createGlobalLuckField(Outcome::getLuck),
+                createGlobalChanceField(Outcome::getChance),
+                createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.IDENTIFIER.fieldOf("structure").forGetter(outcome -> outcome.structureId)
         ).apply(instance, StructureOutcome::new);
     });
     private final List<Identifier> structureId;
 
-    public StructureOutcome(Optional<Integer> delay, Optional<String> pos, List<Identifier> structureId) {
-        super(OutcomeType.STRUCTURE, delay, pos);
+    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, List<Identifier> structureId) {
+        super(OutcomeType.STRUCTURE, luck, chance, delay, pos);
         this.structureId = structureId;
     }
 
