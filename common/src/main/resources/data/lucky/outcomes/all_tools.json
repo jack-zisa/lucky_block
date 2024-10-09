@@ -1,0 +1,167 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:wooden_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:wooden_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:wooden_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:wooden_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:wooden_hoe"
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:stone_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:stone_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:stone_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:stone_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:stone_hoe"
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_hoe"
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_hoe"
+        }
+      ],
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 3
+      }
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:diamond_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:diamond_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:diamond_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:diamond_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:diamond_hoe"
+        }
+      ],
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 2
+      }
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:netherite_sword"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:netherite_shovel"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:netherite_pickaxe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:netherite_axe"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:netherite_hoe"
+        }
+      ],
+      "count": 1
+    }
+  ],
+  "count": 1
+}

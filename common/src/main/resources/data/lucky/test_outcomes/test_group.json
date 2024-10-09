@@ -1,0 +1,14 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:none"
+    },
+    {
+      "type": "lucky:none"
+    },
+    {
+      "type": "lucky:none"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "lucky:block/test_lucky_block"
+    }
+  }
+}

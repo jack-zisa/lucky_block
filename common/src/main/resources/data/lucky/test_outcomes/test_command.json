@@ -1,0 +1,5 @@
+{
+  "type": "lucky:command",
+  "delay": 20,
+  "command": "/setblock {playerPos} stone"
+}

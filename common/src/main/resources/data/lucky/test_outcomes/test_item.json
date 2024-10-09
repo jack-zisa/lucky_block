@@ -1,0 +1,11 @@
+{
+  "type": "lucky:item",
+  "count": 8,
+  "stack": {
+    "id": "minecraft:diamond",
+    "count": 24,
+    "components": {
+      "minecraft:enchantment_glint_override": true
+    }
+  }
+}

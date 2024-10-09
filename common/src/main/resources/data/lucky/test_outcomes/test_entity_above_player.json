@@ -1,0 +1,7 @@
+{
+  "type": "lucky:entity",
+  "entity_type": "minecraft:creeper",
+  "count": 1,
+  "nbt": "{powered:1,ignited:1}",
+  "pos": [100, "{randomBetween({playerY},{playerY} + 10)}", "{playerZ}"]
+}
