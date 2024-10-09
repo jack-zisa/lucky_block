@@ -1,0 +1,22 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:leather_horse_armor"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:golden_horse_armor"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:horse_horse_armor"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:diamond_horse_armor"
+    }
+  ]
+}

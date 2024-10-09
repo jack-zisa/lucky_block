@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
 import com.mojang.serialization.DataResult;
@@ -21,7 +21,8 @@ import java.util.Map;
 
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
-    private Map<Identifier, Outcome> outcomes = ImmutableMap.of();
+    private List<Pair<Identifier, Outcome>> outcomes;
+    private float totalWeight = 0;
     private final Map<Pair<Outcome, OutcomeContext>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
@@ -30,12 +31,14 @@ public class OutcomeManager extends JsonDataLoader {
 
     @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
-        ImmutableMap.Builder<Identifier, Outcome> builder = ImmutableMap.builder();
+        ImmutableList.Builder<Pair<Identifier, Outcome>> builder = ImmutableList.builder();
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
             dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome '{}': {}", entry.getKey(), string)).ifPresent(outcome -> {
-                LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
-                builder.put(entry.getKey(), outcome);
+                float chance = outcome.getChance();
+                totalWeight += chance; // Add the chance to the total weight
+                LuckyBlockMod.LOGGER.info("Loading outcome '{}' with chance {}", entry.getKey(), outcome.getChance());
+                builder.add(new Pair<>(entry.getKey(), outcome));
             });
         }
         outcomes = builder.build();
@@ -67,16 +70,43 @@ public class OutcomeManager extends JsonDataLoader {
         return outcomes.isEmpty();
     }
 
-    public Outcome getRandomOutcome(Random random) {
-        int r = random.nextInt(outcomes.size());
-        int i = 0;
-
-        for (Outcome outcome : outcomes.values()) {
-            if (i == r)
-                return outcome;
-            ++i;
+    public Outcome getRandomOutcome(Random random, int luck) {
+        if (outcomes.isEmpty()) {
+            throw new IllegalArgumentException("No outcomes found");
         }
 
-        return NoneOutcome.INSTANCE;
+        int lowest = 0, highest = 0;
+
+        for (Pair<Identifier, Outcome> drop : outcomes) {
+            if (drop.getRight().getLuck() < lowest)
+                lowest = drop.getRight().getLuck();
+            if (drop.getRight().getLuck() > highest)
+                highest = drop.getRight().getLuck();
+        }
+
+        highest += -1 * lowest + 1;
+
+        double totalWeight = 0d;
+        List<Double> weights = new ArrayList<>();
+        weights.add(0d);
+
+        for (Pair<Identifier, Outcome> drop : outcomes) {
+            int outcomeLuck = drop.getRight().getLuck() + (-1 * lowest) + 1;
+            double adjusted = Math.pow(1d / (1d - Math.abs(luck) * .77d / 100d), luck >= 0 ? outcomeLuck : highest + 1 - outcomeLuck);
+            weights.add(totalWeight += (drop.getRight().getChance() > 0f ? drop.getRight().getChance() : 1d) * adjusted * 100);
+        }
+
+        double rIndex = random.nextDouble() * totalWeight;
+        int index = -1;
+        for (int i = 0; i < weights.size() - 1; ++i) {
+            if (rIndex >= weights.get(i) && rIndex < weights.get(i + 1)) {
+                index = i;
+            }
+        }
+
+        if (index == -1)
+            index = weights.size() - 2;
+
+        return outcomes.get(index).getRight();
     }
 }

@@ -7,49 +7,19 @@
       "outcomes": [
         {
           "type": "lucky:item",
-          "item": "minecraft:wooden_sword"
+          "item": "minecraft:leather_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:wooden_shovel"
+          "item": "minecraft:leather_chestplate"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:wooden_pickaxe"
+          "item": "minecraft:leather_leggings"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:wooden_axe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:wooden_hoe"
-        }
-      ]
-    },
-    {
-      "type": "lucky:group",
-      "luck": 0,
-      "outcomes": [
-        {
-          "type": "lucky:item",
-          "item": "minecraft:stone_sword"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:stone_shovel"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:stone_pickaxe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:stone_axe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:stone_hoe"
+          "item": "minecraft:leather_boots"
         }
       ]
     },
@@ -59,23 +29,19 @@
       "outcomes": [
         {
           "type": "lucky:item",
-          "item": "minecraft:golden_sword"
+          "item": "minecraft:golden_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:golden_shovel"
+          "item": "minecraft:golden_chestplate"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:golden_pickaxe"
+          "item": "minecraft:golden_leggings"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:golden_axe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:golden_hoe"
+          "item": "minecraft:golden_boots"
         }
       ]
     },
@@ -85,23 +51,46 @@
       "outcomes": [
         {
           "type": "lucky:item",
-          "item": "minecraft:iron_sword"
+          "item": "minecraft:chainmail_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:iron_shovel"
+          "item": "minecraft:chainmail_chestplate"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:iron_pickaxe"
+          "item": "minecraft:chainmail_leggings"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:iron_axe"
+          "item": "minecraft:chainmail_boots"
+        }
+      ],
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 3
+      }
+    },
+    {
+      "type": "lucky:group",
+      "luck": 1,
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:iron_hoe"
+          "item": "minecraft:iron_chestplate"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_leggings"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:iron_boots"
         }
       ],
       "count": {
@@ -116,23 +105,19 @@
       "outcomes": [
         {
           "type": "lucky:item",
-          "item": "minecraft:diamond_sword"
+          "item": "minecraft:diamond_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:diamond_shovel"
+          "item": "minecraft:diamond_chestplate"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:diamond_pickaxe"
+          "item": "minecraft:diamond_leggings"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:diamond_axe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:diamond_hoe"
+          "item": "minecraft:diamond_boots"
         }
       ],
       "count": {
@@ -147,23 +132,19 @@
       "outcomes": [
         {
           "type": "lucky:item",
-          "item": "minecraft:netherite_sword"
+          "item": "minecraft:netherite_helmet"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:netherite_shovel"
+          "item": "minecraft:netherite_chestplate"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:netherite_pickaxe"
+          "item": "minecraft:netherite_leggings"
         },
         {
           "type": "lucky:item",
-          "item": "minecraft:netherite_axe"
-        },
-        {
-          "type": "lucky:item",
-          "item": "minecraft:netherite_hoe"
+          "item": "minecraft:netherite_boots"
         }
       ],
       "count": 1

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -59,7 +60,7 @@ public abstract class Outcome {
     }
 
     public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
-        return Codec.INT.fieldOf("luck").orElse(0).forGetter(getter);
+        return Codecs.rangedInt(-2, 2).fieldOf("luck").orElse(0).forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Float> createGlobalChanceField(Function<O, Float> getter) {
