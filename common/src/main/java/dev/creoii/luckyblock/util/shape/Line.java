@@ -14,15 +14,14 @@ import java.util.List;
 
 public class Line extends Shape {
     public static final MapCodec<Line> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalOffsetField(Shape::getOffset),
-                createGlobalSizeField(Shape::getSize),
+        return instance.group(createGlobalSizeField(Shape::getSize),
                 LuckyBlockCodecs.BLOCK_POS.fieldOf("target").forGetter(line -> line.target)
         ).apply(instance, Line::new);
     });
     private final String target;
 
-    public Line(Vec3d offset, String size, String target) {
-        super(ShapeType.LINE, offset, size);
+    public Line(String size, String target) {
+        super(ShapeType.LINE, size);
         this.target = target;
     }
 
@@ -30,9 +29,9 @@ public class Line extends Shape {
     public List<BlockPos> getBlockPositions(Outcome outcome, OutcomeContext context) {
         List<BlockPos> positions = new ArrayList<>();
 
-        Vec3d direction = context.parseVec3d(target).subtract(outcome.getVec(context).add(offset)).normalize();
+        Vec3d direction = context.parseVec3d(target).subtract(outcome.getVec(context)).normalize();
         for (int i = 0; i <= context.parseInt(size); ++i) {
-            positions.add(LuckyBlockUtils.fromVec3d(offset.add(direction.multiply(i))));
+            positions.add(LuckyBlockUtils.fromVec3d(direction.multiply(i)));
         }
 
         return positions;

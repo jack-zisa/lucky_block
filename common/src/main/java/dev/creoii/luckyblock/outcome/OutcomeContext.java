@@ -201,24 +201,20 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
         for (int i = 0; i < param.length(); i++) {
             char c = param.charAt(i);
 
-            // Track opening parentheses
             if (c == '(') {
                 parentheses++;
             }
 
-            // Track closing parentheses
             if (c == ')') {
                 parentheses--;
             }
 
-            // Split only if we are not inside parentheses
             if (c == ',' && parentheses == 0) {
                 result.add(builder.toString().trim());
-                builder.setLength(0);  // Clear the builder for the next segment
-            } else builder.append(c);  // Append the current character
+                builder.setLength(0);
+            } else builder.append(c);
         }
 
-        // Add the last part if there's anything left in the builder
         if (!builder.isEmpty()) {
             result.add(builder.toString().trim());
         }

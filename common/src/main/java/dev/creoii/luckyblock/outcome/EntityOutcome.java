@@ -22,7 +22,7 @@ public class EntityOutcome extends Outcome {
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                StringNbtReader.NBT_COMPOUND_CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
+                NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;

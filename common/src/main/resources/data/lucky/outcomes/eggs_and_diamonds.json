@@ -1,0 +1,17 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:egg",
+      "count": 40
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:diamond",
+      "count": 20,
+      "velocity": "{randomVelocity(0.7,18)}"
+    }
+  ]
+}

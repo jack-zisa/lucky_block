@@ -13,7 +13,7 @@ public class Empty extends Shape {
     public static final MapCodec<Shape> CODEC = MapCodec.unit(INSTANCE);
 
     public Empty() {
-        super(ShapeType.EMPTY, BlockPos.ORIGIN, "0");
+        super(ShapeType.EMPTY, "0");
     }
 
     @Override

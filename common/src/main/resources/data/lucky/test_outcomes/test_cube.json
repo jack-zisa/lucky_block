@@ -10,7 +10,7 @@
   "shape": {
     "type": "lucky:cube",
     "offset": [0, -3, 0],
-    "size": 3,
+    "size": [3, 3, 3],
     "hollow": true
   }
 }

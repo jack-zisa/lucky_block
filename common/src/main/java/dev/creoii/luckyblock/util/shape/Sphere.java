@@ -14,32 +14,37 @@ import java.util.List;
 
 public class Sphere extends Shape {
     public static final MapCodec<Sphere> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalOffsetField(Shape::getOffset),
-                createGlobalSizeField(Shape::getSize),
+        return instance.group(createGlobalSizeField(Shape::getSize),
                 Codec.BOOL.fieldOf("hollow").forGetter(sphere -> sphere.hollow)
         ).apply(instance, Sphere::new);
     });
     private final boolean hollow;
 
-    public Sphere(Vec3d center, String size, boolean hollow) {
-        super(ShapeType.SPHERE, center, size);
+    public Sphere(String size, boolean hollow) {
+        super(ShapeType.SPHERE, size);
         this.hollow = hollow;
     }
 
     @Override
     public List<BlockPos> getBlockPositions(Outcome outcome, OutcomeContext context) {
         List<BlockPos> positions = new ArrayList<>();
-        int size = context.parseInt(this.size);
-        for (int x = -size; x <= size; x++) {
-            for (int y = -size; y <= size; y++) {
-                for (int z = -size; z <= size; z++) {
-                    double distance2 = x * x + y * y + z * z;
+        Vec3d size = context.parseVec3d(this.size);
+
+        for (int x = (int) Math.round(-size.x); x <= Math.round(size.x); x++) {
+            for (int y = (int) Math.round(-size.y); y <= Math.round(size.y); y++) {
+                for (int z = (int) Math.round(-size.z); z <= Math.round(size.z); z++) {
+                    double normalizedX = x / size.x;
+                    double normalizedY = y / size.y;
+                    double normalizedZ = z / size.z;
+
+                    double distance2 = normalizedX * normalizedX + normalizedY * normalizedY + normalizedZ * normalizedZ;
+
                     if (hollow) {
-                        if (distance2 <= size * size && distance2 >= (size - 1) * (size - 1)) {
-                            positions.add(LuckyBlockUtils.fromVec3d(offset).add(x, y, z));
+                        if (distance2 <= 1d && distance2 >= Math.pow(1 - 1d / Math.max(size.x, Math.max(size.y, size.z)), 2)) {
+                            positions.add(new BlockPos(x, y, z));
                         }
-                    } else if (distance2 <= size * size) {
-                        positions.add(LuckyBlockUtils.fromVec3d(offset).add(x, y, z));
+                    } else if (distance2 <= 1d) {
+                        positions.add(new BlockPos(x, y, z));
                     }
                 }
             }

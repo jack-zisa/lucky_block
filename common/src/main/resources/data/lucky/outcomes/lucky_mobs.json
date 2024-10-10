@@ -4,37 +4,58 @@
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:pig",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Pig\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Pig','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:cow",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Cow\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Cow','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:chicken",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Chicken\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Chicken','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:sheep",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Sheep\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Sheep','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:rabbit",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Rabbit\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Rabbit','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:squid",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Squid\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Squid','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:goat",
-      "nbt": "{CustomName:'[{\"text\":\"Lucky Goat\",\"color\":\"yellow\",\"bold\":true}]'}"
+      "nbt": {
+        "CustomName": "{'text':'Lucky Goat','color':'yellow'}",
+        "CustomNameVisible": true
+      }
     }
   ],
   "count": 1

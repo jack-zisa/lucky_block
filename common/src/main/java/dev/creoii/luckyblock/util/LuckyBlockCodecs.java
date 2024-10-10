@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.outcome.OutcomeContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -28,6 +29,10 @@ public class LuckyBlockCodecs {
 
     public static Codec<String> IDENTIFIER = Codec.either(Identifier.CODEC, Codec.STRING).xmap(either -> {
         return either.map(Identifier::toString, Function.identity());
+    }, Either::right);
+
+    public static Codec<String> NBT = Codec.either(NbtCompound.CODEC, Codec.STRING).xmap(either -> {
+        return either.map(NbtCompound::toString, Function.identity());
     }, Either::right);
 
     /**

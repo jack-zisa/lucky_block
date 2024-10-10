@@ -13,24 +13,23 @@ import java.util.List;
 
 public class Cube extends Shape {
     public static final MapCodec<Cube> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(createGlobalOffsetField(Shape::getOffset),
-                createGlobalSizeField(Shape::getSize),
+        return instance.group(createGlobalSizeField(Shape::getSize),
                 Codec.BOOL.fieldOf("hollow").forGetter(cube -> cube.hollow)
         ).apply(instance, Cube::new);
     });
     private final boolean hollow;
 
-    public Cube(Vec3d center, String size, boolean hollow) {
-        super(ShapeType.CUBE, center, size);
+    public Cube(String size, boolean hollow) {
+        super(ShapeType.CUBE, size);
         this.hollow = hollow;
     }
 
     @Override
     public List<BlockPos> getBlockPositions(Outcome outcome, OutcomeContext context) {
         List<BlockPos> positions = new ArrayList<>();
-        int size = context.parseInt(this.size);
-        BlockPos from = new BlockPos((int) Math.round(offset.x - size), (int) Math.round(offset.y - size), (int) Math.round(offset.z - size));
-        BlockPos to = new BlockPos((int) Math.round(offset.x + size), (int) Math.round(offset.y + size), (int) Math.round(offset.z + size));
+        Vec3d size = context.parseVec3d(this.size);
+        BlockPos from = new BlockPos((int) Math.round(-size.x), (int) Math.round(-size.y), (int) Math.round(-size.z));
+        BlockPos to = new BlockPos((int) Math.round(size.x), (int) Math.round(size.y), (int) Math.round(size.z));
         for (int z = from.getZ(); z <= to.getZ(); ++z) {
             for (int y = from.getY(); y <= to.getY(); ++y) {
                 for (int x = from.getX(); x <= to.getX(); ++x) {

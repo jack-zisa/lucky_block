@@ -1,0 +1,14 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:command",
+      "command": "/difficulty hard"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:giant"
+    }
+  ]
+}

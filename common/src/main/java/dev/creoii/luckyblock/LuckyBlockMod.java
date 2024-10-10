@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock;
 
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import dev.creoii.luckyblock.luckyblock.LuckyBlockItem;
 import dev.creoii.luckyblock.luckyblock.LuckyBlock;
@@ -21,7 +20,11 @@ import org.slf4j.Logger;
 
 /**
  * Todo:
- * - Outcome referencing
+ * <ul>
+ *     <li>Outcome referencing</li>
+ *     <li>function support for identifiers</li>
+ *     <li>function support for nbt</li>
+ * </ul>
  */
 public final class LuckyBlockMod {
     public static final String NAMESPACE = "lucky";
