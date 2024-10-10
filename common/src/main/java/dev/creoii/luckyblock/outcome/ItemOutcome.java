@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -18,16 +19,19 @@ public class ItemOutcome extends Outcome {
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.ITEMSTACK.fieldOf("item").forGetter(outcome -> outcome.stack),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count)
+                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
+                ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
     private final IntProvider count;
+    private final ComponentChanges components;
 
-    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, ItemStack stack, IntProvider count) {
+    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, ItemStack stack, IntProvider count, ComponentChanges components) {
         super(OutcomeType.ITEM, luck, chance, delay, pos);
         this.stack = stack;
         this.count = count;
+        this.components = components;
     }
 
     @Override
@@ -39,6 +43,8 @@ public class ItemOutcome extends Outcome {
             ItemEntity entity = EntityType.ITEM.create(context.world());
             if (entity != null) {
                 ItemStack newStack = stack.copy();
+                if (components != ComponentChanges.EMPTY)
+                    newStack.applyChanges(components);
                 newStack.setCount(stack.getMaxCount());
                 entity.setStack(newStack);
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
@@ -51,6 +57,8 @@ public class ItemOutcome extends Outcome {
             ItemEntity entity = EntityType.ITEM.create(context.world());
             if (entity != null) {
                 ItemStack remainder = stack.copy();
+                if (components != ComponentChanges.EMPTY)
+                    remainder.applyChanges(components);
                 remainder.setCount(total % stack.getMaxCount());
                 entity.setStack(remainder);
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);

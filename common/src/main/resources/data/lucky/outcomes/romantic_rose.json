@@ -1,0 +1,8 @@
+{
+  "type": "lucky:item",
+  "luck": -1,
+  "item": "minecraft:poppy",
+  "components": {
+    "minecraft:custom_name": "{'text':'Romantic Rose','color':'dark_red','italic':false}"
+  }
+}
