@@ -1,0 +1,159 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:dispenser",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:note_block"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:sticky_piston",
+      "count": 4
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:piston",
+      "count": 4
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:tnt",
+      "count": 6
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:lever",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:stone_pressure_plate",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oak_pressure_plate",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:redstone_torch",
+      "count": 8
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:stone_button",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oak_trapdoor",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:iron_trapdoor",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oak_fence_gate"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:redstone_lamp",
+      "count": 4
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:tripwire_hook",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oak_button",
+      "count": 2
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:light_weighted_pressure_plate"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:daylight_detector"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:hopper",
+      "count": 4
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:dropper",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oak_door"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:iron_door"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:redstone",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 32,
+        "max_inclusive": 64
+      }
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:repeater",
+      "count": 8
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:comparator",
+      "count": 2
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:item",
+        "item": {
+          "id": "minecraft:splash_potion",
+          "components": {
+            "potion_contents": {
+              "potion": "minecraft:healing"
+            }
+          }
+        }
+      },
+      "count": 100
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:effect"
+      },
+      "count": 100
+    }
+  ]
+}

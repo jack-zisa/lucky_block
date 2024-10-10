@@ -6,7 +6,6 @@ import dev.creoii.luckyblock.outcome.OutcomeContext;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.BiFunction;
 

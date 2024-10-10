@@ -13,7 +13,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.structure.Structure;
 
-import java.util.List;
 import java.util.Optional;
 
 public class StructureOutcome extends Outcome {
@@ -22,12 +21,12 @@ public class StructureOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
-                Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId)
+                LuckyBlockCodecs.IDENTIFIER.fieldOf("structure").forGetter(outcome -> outcome.structureId)
         ).apply(instance, StructureOutcome::new);
     });
-    private final Identifier structureId;
+    private final String structureId;
 
-    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, Identifier structureId) {
+    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String structureId) {
         super(OutcomeType.STRUCTURE, luck, chance, delay, pos);
         this.structureId = structureId;
     }
@@ -35,6 +34,7 @@ public class StructureOutcome extends Outcome {
     @Override
     public void run(OutcomeContext context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
+            Identifier structureId = Identifier.tryParse(context.processString(this.structureId));
             Structure structure = dynamicRegistryManager.get(RegistryKeys.STRUCTURE).get(structureId);
             if (structure == null) {
                 LuckyBlockMod.LOGGER.error("Structure identifier '{}' is invalid", structureId);

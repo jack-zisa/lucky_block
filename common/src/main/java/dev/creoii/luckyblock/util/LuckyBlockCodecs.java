@@ -9,7 +9,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 
-import java.util.List;
 import java.util.function.Function;
 
 public class LuckyBlockCodecs {
@@ -23,12 +22,12 @@ public class LuckyBlockCodecs {
         return either.map(String::valueOf, Function.identity());
     }, Either::right);
 
-    public static Codec<List<Identifier>> IDENTIFIER = Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).xmap(either -> {
-        return either.map(List::of, Function.identity());
-    }, Either::right);
-
     public static Codec<ItemStack> ITEMSTACK = Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
         return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
+    }, Either::right);
+
+    public static Codec<String> IDENTIFIER = Codec.either(Identifier.CODEC, Codec.STRING).xmap(either -> {
+        return either.map(Identifier::toString, Function.identity());
     }, Either::right);
 
     /**

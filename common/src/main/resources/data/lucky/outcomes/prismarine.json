@@ -55,6 +55,28 @@
         "min_inclusive": 4,
         "max_inclusive": 8
       }
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:item",
+        "item": {
+          "id": "minecraft:splash_potion",
+          "components": {
+            "potion_contents": {
+              "potion": "minecraft:invisibility"
+            }
+          }
+        }
+      },
+      "count": 100
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:effect"
+      },
+      "count": 100
     }
   ]
 }

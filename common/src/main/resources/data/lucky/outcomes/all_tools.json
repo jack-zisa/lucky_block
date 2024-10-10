@@ -1,5 +1,6 @@
 {
   "type": "lucky:group",
+  "chance": 6,
   "outcomes": [
     {
       "type": "lucky:group",

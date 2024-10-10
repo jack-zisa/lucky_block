@@ -19,7 +19,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record OutcomeContext(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-    public static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
+    private static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
+    private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
+    private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
 
     public String processString(String string) {
         if (string == null || string.isEmpty()) {
@@ -52,6 +54,8 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "playerSquaredDistance" -> replacement = String.valueOf(player.getPos().squaredDistanceTo(pos.toCenterPos()));
                 case "playerPitch" -> replacement = String.valueOf(player.getPitch());
                 case "playerYaw" -> replacement = String.valueOf(player.getYaw());
+                case "randomColor" -> replacement = COLORS.get(world.getRandom().nextInt(COLORS.size()));
+                case "randomWood" -> replacement = WOODS.get(world.getRandom().nextInt(WOODS.size()));
                 default -> throw new IllegalArgumentException("Error parsing token '" + param + "'");
             }
             matcher.appendReplacement(result, replacement);

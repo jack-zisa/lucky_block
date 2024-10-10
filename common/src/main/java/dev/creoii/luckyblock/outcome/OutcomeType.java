@@ -16,6 +16,8 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
     public static final OutcomeType ENTITY = new OutcomeType(EntityOutcome.CODEC);
     public static final OutcomeType FEATURE = new OutcomeType(FeatureOutcome.CODEC);
     public static final OutcomeType STRUCTURE = new OutcomeType(StructureOutcome.CODEC);
+    public static final OutcomeType PARTICLE = new OutcomeType(ParticleOutcome.CODEC);
+    public static final OutcomeType SOUND = new OutcomeType(SoundOutcome.CODEC);
 
     public static void init() {
         registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "none"), NONE);
@@ -28,6 +30,8 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
         registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "entity"), ENTITY);
         registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "feature"), FEATURE);
         registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "structure"), STRUCTURE);
+        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "particle"), PARTICLE);
+        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "sound"), SOUND);
     }
 
     public static void registerOutcomeType(Identifier id, OutcomeType outcomeType) {
