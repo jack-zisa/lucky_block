@@ -21,7 +21,7 @@ public class LuckyBlockItem extends BlockItem {
         if (stack.contains(LuckyBlockMod.LUCK)) {
             int luck = stack.get(LuckyBlockMod.LUCK);
             Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
-            tooltip.add(Text.translatable("lucky.item.luck", luck).formatted(formatting));
+            tooltip.add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
         }
     }
 }
