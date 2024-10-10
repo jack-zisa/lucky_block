@@ -1,0 +1,168 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:porkchop",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_porkchop",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:salmon",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_salmon",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:beef",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_beef",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:chicken",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_chicken",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:mutton",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_mutton",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:rabbit",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_rabbit",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cod",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cooked_cod",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    }
+  ],
+  "count": 1
+}

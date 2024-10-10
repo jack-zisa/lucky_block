@@ -1,0 +1,23 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pumpkin",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 8,
+        "max_inclusive": 16
+      }
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:jack_o_lantern",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 8,
+        "max_inclusive": 16
+      }
+    }
+  ]
+}

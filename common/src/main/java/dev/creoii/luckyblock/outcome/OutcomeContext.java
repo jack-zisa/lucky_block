@@ -36,11 +36,11 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
             String replacement;
             switch (param) {
                 case "playerName" -> replacement = player().getGameProfile().getName();
-                case "playerPos" -> replacement = player.getBlockPos().getX() + " " + player.getBlockPos().getY() + " " + player.getBlockPos().getZ();
+                case "playerPos" -> replacement = player.getBlockX() + " " + player.getBlockY() + " " + player.getBlockZ();
                 case "playerPosX" -> replacement = String.valueOf(player.getBlockX());
                 case "playerPosY" -> replacement = String.valueOf(player.getBlockY());
                 case "playerPosZ" -> replacement = String.valueOf(player.getBlockZ());
-                case "playerVec" -> replacement = player.getPos().x + " " + player.getPos().y + " " + player.getPos().z;
+                case "playerVec" -> replacement = player.getX() + " " + player.getY() + " " + player.getZ();
                 case "playerVecX", "playerX" -> replacement = String.valueOf(player.getX());
                 case "playerVecY", "playerY" -> replacement = String.valueOf(player.getY());
                 case "playerVecZ", "playerZ" -> replacement = String.valueOf(player.getZ());
@@ -50,6 +50,8 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "blockPosZ", "blockZ" -> replacement = String.valueOf(pos.getZ());
                 case "playerDistance" -> replacement = String.valueOf(player.getPos().distanceTo(pos.toCenterPos()));
                 case "playerSquaredDistance" -> replacement = String.valueOf(player.getPos().squaredDistanceTo(pos.toCenterPos()));
+                case "playerPitch" -> replacement = String.valueOf(player.getPitch());
+                case "playerYaw" -> replacement = String.valueOf(player.getYaw());
                 default -> throw new IllegalArgumentException("Error parsing token '" + param + "'");
             }
             matcher.appendReplacement(result, replacement);
@@ -79,8 +81,12 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "{playerPos}" -> player().getBlockPos().toCenterPos();
                 case "{playerVec}" -> player().getPos();
                 default -> {
-                    LuckyBlockMod.LOGGER.error("Error parsing special vec3d: '{}'", param);
-                    throw new NumberFormatException();
+                    try {
+                        yield parseVec3d(FunctionUtils.processFunctions(param, this));
+                    } catch (IllegalArgumentException e) {
+                        LuckyBlockMod.LOGGER.error("Error parsing special vec3d: '{}'", param);
+                        throw e;
+                    }
                 }
             };
         } else return new Vec3d(LuckyBlockCodecs.SpecialDouble.of(values[0]).getValue(this), LuckyBlockCodecs.SpecialDouble.of(values[1]).getValue(this), LuckyBlockCodecs.SpecialDouble.of(values[2]).getValue(this));

@@ -1,0 +1,71 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:carrot",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:golden_carrot",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:potato",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 8,
+            "max_inclusive": 16
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:baked_potato",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 4,
+            "max_inclusive": 8
+          }
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:poisonous_potato",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 2,
+            "max_inclusive": 4
+          }
+        }
+      ]
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pumpkin_pie",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 6,
+        "max_inclusive": 12
+      }
+    }
+  ],
+  "count": 1
+}

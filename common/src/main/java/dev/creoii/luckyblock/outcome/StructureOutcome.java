@@ -22,12 +22,12 @@ public class StructureOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
-                LuckyBlockCodecs.IDENTIFIER.fieldOf("structure").forGetter(outcome -> outcome.structureId)
+                Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId)
         ).apply(instance, StructureOutcome::new);
     });
-    private final List<Identifier> structureId;
+    private final Identifier structureId;
 
-    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, List<Identifier> structureId) {
+    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, Identifier structureId) {
         super(OutcomeType.STRUCTURE, luck, chance, delay, pos);
         this.structureId = structureId;
     }
@@ -35,7 +35,7 @@ public class StructureOutcome extends Outcome {
     @Override
     public void run(OutcomeContext context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            Structure structure = dynamicRegistryManager.get(RegistryKeys.STRUCTURE).get(structureId.get(serverWorld.getRandom().nextInt(structureId.size())));
+            Structure structure = dynamicRegistryManager.get(RegistryKeys.STRUCTURE).get(structureId);
             if (structure == null) {
                 LuckyBlockMod.LOGGER.error("Structure identifier '{}' is invalid", structureId);
                 return;

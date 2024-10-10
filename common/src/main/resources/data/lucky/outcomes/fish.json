@@ -1,0 +1,37 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:fishing_rod"
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:item",
+          "item": "minecraft:cod"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:salmon"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:pufferfish"
+        },
+        {
+          "type": "lucky:item",
+          "item": "minecraft:tropical_fish"
+        }
+      ],
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 10,
+        "max_inclusive": 20
+      }
+    }
+  ],
+  "count": 1
+}

@@ -1,0 +1,23 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:bookshelf",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 6,
+        "max_inclusive": 12
+      }
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:book",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 8,
+        "max_inclusive": 16
+      }
+    }
+  ]
+}

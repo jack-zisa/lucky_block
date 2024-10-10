@@ -1,0 +1,51 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:dandelion",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:poppy",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:blue_orchid",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:allium",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:azure_bluet",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pink_tulip",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:oxeye_daisy",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:cornflower",
+      "count": 64
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:lily_of_the_valley",
+      "count": 64
+    }
+  ],
+  "count": 1
+}

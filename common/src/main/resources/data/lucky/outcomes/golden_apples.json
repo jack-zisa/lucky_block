@@ -1,0 +1,24 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:golden_apple",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:enchanted_golden_apple",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 2
+      }
+    }
+  ]
+}
