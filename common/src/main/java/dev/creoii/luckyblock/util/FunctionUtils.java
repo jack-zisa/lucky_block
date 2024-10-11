@@ -87,7 +87,6 @@ public class FunctionUtils {
                     numbers[i] = context.evaluateExpression(args[i].trim());
                 }
                 Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
-
                 Sphere sphere = new Sphere(args[3], false);
                 List<BlockPos> positions = sphere.getBlockPositions(null, context);
                 Collections.shuffle(positions);
@@ -113,7 +112,7 @@ public class FunctionUtils {
                     String functionId = expression.substring(i, k);
                     if (FUNCTIONS.containsKey(functionId)) {
                         String arguments = expression.substring(k + 1, expression.indexOf(")", k + 1));
-                        return expression.substring(0, Math.max(0, i - 2)) + FUNCTIONS.get(functionId).apply(arguments.split(","), context) + expression.substring(end + 1);
+                        return expression.substring(0, Math.max(0, i - 2)) + FUNCTIONS.get(functionId).apply(OutcomeContext.split(arguments), context) + expression.substring(end + 1);
                     } else throw new IllegalArgumentException("Unknown function: '" + functionId + "'");
                 }
             }

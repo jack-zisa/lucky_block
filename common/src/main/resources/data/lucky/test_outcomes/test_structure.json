@@ -1,8 +1,4 @@
 {
   "type": "lucky:structure",
-  "structure": [
-    "minecraft:bastion_remnant",
-    "minecraft:pillager_outpost",
-    "minecraft:ancient_city"
-  ]
+  "structure": "minecraft:pillager_outpost"
 }

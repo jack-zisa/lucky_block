@@ -87,7 +87,8 @@
             }
           }
         }
-      }
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
     }
   ]
 }

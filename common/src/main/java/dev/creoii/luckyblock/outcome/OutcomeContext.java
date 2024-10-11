@@ -78,6 +78,12 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
     }
 
     public Vec3d parseVec3d(String param) {
+        if (param.startsWith("[")) {
+            param = param.substring(1);
+        }
+        if (param.endsWith("]")) {
+            param = param.substring(0, param.length() - 1);
+        }
         String[] values = split(param);
         if (values.length == 1) {
             return switch (param) {
@@ -193,7 +199,7 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
         };
     }
 
-    private static String[] split(String param) {
+    public static String[] split(String param) {
         List<String> result = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         int parentheses = 0;
@@ -201,11 +207,11 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
         for (int i = 0; i < param.length(); i++) {
             char c = param.charAt(i);
 
-            if (c == '(') {
+            if (c == '(' || c == '[') {
                 parentheses++;
             }
 
-            if (c == ')') {
+            if (c == ')' || c == ']') {
                 parentheses--;
             }
 

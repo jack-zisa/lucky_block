@@ -1,7 +1,4 @@
 {
   "type": "lucky:feature",
-  "feature": [
-    "minecraft:tall_mangrove",
-    "minecraft:large_dripstone"
-  ]
+  "feature": "minecraft:tall_mangrove"
 }
