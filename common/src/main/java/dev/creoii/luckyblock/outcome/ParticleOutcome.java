@@ -50,7 +50,6 @@ public class ParticleOutcome extends Outcome {
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
-                System.out.println("add particle " + (i + 1));
                 ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, context.evaluateExpression(speed.orElse("1")));
 
                 if (shouldReinit()) {
