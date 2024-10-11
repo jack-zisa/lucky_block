@@ -11,7 +11,8 @@
       "type": "lucky:item",
       "item": "minecraft:diamond",
       "count": 20,
-      "velocity": "{randomVelocity(0.7,18)}"
+      "velocity": "{randomVelocity(0.7,18)}",
+      "reinit": true
     }
   ]
 }

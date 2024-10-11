@@ -18,17 +18,19 @@ public abstract class Outcome {
     private final float chance;
     private final Optional<Integer> delay;
     private final Optional<String> pos;
+    private final boolean reinit;
 
     public Outcome(OutcomeType type) {
-        this(type, 0, 1f, Optional.of(0), Optional.empty());
+        this(type, 0, 1f, Optional.of(0), Optional.empty(), false);
     }
 
-    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<String> pos) {
+    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit) {
         this.type = type;
         this.luck = luck;
         this.chance = chance;
         this.delay = delay;
         this.pos = pos;
+        this.reinit = reinit;
     }
 
     public OutcomeType getType() {
@@ -41,6 +43,10 @@ public abstract class Outcome {
 
     public float getChance() {
         return chance;
+    }
+
+    public boolean shouldReinit() {
+        return reinit;
     }
 
     public Optional<Integer> getDelay() {
@@ -73,6 +79,10 @@ public abstract class Outcome {
 
     public static <O> RecordCodecBuilder<O, Optional<String>> createGlobalPosField(Function<O, Optional<String>> getter) {
         return LuckyBlockCodecs.BLOCK_POS.optionalFieldOf("pos").forGetter(getter);
+    }
+
+    public static <O> RecordCodecBuilder<O, Boolean> createGlobalReinitField(Function<O, Boolean> getter) {
+        return Codec.BOOL.fieldOf("reinit").orElse(false).forGetter(getter);
     }
 
     public void runOutcome(OutcomeContext context) {

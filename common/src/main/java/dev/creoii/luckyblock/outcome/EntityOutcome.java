@@ -20,6 +20,7 @@ public class EntityOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
+                createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
@@ -29,8 +30,8 @@ public class EntityOutcome extends Outcome {
     private final IntProvider count;
     private final Optional<NbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
-        super(OutcomeType.ENTITY, luck, chance, delay, pos);
+    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
+        super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
         this.nbt = nbt;
@@ -46,6 +47,10 @@ public class EntityOutcome extends Outcome {
                 nbt.ifPresent(entity::readNbt);
                 entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
                 context.world().spawnEntity(entity);
+
+                if (shouldReinit()) {
+                    spawnPos = getVec(context);
+                }
             }
         }
     }

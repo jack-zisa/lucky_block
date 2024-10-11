@@ -18,7 +18,7 @@ public class MessageOutcome extends Outcome {
     private final Text message;
 
     public MessageOutcome(int luck, float chance, Optional<Integer> delay, Text message) {
-        super(OutcomeType.MESSAGE, luck, chance, delay, Optional.empty());
+        super(OutcomeType.MESSAGE, luck, chance, delay, Optional.empty(), false);
         this.message = message;
     }
 

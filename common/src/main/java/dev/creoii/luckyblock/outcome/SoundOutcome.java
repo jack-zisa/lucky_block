@@ -25,7 +25,7 @@ public class SoundOutcome extends Outcome {
     private final String pitch;
 
     public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, SoundEvent soundEvent, String volume, String pitch) {
-        super(OutcomeType.SOUND, luck, chance, delay, pos);
+        super(OutcomeType.SOUND, luck, chance, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;
         this.pitch = pitch;

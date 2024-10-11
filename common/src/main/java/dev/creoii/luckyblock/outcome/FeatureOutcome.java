@@ -31,7 +31,7 @@ public class FeatureOutcome extends Outcome {
     private final List<PlacementModifier> placementModifiers;
 
     public FeatureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String featureId, List<PlacementModifier> placementModifiers) {
-        super(OutcomeType.RANDOM, luck, chance, delay, pos);
+        super(OutcomeType.RANDOM, luck, chance, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;
     }

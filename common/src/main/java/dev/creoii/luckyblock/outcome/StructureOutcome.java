@@ -27,7 +27,7 @@ public class StructureOutcome extends Outcome {
     private final String structureId;
 
     public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String structureId) {
-        super(OutcomeType.STRUCTURE, luck, chance, delay, pos);
+        super(OutcomeType.STRUCTURE, luck, chance, delay, pos, false);
         this.structureId = structureId;
     }
 

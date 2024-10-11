@@ -20,7 +20,7 @@ public class CommandOutcome extends Outcome {
     private final String command;
 
     public CommandOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String command) {
-        super(OutcomeType.COMMAND, luck, chance, delay, pos);
+        super(OutcomeType.COMMAND, luck, chance, delay, pos, false);
         this.command = command;
     }
 

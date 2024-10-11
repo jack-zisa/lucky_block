@@ -16,6 +16,7 @@ public class ParticleOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
+                createGlobalReinitField(Outcome::shouldReinit),
                 ParticleTypes.TYPE_CODEC.fieldOf("particle_type").forGetter(outcome -> outcome.particle),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 LuckyBlockCodecs.VEC_3D.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
@@ -25,8 +26,8 @@ public class ParticleOutcome extends Outcome {
     private final IntProvider count;
     private final Optional<String> velocity;
 
-    public ParticleOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, ParticleEffect particle, IntProvider count, Optional<String> velocity) {
-        super(OutcomeType.PARTICLE, luck, chance, delay, pos);
+    public ParticleOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<String> velocity) {
+        super(OutcomeType.PARTICLE, luck, chance, delay, pos, reinit);
         this.particle = particle;
         this.count = count;
         this.velocity = velocity;
@@ -43,6 +44,10 @@ public class ParticleOutcome extends Outcome {
 
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             context.world().addParticle(particle, pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z);
+
+            if (shouldReinit()) {
+                pos = getPos().isPresent() ? context.parseVec3d(getPos().get()) : context.pos().toCenterPos();
+            }
         }
     }
 }
