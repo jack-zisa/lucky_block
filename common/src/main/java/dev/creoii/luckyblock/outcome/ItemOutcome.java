@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.EntityType;
@@ -23,17 +24,17 @@ public class ItemOutcome extends Outcome {
                 LuckyBlockCodecs.ITEMSTACK.fieldOf("item").forGetter(outcome -> outcome.stack),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
-                NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
+                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 LuckyBlockCodecs.VEC_3D.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
     private final IntProvider count;
     private final ComponentChanges components;
-    private final Optional<NbtCompound> nbt;
+    private final Optional<ContextualNbtCompound> nbt;
     private final Optional<String> velocity;
 
-    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<NbtCompound> nbt, Optional<String> velocity) {
+    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<String> velocity) {
         super(OutcomeType.ITEM, luck, chance, delay, pos, reinit);
         this.stack = stack;
         this.count = count;

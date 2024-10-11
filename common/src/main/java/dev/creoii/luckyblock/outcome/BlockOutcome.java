@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -21,15 +22,15 @@ public class BlockOutcome extends Outcome {
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
-                NbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntityNbt),
+                ContextualNbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntityNbt),
                 Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape)
         ).apply(instance, BlockOutcome::new);
     });
     private final BlockStateProvider stateProvider;
-    private final Optional<NbtCompound> blockEntityNbt;
+    private final Optional<ContextualNbtCompound> blockEntityNbt;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, BlockStateProvider stateProvider, Optional<NbtCompound> blockEntityNbt, Optional<Shape> shape) {
+    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntityNbt, Optional<Shape> shape) {
         super(OutcomeType.BLOCK, luck, chance, delay, pos, reinit);
         this.stateProvider = stateProvider;
         this.blockEntityNbt = blockEntityNbt;

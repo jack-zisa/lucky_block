@@ -28,7 +28,7 @@ public class GroupOutcome extends Outcome {
     public void run(OutcomeContext context) {
         Collections.shuffle(outcomes);
         for (int i = 0; i < (count.isPresent() ? Math.clamp(this.count.get().get(context.world().getRandom()), 0, outcomes.size()) : outcomes.size()); ++i) {
-            outcomes.get(i).run(context);
+            outcomes.get(i).runOutcome(context);
         }
     }
 }

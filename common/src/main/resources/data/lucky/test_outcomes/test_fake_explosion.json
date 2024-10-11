@@ -1,0 +1,17 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:explosion"
+      }
+    },
+    {
+      "type": "lucky:sound",
+      "sound_event": {
+        "sound_id": "minecraft:entity.generic.explode"
+      }
+    }
+  ]
+}

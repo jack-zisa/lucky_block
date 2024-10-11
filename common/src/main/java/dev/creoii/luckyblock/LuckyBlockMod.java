@@ -23,7 +23,6 @@ import org.slf4j.Logger;
  * <ul>
  *     <li>Outcome referencing</li>
  *     <li>function support for identifiers</li>
- *     <li>function support for nbt</li>
  * </ul>
  */
 public final class LuckyBlockMod {

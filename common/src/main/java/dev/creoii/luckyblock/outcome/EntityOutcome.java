@@ -2,11 +2,11 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
@@ -23,14 +23,14 @@ public class EntityOutcome extends Outcome {
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
+                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;
     private final IntProvider count;
-    private final Optional<NbtCompound> nbt;
+    private final Optional<ContextualNbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
+    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
         super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
@@ -44,7 +44,10 @@ public class EntityOutcome extends Outcome {
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             Entity entity = entityType.create(context.world());
             if (entity != null) {
-                nbt.ifPresent(entity::readNbt);
+                if (nbt.isPresent()) {
+                    nbt.get().setContext(context);
+                    entity.readNbt(nbt.get());
+                }
                 entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
                 context.world().spawnEntity(entity);
 

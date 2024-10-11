@@ -90,6 +90,9 @@ public class FunctionUtils {
                 Sphere sphere = new Sphere(args[3], false);
                 List<BlockPos> positions = sphere.getBlockPositions(null, context);
                 Collections.shuffle(positions);
+                if (positions.isEmpty()) {
+                    return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
+                }
                 BlockPos pos = positions.getFirst().add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
                 return pos.getX() + "," + pos.getY() + "," + pos.getZ();
             })

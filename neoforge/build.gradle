@@ -7,6 +7,22 @@ architectury {
     neoForge()
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    neoForge {
+        runs {
+            configureEach {}
+
+            data {
+                data()
+                programArgs("--all", "--mod", "lucky")
+                programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
+            }
+        }
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -56,4 +72,5 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+    atAccessWideners.add("${rootProject.mod_id}.accesswidener")
 }

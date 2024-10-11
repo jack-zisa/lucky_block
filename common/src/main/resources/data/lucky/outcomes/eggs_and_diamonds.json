@@ -5,13 +5,17 @@
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:egg",
-      "count": 40
+      "count": 40,
+      "nbt": {
+        "Motion": "{randomVelocity(0.6,15)}"
+      }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:diamond",
       "count": 20,
       "velocity": "{randomVelocity(0.7,18)}",
+      "delay": 15,
       "reinit": true
     }
   ]
