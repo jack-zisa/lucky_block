@@ -1,0 +1,8 @@
+{
+  "type": "lucky:explosion",
+  "luck": -2,
+  "explosion": {
+    "power": 6,
+    "explosion_source_type": "block"
+  }
+}

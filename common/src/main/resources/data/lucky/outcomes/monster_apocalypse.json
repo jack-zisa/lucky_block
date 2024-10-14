@@ -1,6 +1,7 @@
 {
   "type": "lucky:group",
   "luck": -2,
+  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:item",
@@ -13,6 +14,21 @@
     {
       "type": "lucky:command",
       "command": "/time set 18750"
+    },
+    {
+      "type": "lucky:effect",
+      "status_effect": {
+        "id": "minecraft:slowness",
+        "amplifier": 4,
+        "duration": 30
+      }
+    },
+    {
+      "type": "lucky:effect",
+      "status_effect": {
+        "id": "minecraft:blindness",
+        "duration": 30
+      }
     },
     {
       "type": "lucky:group",

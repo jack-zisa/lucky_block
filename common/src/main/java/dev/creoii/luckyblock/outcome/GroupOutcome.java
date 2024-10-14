@@ -11,6 +11,7 @@ public class GroupOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
+                createGlobalReinitField(Outcome::shouldReinit),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
                 IntProvider.POSITIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count)
         ).apply(instance, GroupOutcome::new);
@@ -18,8 +19,8 @@ public class GroupOutcome extends Outcome {
     private final List<Outcome> outcomes;
     private final Optional<IntProvider> count;
 
-    public GroupOutcome(int luck, float chance, Optional<Integer> delay, List<Outcome> outcomes, Optional<IntProvider> count) {
-        super(OutcomeType.GROUP, luck, chance, delay, Optional.empty(), false);
+    public GroupOutcome(int luck, float chance, Optional<Integer> delay, boolean reinit, List<Outcome> outcomes, Optional<IntProvider> count) {
+        super(OutcomeType.GROUP, luck, chance, delay, Optional.empty(), reinit);
         this.outcomes = outcomes instanceof ArrayList<Outcome> ? outcomes : new ArrayList<>(outcomes);
         this.count = count;
     }
@@ -27,8 +28,15 @@ public class GroupOutcome extends Outcome {
     @Override
     public void run(OutcomeContext context) {
         Collections.shuffle(outcomes);
-        for (int i = 0; i < (count.isPresent() ? Math.clamp(this.count.get().get(context.world().getRandom()), 0, outcomes.size()) : outcomes.size()); ++i) {
-            outcomes.get(i).runOutcome(context);
+        int count = this.count.map(intProvider -> intProvider.get(context.world().getRandom())).orElseGet(outcomes::size);
+        if (shouldReinit()) {
+            for (int i = 0; i < count; ++i) {
+                outcomes.get(context.world().getRandom().nextInt(outcomes.size())).runOutcome(context);
+            }
+        } else {
+            for (int i = 0; i < Math.clamp(count, 0, outcomes.size()); ++i) {
+                outcomes.get(i).runOutcome(context);
+            }
         }
     }
 }

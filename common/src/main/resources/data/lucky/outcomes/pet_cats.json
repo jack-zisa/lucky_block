@@ -1,0 +1,33 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:cat",
+      "nbt": {
+        "CatType": "{randomBetween(0,10)}",
+        "CollarColor": "{randomBetween(0,15)}",
+        "Owner": "{playerUUID}",
+        "Sitting": true
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 5,
+        "max_inclusive": 10
+      },
+      "reinit": true
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:heart",
+        "count": 20
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}",
+      "count": 20,
+      "reinit": true
+    }
+  ]
+}

@@ -22,7 +22,6 @@ import java.util.Map;
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private List<Pair<Identifier, Outcome>> outcomes;
-    private float totalWeight = 0;
     private final Map<Pair<Outcome, OutcomeContext>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
@@ -35,8 +34,6 @@ public class OutcomeManager extends JsonDataLoader {
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
             dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome '{}': {}", entry.getKey(), string)).ifPresent(outcome -> {
-                float chance = outcome.getChance();
-                totalWeight += chance; // Add the chance to the total weight
                 LuckyBlockMod.LOGGER.info("Loading outcome '{}' with chance {}", entry.getKey(), outcome.getChance());
                 builder.add(new Pair<>(entry.getKey(), outcome));
             });

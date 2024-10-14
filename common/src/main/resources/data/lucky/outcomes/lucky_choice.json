@@ -1,0 +1,13 @@
+{
+  "type": "lucky:random",
+  "outcomes": [
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:lucky_choice_left"
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:lucky_choice_right"
+    }
+  ]
+}

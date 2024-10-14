@@ -1,0 +1,21 @@
+{
+  "type": "lucky:group",
+  "luck": -1,
+  "outcomes": [
+    {
+      "type": "lucky:command",
+      "command": "/difficulty hard"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:witch"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:bat",
+      "count": 64,
+      "pos": "{randomInSphere({blockX},{blockY}+1,{blockZ},[1,2,1])}",
+      "reinit": true
+    }
+  ]
+}

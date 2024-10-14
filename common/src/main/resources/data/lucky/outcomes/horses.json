@@ -1,0 +1,35 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:horse",
+      "nbt": {
+        "Tame": true,
+        "Owner": "{playerUUID}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:skeleton_horse",
+      "nbt": {
+        "Tame": true,
+        "Owner": "{playerUUID}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:zombie_horse",
+      "nbt": {
+        "Tame": true,
+        "Owner": "{playerUUID}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    }
+  ],
+  "count": 12,
+  "reinit": true
+}

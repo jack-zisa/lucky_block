@@ -63,6 +63,7 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "playerYaw" -> replacement = String.valueOf(player.getYaw());
                 case "randomColor" -> replacement = COLORS.get(world.getRandom().nextInt(COLORS.size()));
                 case "randomWood" -> replacement = WOODS.get(world.getRandom().nextInt(WOODS.size()));
+                case "playerUUID" -> replacement = player.getUuidAsString();
                 default -> throw new IllegalArgumentException("Error parsing token '" + param + "'");
             }
             matcher.appendReplacement(result, replacement);

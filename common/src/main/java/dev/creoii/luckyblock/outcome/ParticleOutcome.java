@@ -10,7 +10,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ParticleOutcome extends Outcome {

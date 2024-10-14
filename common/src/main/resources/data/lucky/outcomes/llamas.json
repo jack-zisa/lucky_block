@@ -1,0 +1,87 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llaura','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llauretta','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llavender','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llinda','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llisa','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llouise','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llucy','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:llama",
+      "nbt": {
+        "CustomName": "{'text':'Llydia','color':'dark_purple'}",
+        "CustomNameVisible": true,
+        "Variant": "{randomBetween(0,3)}"
+      },
+      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+    }
+  ],
+  "count": 8,
+  "reinit": true
+}
