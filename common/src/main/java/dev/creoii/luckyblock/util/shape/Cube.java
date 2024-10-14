@@ -14,7 +14,7 @@ import java.util.List;
 public class Cube extends Shape {
     public static final MapCodec<Cube> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalSizeField(Shape::getSize),
-                Codec.BOOL.fieldOf("hollow").forGetter(cube -> cube.hollow)
+                Codec.BOOL.fieldOf("hollow").orElse(false).forGetter(cube -> cube.hollow)
         ).apply(instance, Cube::new);
     });
     private final boolean hollow;
@@ -30,9 +30,9 @@ public class Cube extends Shape {
         Vec3d size = context.parseVec3d(this.size);
         BlockPos from = new BlockPos((int) Math.round(-size.x), (int) Math.round(-size.y), (int) Math.round(-size.z));
         BlockPos to = new BlockPos((int) Math.round(size.x), (int) Math.round(size.y), (int) Math.round(size.z));
-        for (int z = from.getZ(); z <= to.getZ(); ++z) {
-            for (int y = from.getY(); y <= to.getY(); ++y) {
-                for (int x = from.getX(); x <= to.getX(); ++x) {
+        for (int z = from.getZ() + 1; z <= to.getZ() - 1; ++z) {
+            for (int y = from.getY() + 1; y <= to.getY() - 1; ++y) {
+                for (int x = from.getX() + 1; x <= to.getX() - 1; ++x) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (hollow) {
                         if (pos.getX() == from.getX() || pos.getX() == to.getX() || pos.getY() == from.getY() || pos.getY() == to.getY() || pos.getZ() == from.getZ() || pos.getZ() == to.getZ()) {

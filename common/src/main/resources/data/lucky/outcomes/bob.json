@@ -1,0 +1,77 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:command",
+      "command": "/difficulty hard"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:zombie",
+      "nbt": {
+        "HandItems": [
+          {
+            "id": "minecraft:diamond_sword",
+            "components": {
+              "minecraft:enchantments": {
+                "levels": {
+                  "minecraft:sharpness": 5
+                }
+              }
+            }
+          },
+          {
+            "id": "minecraft:shield"
+          }
+        ],
+        "ArmorItems": [
+          {
+            "id": "minecraft:diamond_boots",
+            "components": {
+              "minecraft:enchantments": {
+                "levels": {
+                  "minecraft:protection": 4
+                }
+              }
+            }
+          },
+          {
+            "id": "minecraft:diamond_leggings",
+            "components": {
+              "minecraft:enchantments": {
+                "levels": {
+                  "minecraft:protection": 4
+                }
+              }
+            }
+          },
+          {
+            "id": "minecraft:diamond_chestplate",
+            "components": {
+              "minecraft:enchantments": {
+                "levels": {
+                  "minecraft:protection": 4
+                }
+              }
+            }
+          },
+          {
+            "id": "minecraft:diamond_helmet",
+            "components": {
+              "minecraft:enchantments": {
+                "levels": {
+                  "minecraft:protection": 4
+                }
+              }
+            }
+          }
+        ],
+        "HandDropChances": [0.5, 0],
+        "ArmorDropChances": [0.3, 0.3, 0.3, 0.3],
+        "CustomName": "{'text':'Bob','color':'blue'}",
+        "CustomNameVisible": true
+      }
+    }
+  ]
+}

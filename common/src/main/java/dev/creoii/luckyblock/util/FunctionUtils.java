@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.random.RandomGenerator;
 
 public class FunctionUtils {
     private static final Map<String, BiFunction<String[], OutcomeContext, String>> FUNCTIONS = new ImmutableMap.Builder<String, BiFunction<String[], OutcomeContext, String>>()
@@ -74,8 +75,10 @@ public class FunctionUtils {
 
                 Cube cube = new Cube(args[3], false);
                 List<BlockPos> positions = cube.getBlockPositions(null, context);
-                Collections.shuffle(positions);
-                BlockPos pos = positions.getFirst().add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
+                if (positions.isEmpty()) {
+                    return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
+                }
+                BlockPos pos = positions.get(context.world().getRandom().nextInt(positions.size())).add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
                 return pos.getX() + "," + pos.getY() + "," + pos.getZ();
             })
             .put("randomInSphere", (args, context) -> {
@@ -89,11 +92,10 @@ public class FunctionUtils {
                 Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
                 Sphere sphere = new Sphere(args[3], false);
                 List<BlockPos> positions = sphere.getBlockPositions(null, context);
-                Collections.shuffle(positions);
                 if (positions.isEmpty()) {
                     return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
                 }
-                BlockPos pos = positions.getFirst().add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
+                BlockPos pos = positions.get(context.world().getRandom().nextInt(positions.size())).add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
                 return pos.getX() + "," + pos.getY() + "," + pos.getZ();
             })
             .build();

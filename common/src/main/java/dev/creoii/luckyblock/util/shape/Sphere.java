@@ -15,7 +15,7 @@ import java.util.List;
 public class Sphere extends Shape {
     public static final MapCodec<Sphere> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalSizeField(Shape::getSize),
-                Codec.BOOL.fieldOf("hollow").forGetter(sphere -> sphere.hollow)
+                Codec.BOOL.fieldOf("hollow").orElse(false).forGetter(sphere -> sphere.hollow)
         ).apply(instance, Sphere::new);
     });
     private final boolean hollow;
@@ -30,9 +30,9 @@ public class Sphere extends Shape {
         List<BlockPos> positions = new ArrayList<>();
         Vec3d size = context.parseVec3d(this.size);
 
-        for (int x = (int) Math.round(-size.x); x <= Math.round(size.x); x++) {
-            for (int y = (int) Math.round(-size.y); y <= Math.round(size.y); y++) {
-                for (int z = (int) Math.round(-size.z); z <= Math.round(size.z); z++) {
+        for (int x = (int) Math.round(-size.x) + 1; x <= Math.round(size.x) - 1; x++) {
+            for (int y = (int) Math.round(-size.y) + 1; y <= Math.round(size.y) - 1; y++) {
+                for (int z = (int) Math.round(-size.z) + 1; z <= Math.round(size.z) - 1; z++) {
                     double normalizedX = x / size.x;
                     double normalizedY = y / size.y;
                     double normalizedZ = z / size.z;

@@ -56,6 +56,18 @@ public class ContextualNbtCompound extends NbtCompound {
         return 0;
     }
 
+    public byte getByte(String key) {
+        try {
+            if (contains(key, 99)) {
+                return ((AbstractNbtNumber) entries.get(key)).byteValue();
+            } else if (contains(key, 8) && context != null) {
+                return (byte) context.parseInt(entries.get(key).asString());
+            }
+        } catch (ClassCastException ignored) {}
+
+        return 0;
+    }
+
     public long getLong(String key) {
         try {
             if (contains(key, 99)) {

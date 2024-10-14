@@ -109,8 +109,12 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "{blockPos}" -> pos();
                 case "{playerPos}", "{playerVec}" -> player().getBlockPos();
                 default -> {
-                    LuckyBlockMod.LOGGER.error("Error parsing special block pos: '{}'", param);
-                    throw new NumberFormatException();
+                    try {
+                        yield parseBlockPos(FunctionUtils.processFunctions(param, this));
+                    } catch (IllegalArgumentException e) {
+                        LuckyBlockMod.LOGGER.error("Error parsing special block pos: '{}'", param);
+                        throw e;
+                    }
                 }
             };
         } else return new BlockPos(LuckyBlockCodecs.SpecialInteger.of(values[0]).getValue(this), LuckyBlockCodecs.SpecialInteger.of(values[1]).getValue(this), LuckyBlockCodecs.SpecialInteger.of(values[2]).getValue(this));

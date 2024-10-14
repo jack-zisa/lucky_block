@@ -23,6 +23,11 @@ import org.slf4j.Logger;
  * <ul>
  *     <li>Outcome referencing</li>
  *     <li>function support for identifiers</li>
+ *     <li>effect outcome</li>
+ *     <li>.mcfunction Outcome</li>
+ *     <li>ensure game events are properly thrown in outcomes</li>
+ *     <li>contextual int providers?</li>
+ *     <li>position providers (to replace {} functions)</li>
  * </ul>
  */
 public final class LuckyBlockMod {

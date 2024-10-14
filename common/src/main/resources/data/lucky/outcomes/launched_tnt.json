@@ -1,0 +1,10 @@
+{
+  "type": "lucky:entity",
+  "luck": -2,
+  "entity_type": "minecraft:tnt",
+  "nbt": {
+    "Motion": "{randomVelocity(0.9,15)}",
+    "fuse": 50
+  },
+  "count": 15
+}

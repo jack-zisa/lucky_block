@@ -1,0 +1,25 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:anvil"
+        }
+      },
+      "pos": ["{playerX}", "{playerY}+70", "{playerZ}"],
+      "shape": {
+        "type": "lucky:cube",
+        "size": [1, 2, 1]
+      }
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:cage",
+      "pos": ["{playerX}-1", "{playerY}-1", "{playerZ}-1"]
+    }
+  ]
+}
