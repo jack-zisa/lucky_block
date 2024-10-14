@@ -1,0 +1,21 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:diamond_block"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+7", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:lightning_bolt",
+      "delay": 45
+    }
+  ]
+}

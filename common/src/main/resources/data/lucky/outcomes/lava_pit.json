@@ -1,0 +1,48 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:air"
+        }
+      },
+      "shape": {
+        "type": "lucky:cube",
+        "size": [2, 10, 2]
+      },
+      "pos": ["{playerPosX}", "{playerPosY}-10", "{playerPosZ}"]
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:lava"
+        }
+      },
+      "shape": {
+        "type": "lucky:cube",
+        "size": [2, 1, 2]
+      },
+      "pos": ["{playerPosX}", "{playerPosY}-20", "{playerPosZ}"]
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:cobweb"
+        }
+      },
+      "shape": {
+        "type": "lucky:cube",
+        "size": [2, 1, 2]
+      },
+      "pos": ["{playerPosX}", "{playerPosY}-19", "{playerPosZ}"]
+    }
+  ]
+}

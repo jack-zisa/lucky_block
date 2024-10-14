@@ -1,0 +1,21 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:lava"
+        }
+      },
+      "pos": ["{playerX}", "{playerY}+3", "{playerZ}"]
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:cage",
+      "pos": ["{playerX}-1", "{playerY}-1", "{playerZ}-1"]
+    }
+  ]
+}

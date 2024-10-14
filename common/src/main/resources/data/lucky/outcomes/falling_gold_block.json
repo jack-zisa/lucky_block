@@ -1,0 +1,30 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:gold_block"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+7", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:flame"
+      },
+      "count": 500,
+      "delay": 45
+    },
+    {
+      "type": "lucky:sound",
+      "sound_event": {
+        "sound_id": "minecraft:entity.ghast.shoot"
+      },
+      "delay": 45
+    }
+  ]
+}

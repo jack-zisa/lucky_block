@@ -50,6 +50,13 @@ public record OutcomeContext(World world, BlockPos pos, BlockState state, Player
                 case "blockPosX", "blockX" -> replacement = String.valueOf(pos.getX());
                 case "blockPosY", "blockY" -> replacement = String.valueOf(pos.getY());
                 case "blockPosZ", "blockZ" -> replacement = String.valueOf(pos.getZ());
+                case "blockVec" -> {
+                    Vec3d center = pos.toCenterPos();
+                    replacement = center.x + " " + center.y + " " + center.z;
+                }
+                case "blockVecX" -> replacement = String.valueOf(pos.toCenterPos().x);
+                case "blockVecY" -> replacement = String.valueOf(pos.toCenterPos().y);
+                case "blockVecZ" -> replacement = String.valueOf(pos.toCenterPos().z);
                 case "playerDistance" -> replacement = String.valueOf(player.getPos().distanceTo(pos.toCenterPos()));
                 case "playerSquaredDistance" -> replacement = String.valueOf(player.getPos().squaredDistanceTo(pos.toCenterPos()));
                 case "playerPitch" -> replacement = String.valueOf(player.getPitch());

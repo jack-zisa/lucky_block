@@ -1,0 +1,106 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:redstone_block"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+5", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+10", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+15", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+20", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+25", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+30", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+35", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+40", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+45", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:tnt"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+50", "{blockVecZ}"]
+    }
+  ]
+}

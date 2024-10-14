@@ -1,0 +1,30 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:falling_block",
+      "nbt": {
+        "BlockState": {
+          "Name": "minecraft:iron_block"
+        }
+      },
+      "pos": ["{blockVecX}", "{blockVecY}+7", "{blockVecZ}"]
+    },
+    {
+      "type": "lucky:particle",
+      "particle_type": {
+        "type": "minecraft:large_smoke"
+      },
+      "count": 500,
+      "delay": 45
+    },
+    {
+      "type": "lucky:sound",
+      "sound_event": {
+        "sound_id": "minecraft:block.fire.extinguish"
+      },
+      "delay": 45
+    }
+  ]
+}
