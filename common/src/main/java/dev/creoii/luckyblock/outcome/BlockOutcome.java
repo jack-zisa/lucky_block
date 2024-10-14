@@ -6,8 +6,6 @@ import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import org.apache.commons.lang3.mutable.MutableObject;

@@ -1,0 +1,193 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:wooden_sword"
+    },
+    {
+      "type": "lucky:command",
+      "command": "/difficulty hard"
+    },
+    {
+      "type": "lucky:command",
+      "command": "/time set 18750"
+    },
+    {
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:entity",
+          "entity_type": "minecraft:zombie",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 20,
+            "max_inclusive": 50
+          },
+          "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+          "reinit": true
+        },
+        {
+          "type": "lucky:entity",
+          "entity_type": "minecraft:creeper",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 10,
+            "max_inclusive": 30
+          },
+          "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+          "reinit": true
+        },
+        {
+          "type": "lucky:entity",
+          "entity_type": "minecraft:guardian",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 20,
+            "max_inclusive": 50
+          },
+          "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+          "reinit": true
+        },
+        {
+          "type": "lucky:group",
+          "outcomes": [
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:spider",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 15,
+                "max_inclusive": 45
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:cave_spider",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 5,
+                "max_inclusive": 10
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            }
+          ]
+        },
+        {
+          "type": "lucky:group",
+          "outcomes": [
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:silverfish",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 15,
+                "max_inclusive": 45
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:endermite",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 5,
+                "max_inclusive": 10
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            }
+          ]
+        },
+        {
+          "type": "lucky:group",
+          "outcomes": [
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:zombie",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 20,
+                "max_inclusive": 50
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:creeper",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 10,
+                "max_inclusive": 30
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:guardian",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 20,
+                "max_inclusive": 50
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:spider",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 15,
+                "max_inclusive": 45
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:cave_spider",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 5,
+                "max_inclusive": 10
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:silverfish",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 15,
+                "max_inclusive": 45
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            },
+            {
+              "type": "lucky:entity",
+              "entity_type": "minecraft:endermite",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 5,
+                "max_inclusive": 10
+              },
+              "pos": "{randomInSphere({blockX},{blockY},{blockZ},[10,1,10],true)}",
+              "reinit": true
+            }
+          ]
+        }
+      ],
+      "count": 1
+    }
+  ]
+}

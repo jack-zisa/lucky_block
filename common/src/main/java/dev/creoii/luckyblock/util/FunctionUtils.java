@@ -64,8 +64,13 @@ public class FunctionUtils {
                 return motion.x + "," + motion.y + "," + motion.z;
             })
             .put("randomInCube", (args, context) -> {
-                if (args.length != 4)
+                if (args.length < 4 || args.length > 5)
                     return "0";
+
+                boolean hollow = false;
+                if (args.length == 5) {
+                    hollow = Boolean.parseBoolean(args[4]);
+                }
 
                 double[] numbers = new double[args.length];
                 for (int i = 0; i < args.length - 1; i++) { // no need to evaluate 'size'
@@ -73,7 +78,7 @@ public class FunctionUtils {
                 }
                 Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
 
-                Cube cube = new Cube(args[3], false);
+                Cube cube = new Cube(args[3], hollow);
                 List<BlockPos> positions = cube.getBlockPositions(null, context);
                 if (positions.isEmpty()) {
                     return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
@@ -82,15 +87,20 @@ public class FunctionUtils {
                 return pos.getX() + "," + pos.getY() + "," + pos.getZ();
             })
             .put("randomInSphere", (args, context) -> {
-                if (args.length != 4)
+                if (args.length < 4 || args.length > 5)
                     return "0";
+
+                boolean hollow = false;
+                if (args.length == 5) {
+                    hollow = Boolean.parseBoolean(args[4]);
+                }
 
                 double[] numbers = new double[args.length];
                 for (int i = 0; i < args.length - 1; i++) { // no need to evaluate 'size'
                     numbers[i] = context.evaluateExpression(args[i].trim());
                 }
                 Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
-                Sphere sphere = new Sphere(args[3], false);
+                Sphere sphere = new Sphere(args[3], hollow);
                 List<BlockPos> positions = sphere.getBlockPositions(null, context);
                 if (positions.isEmpty()) {
                     return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();

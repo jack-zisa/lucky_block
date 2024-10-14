@@ -1,7 +1,6 @@
 {
   "type": "lucky:group",
   "luck": -2,
-  "chance": 0.2,
   "outcomes": [
     {
       "type": "lucky:command",
@@ -9,7 +8,7 @@
     },
     {
       "type": "lucky:entity",
-      "entity_type": "minecraft:ghast"
+      "entity_type": "minecraft:giant"
     }
   ]
 }
