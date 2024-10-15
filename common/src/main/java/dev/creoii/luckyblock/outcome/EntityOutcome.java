@@ -6,10 +6,12 @@ import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -41,19 +43,44 @@ public class EntityOutcome extends Outcome {
         Vec3d spawnPos = getVec(context);
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
-            Entity entity = entityType.create(context.world());
-            if (entity != null) {
-                if (nbt.isPresent()) {
-                    nbt.get().setContext(context);
-                    entity.readNbt(nbt.get());
-                }
-                entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
-                context.world().spawnEntity(entity);
+            spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
-                if (shouldReinit()) {
-                    spawnPos = getVec(context);
-                }
+            if (shouldReinit()) {
+                spawnPos = getVec(context);
             }
         }
+    }
+
+    private Entity spawnEntity(EntityType<?> entityType, OutcomeContext context, Vec3d spawnPos, @Nullable NbtCompound nbtCompound) {
+        Entity entity = entityType.create(context.world());
+        if (entity != null) {
+            if (nbtCompound != null) {
+                if (nbtCompound instanceof ContextualNbtCompound contextual) {
+                    contextual.setContext(context);
+                }
+
+                if (nbtCompound.contains("nbt")) {
+                    NbtCompound nbt = nbtCompound.getCompound("nbt");
+                    entity.readNbt(nbt);
+                    if (nbt.contains(Entity.PASSENGERS_KEY)) {
+                        NbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+                        EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
+                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                        if (passenger != null)
+                            passenger.startRiding(entity);
+                    }
+                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY)) {
+                    entity.readNbt(nbtCompound);
+                    NbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+                    EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
+                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                    if (passenger != null)
+                        passenger.startRiding(entity);
+                }
+            }
+            entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
+            context.world().spawnEntity(entity);
+        }
+        return entity;
     }
 }

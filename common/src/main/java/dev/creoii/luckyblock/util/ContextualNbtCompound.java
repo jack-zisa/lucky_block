@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import dev.creoii.luckyblock.outcome.OutcomeContext;
 import net.minecraft.nbt.*;
+import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
@@ -142,6 +143,16 @@ public class ContextualNbtCompound extends NbtCompound {
         } catch (ClassCastException ignored) {}
 
         return new long[0];
+    }
+
+    public ContextualNbtCompound getCompound(String key) {
+        try {
+            if (contains(key, 10)) {
+                return (ContextualNbtCompound) entries.get(key);
+            }
+        } catch (ClassCastException ignored) {}
+
+        return new ContextualNbtCompound();
     }
 
     public NbtList getList(String key, int type) {

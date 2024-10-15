@@ -1,0 +1,65 @@
+{
+  "type": "lucky:entity",
+  "entity_type": "minecraft:pig",
+  "nbt": {
+    "Passengers": [
+      {
+        "id": "minecraft:pig",
+        "nbt": {
+          "Passengers": [
+            {
+              "id": "minecraft:pig",
+              "nbt": {
+                "Passengers": [
+                  {
+                    "id": "minecraft:pig",
+                    "nbt": {
+                      "Passengers": [
+                        {
+                          "id": "minecraft:pig",
+                          "nbt": {
+                            "Passengers": [
+                              {
+                                "id": "minecraft:pig",
+                                "nbt": {
+                                  "Passengers": [
+                                    {
+                                      "id": "minecraft:pig",
+                                      "nbt": {
+                                        "Passengers": [
+                                          {
+                                            "id": "minecraft:pig",
+                                            "nbt": {
+                                              "Passengers": [
+                                                {
+                                                  "id": "minecraft:villager",
+                                                  "nbt": {
+                                                    "VillagerData": {
+                                                      "profession": "minecraft:nitwit"
+                                                    }
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

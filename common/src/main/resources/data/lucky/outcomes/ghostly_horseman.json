@@ -1,0 +1,100 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "chance": 100,
+  "outcomes": [
+    {
+      "type": "lucky:command",
+      "command": "/difficulty hard"
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:bat",
+      "nbt": {
+        "Silent": true,
+        "active_effects": [
+          {
+            "id": "minecraft:invisibility",
+            "amplifier": 1,
+            "duration": -1,
+            "show_particles": false
+          }
+        ],
+        "Passengers": [
+          {
+            "id": "minecraft:skeleton_horse",
+            "nbt": {
+              "Tame": true,
+              "Type": 4,
+              "Passengers": [
+                {
+                  "id": "minecraft:skeleton",
+                  "nbt": {
+                    "HandItems": [
+                      {
+                        "id": "minecraft:bow",
+                        "components": {
+                          "minecraft:enchantments": {
+                            "levels": {
+                              "minecraft:sharpness": 5
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "ArmorItems": [
+                      {
+                        "id": "minecraft:chainmail_boots",
+                        "components": {
+                          "minecraft:enchantments": {
+                            "levels": {
+                              "minecraft:protection": 4
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "id": "minecraft:chainmail_leggings",
+                        "components": {
+                          "minecraft:enchantments": {
+                            "levels": {
+                              "minecraft:protection": 4
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "id": "minecraft:chainmail_chestplate",
+                        "components": {
+                          "minecraft:enchantments": {
+                            "levels": {
+                              "minecraft:protection": 4
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "id": "minecraft:chainmail_helmet",
+                        "components": {
+                          "minecraft:enchantments": {
+                            "levels": {
+                              "minecraft:protection": 4
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "HandDropChances": [0.5, 0],
+                    "ArmorDropChances": [0.3, 0.3, 0.3, 0.3],
+                    "CustomName": "{'text':'Ghostly Horseman','color':'gray'}",
+                    "CustomNameVisible": true
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
