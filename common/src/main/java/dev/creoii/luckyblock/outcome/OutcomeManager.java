@@ -47,7 +47,9 @@ public class OutcomeManager extends JsonDataLoader {
             DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
             dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome '{}': {}", entry.getKey(), string)).ifPresent(outcome -> {
                 LuckyBlockMod.LOGGER.info("Loading outcome '{}' with chance {}", entry.getKey(), outcome.getChance());
-                builder.add(new Pair<>(entry.getKey(), outcome));
+                if (!entry.getKey().getPath().startsWith("wells/")) {
+                    builder.add(new Pair<>(entry.getKey(), outcome));
+                }
                 builder1.add(entry.getKey());
             });
         }

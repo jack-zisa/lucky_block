@@ -1,0 +1,31 @@
+{
+  "type": "lucky:entity",
+  "entity_type": "minecraft:armor_stand",
+  "chance": 100,
+  "nbt": {
+    "Small": true,
+    "NoBasePlate": true,
+    "ShowArms": true,
+    "HandItems": [
+      {
+        "id": "minecraft:stone_pickaxe"
+      }
+    ],
+    "ArmorItems": [
+      {
+        "id": "minecraft:leather_boots"
+      },
+      {
+        "id": "minecraft:leather_leggings"
+      },
+      {
+        "id": "minecraft:leather_chestplate"
+      },
+      {
+        "id": "minecraft:player_head"
+      }
+    ],
+    "CustomName": "{'text':'Baby Player'}",
+    "CustomNameVisible": true
+  }
+}
