@@ -23,11 +23,24 @@
       }
     },
     {
-      "type": "lucky:effect",
-      "status_effect": {
-        "id": "minecraft:blindness",
-        "duration": 600
-      }
+      "type": "lucky:group",
+      "outcomes": [
+        {
+          "type": "lucky:effect",
+          "status_effect": {
+            "id": "minecraft:blindness",
+            "duration": 600
+          }
+        },
+        {
+          "type": "lucky:effect",
+          "status_effect": {
+            "id": "minecraft:darkness",
+            "duration": 600
+          }
+        }
+      ],
+      "count": 1
     },
     {
       "type": "lucky:group",

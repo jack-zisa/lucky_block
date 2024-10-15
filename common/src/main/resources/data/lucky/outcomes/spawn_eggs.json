@@ -1,0 +1,340 @@
+{
+  "type": "lucky:group",
+  "luck": 1,
+  "outcomes": [
+    {
+      "type": "lucky:item",
+      "item": "minecraft:armadillo_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:allay_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:axolotl_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:bat_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:bee_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:blaze_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:bogged_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:breeze_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:cat_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:camel_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:cave_spider_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:camel_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:chicken_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:cod_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:cow_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:creeper_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:dolphin_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:donkey_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:drowned_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:elder_guardian_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:ender_dragon_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:enderman_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:endermite_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:evoker_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:fox_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:frog_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:ghast_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:glow_squid_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:goat_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:guardian_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:husk_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:hoglin_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:horse_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:iron_golem_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:illusioner_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:llama_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:magma_cube_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:mooshroom_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:mule_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:ocelot_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:panda_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:parrot_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:phantom_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pig_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:piglin_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:piglin_brute_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pillager_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:polar_bear_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:pufferfish_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:rabbit_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:ravager_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:salmon_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:sheep_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:shulker_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:silverfish_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:skeleton_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:skeleton_horse_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:slime_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:sniffer_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:skeleton_horse_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:snow_golem_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:snow_golem_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:stray_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:strider_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:squid_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:tadpole_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:trader_llama_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:tropical_fish_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:turtle_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:vex_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:villager_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:vindicator_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:warden_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:wandering_trader_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:witch_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:wither_skeleton_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:wolf_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:zoglin_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:zombie_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:zombie_horse_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:zombie_villager_spawn_egg"
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:zombified_piglin_spawn_egg"
+    }
+  ],
+  "count": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 4,
+    "max_inclusive": 8
+  },
+  "reinit": true
+}

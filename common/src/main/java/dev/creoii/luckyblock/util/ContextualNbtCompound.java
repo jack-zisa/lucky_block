@@ -145,16 +145,6 @@ public class ContextualNbtCompound extends NbtCompound {
         return new long[0];
     }
 
-    public ContextualNbtCompound getCompound(String key) {
-        try {
-            if (contains(key, 10)) {
-                return (ContextualNbtCompound) entries.get(key);
-            }
-        } catch (ClassCastException ignored) {}
-
-        return new ContextualNbtCompound();
-    }
-
     public NbtList getList(String key, int type) {
         try {
             if (getType(key) == 9) {

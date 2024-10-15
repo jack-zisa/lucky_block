@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -76,7 +77,7 @@ public class EntityOutcome extends Outcome {
                     Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
                     if (passenger != null)
                         passenger.startRiding(entity);
-                }
+                } else entity.readNbt(nbtCompound);
             }
             entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
             context.world().spawnEntity(entity);
