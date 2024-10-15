@@ -1,7 +1,6 @@
 {
   "type": "lucky:entity",
   "entity_type": "minecraft:armor_stand",
-  "chance": 100,
   "nbt": {
     "Small": true,
     "NoBasePlate": true,
@@ -13,16 +12,36 @@
     ],
     "ArmorItems": [
       {
-        "id": "minecraft:leather_boots"
+        "id": "minecraft:leather_boots",
+        "components": {
+          "minecraft:dyed_color": {
+            "rgb": "{randomRGBColor}"
+          }
+        }
       },
       {
-        "id": "minecraft:leather_leggings"
+        "id": "minecraft:leather_leggings",
+        "components": {
+          "minecraft:dyed_color": {
+            "rgb": "{randomRGBColor}"
+          }
+        }
       },
       {
-        "id": "minecraft:leather_chestplate"
+        "id": "minecraft:leather_chestplate",
+        "components": {
+          "minecraft:dyed_color": {
+            "rgb": "{randomRGBColor}"
+          }
+        }
       },
       {
-        "id": "minecraft:player_head"
+        "id": "minecraft:player_head",
+        "components": {
+          "minecraft:profile": {
+            "name": "{playerName}"
+          }
+        }
       }
     ],
     "CustomName": "{'text':'Baby {playerName}'}",

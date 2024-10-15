@@ -2,7 +2,7 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.position.ConstantPosProvider;
+import dev.creoii.luckyblock.util.position.ConstantVecProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -13,7 +13,7 @@ public class Empty extends Shape {
     public static final MapCodec<Shape> CODEC = MapCodec.unit(INSTANCE);
 
     public Empty() {
-        super(ShapeType.EMPTY, ConstantPosProvider.ZERO);
+        super(ShapeType.EMPTY, ConstantVecProvider.ZERO);
     }
 
     @Override

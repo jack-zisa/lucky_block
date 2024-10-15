@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKeys;
@@ -24,13 +24,13 @@ public class StructureOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPosProvider),
+                createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId)
         ).apply(instance, StructureOutcome::new);
     });
     private final Identifier structureId;
 
-    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, Identifier structureId) {
+    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, Identifier structureId) {
         super(OutcomeType.STRUCTURE, luck, chance, delay, pos, false);
         this.structureId = structureId;
     }
@@ -38,7 +38,7 @@ public class StructureOutcome extends Outcome {
     @Override
     public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            BlockPos pos = getPosProvider(context).getPos(context);
+            BlockPos pos = getPos(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
             if (template.isPresent()) {
                 /* TODO: create a codec for structure placement data */

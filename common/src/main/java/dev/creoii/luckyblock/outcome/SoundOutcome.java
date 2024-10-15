@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -20,7 +20,7 @@ public class SoundOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPosProvider),
+                createGlobalPosField(Outcome::getPos),
                 SoundEvent.CODEC.fieldOf("sound_event").forGetter(outcome -> outcome.soundEvent),
                 Codec.DOUBLE.fieldOf("volume").orElse(1d).forGetter(outcome -> outcome.volume),
                 Codec.DOUBLE.fieldOf("pitch").orElse(1d).forGetter(outcome -> outcome.pitch)
@@ -30,7 +30,7 @@ public class SoundOutcome extends Outcome {
     private final double volume;
     private final double pitch;
 
-    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, SoundEvent soundEvent, double volume, double pitch) {
+    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, SoundEvent soundEvent, double volume, double pitch) {
         super(OutcomeType.SOUND, luck, chance, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;
@@ -39,7 +39,7 @@ public class SoundOutcome extends Outcome {
 
     @Override
     public void run(Context context) {
-        Vec3d pos = getPosProvider().isPresent() ? getPosProvider().get().getVec(context) : context.pos().toCenterPos();
+        Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
 
         double d = MathHelper.square(soundEvent.getDistanceToTravel((float) volume));
 

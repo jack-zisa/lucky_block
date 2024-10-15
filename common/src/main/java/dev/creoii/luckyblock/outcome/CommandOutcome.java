@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.FunctionUtils;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -15,13 +15,13 @@ public class CommandOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPosProvider),
+                createGlobalPosField(Outcome::getPos),
                 Codec.STRING.fieldOf("command").forGetter(outcome -> outcome.command)
         ).apply(instance, CommandOutcome::new);
     });
     private final String command;
 
-    public CommandOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, String command) {
+    public CommandOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, String command) {
         super(OutcomeType.COMMAND, luck, chance, delay, pos, false);
         this.command = command;
     }
@@ -31,8 +31,8 @@ public class CommandOutcome extends Outcome {
         MinecraftServer server = context.world().getServer();
         if (server != null) {
             ServerCommandSource source = server.getCommandSource();
-            if (getPosProvider().isPresent()) {
-                source = source.withPosition(getPosProvider().get().getVec(context));
+            if (getPos().isPresent()) {
+                source = source.withPosition(getPos().get().getVec(context));
             }
             server.getCommandManager().executeWithPrefix(source, FunctionUtils.parseString(command, context));
         }

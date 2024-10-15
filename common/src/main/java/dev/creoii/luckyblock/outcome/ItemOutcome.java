@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -24,7 +24,7 @@ public class ItemOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPosProvider),
+                createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
@@ -32,16 +32,16 @@ public class ItemOutcome extends Outcome {
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
                 NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
-                PosProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
+                VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
     private final IntProvider count;
     private final ComponentChanges components;
     private final Optional<NbtCompound> nbt;
-    private final Optional<PosProvider> velocity;
+    private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<NbtCompound> nbt, Optional<PosProvider> velocity) {
+    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<NbtCompound> nbt, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
@@ -52,7 +52,7 @@ public class ItemOutcome extends Outcome {
 
     @Override
     public void run(Context context) {
-        Vec3d spawnPos = getPosProvider().isPresent() ? getPosProvider().get().getVec(context) : context.pos().toCenterPos();
+        Vec3d spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
         Vec3d velocity = null;
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
@@ -78,7 +78,7 @@ public class ItemOutcome extends Outcome {
 
                     context.world().spawnEntity(entity);
 
-                    spawnPos = getPosProvider().isPresent() ? getPosProvider().get().getVec(context) : context.pos().toCenterPos();
+                    spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
                 }
             }
             return;

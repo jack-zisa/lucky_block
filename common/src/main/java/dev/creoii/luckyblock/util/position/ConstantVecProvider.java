@@ -4,12 +4,12 @@ import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.Vec3d;
 
-public class ConstantPosProvider extends PosProvider {
-    public static final ConstantPosProvider ZERO = new ConstantPosProvider(Vec3d.ZERO);
-    public static final MapCodec<ConstantPosProvider> CODEC = Vec3d.CODEC.fieldOf("value").xmap(ConstantPosProvider::new, ConstantPosProvider::getValue);
+public class ConstantVecProvider extends VecProvider {
+    public static final ConstantVecProvider ZERO = new ConstantVecProvider(Vec3d.ZERO);
+    public static final MapCodec<ConstantVecProvider> CODEC = Vec3d.CODEC.fieldOf("value").xmap(ConstantVecProvider::new, ConstantVecProvider::getValue);
     private final Vec3d value;
 
-    public ConstantPosProvider(Vec3d value) {
+    public ConstantVecProvider(Vec3d value) {
         this.value = value;
     }
 

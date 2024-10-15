@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -19,7 +19,7 @@ public class Sphere extends Shape {
     });
     private final boolean hollow;
 
-    public Sphere(PosProvider size, boolean hollow) {
+    public Sphere(VecProvider size, boolean hollow) {
         super(ShapeType.SPHERE, size);
         this.hollow = hollow;
     }

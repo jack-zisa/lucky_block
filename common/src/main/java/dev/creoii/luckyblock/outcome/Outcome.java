@@ -3,8 +3,8 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.position.ConstantPosProvider;
-import dev.creoii.luckyblock.util.position.PosProvider;
+import dev.creoii.luckyblock.util.position.ConstantVecProvider;
+import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
@@ -20,14 +20,14 @@ public abstract class Outcome {
     private final int luck;
     private final float chance;
     private final Optional<Integer> delay;
-    private final Optional<PosProvider> pos;
+    private final Optional<VecProvider> pos;
     private final boolean reinit;
 
     public Outcome(OutcomeType type) {
         this(type, 0, 1f, Optional.of(0), Optional.empty(), false);
     }
 
-    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, boolean reinit) {
+    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit) {
         this.type = type;
         this.luck = luck;
         this.chance = chance;
@@ -56,12 +56,12 @@ public abstract class Outcome {
         return delay;
     }
 
-    public Optional<PosProvider> getPosProvider() {
+    public Optional<VecProvider> getPos() {
         return pos;
     }
 
-    public PosProvider getPosProvider(Context context) {
-        return pos.orElseGet(() -> new ConstantPosProvider(context.pos().toCenterPos()));
+    public VecProvider getPos(Context context) {
+        return pos.orElseGet(() -> new ConstantVecProvider(context.pos().toCenterPos()));
     }
 
     public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
@@ -76,8 +76,8 @@ public abstract class Outcome {
         return Codec.INT.optionalFieldOf("delay").forGetter(getter);
     }
 
-    public static <O> RecordCodecBuilder<O, Optional<PosProvider>> createGlobalPosField(Function<O, Optional<PosProvider>> getter) {
-        return PosProvider.VALUE_CODEC.optionalFieldOf("pos").forGetter(getter);
+    public static <O> RecordCodecBuilder<O, Optional<VecProvider>> createGlobalPosField(Function<O, Optional<VecProvider>> getter) {
+        return VecProvider.VALUE_CODEC.optionalFieldOf("pos").forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Boolean> createGlobalReinitField(Function<O, Boolean> getter) {

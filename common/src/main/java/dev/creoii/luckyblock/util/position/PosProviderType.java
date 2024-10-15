@@ -6,15 +6,15 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 @FunctionalInterface
-public interface PosProviderType<T extends PosProvider> {
-    PosProviderType<ConstantPosProvider> CONSTANT = () -> ConstantPosProvider.CODEC;
-    PosProviderType<InShapePosProvider> IN_SHAPE = () -> InShapePosProvider.CODEC;
+public interface PosProviderType<T extends VecProvider> {
+    PosProviderType<ConstantVecProvider> CONSTANT = () -> ConstantVecProvider.CODEC;
+    PosProviderType<RandomInShapeVecProvider> RANDOM_IN_SHAPE = () -> RandomInShapeVecProvider.CODEC;
 
     MapCodec<T> codec();
 
     static void init() {
         register(new Identifier(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "in_shape"), IN_SHAPE);
+        register(new Identifier(LuckyBlockMod.NAMESPACE, "random_in_shape"), RANDOM_IN_SHAPE);
     }
 
     static void register(Identifier id, PosProviderType<?> type) {
