@@ -11,5 +11,5 @@ public class NoneOutcome extends Outcome {
     }
 
     @Override
-    public void run(OutcomeContext context) {}
+    public void run(Context context) {}
 }

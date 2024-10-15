@@ -1,8 +1,8 @@
 package dev.creoii.luckyblock.luckyblock;
 
+import com.google.gson.JsonObject;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.outcome.OutcomeContext;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,24 +33,32 @@ public class LuckyBlock extends Block {
     @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
         ItemStack stack = ctx.getStack();
-        if (stack.contains(LuckyBlockMod.LUCK)) {
-            return getDefaultState().with(LUCK, stack.get(LuckyBlockMod.LUCK) + 100);
+        Integer luck = stack.get(LuckyBlockMod.LUCK);
+        if (luck != null) {
+            return getDefaultState().with(LUCK, luck + 100);
         }
         return super.getPlacementState(ctx);
+    }
+
+    private JsonObject getOutcomeFromState(World world, BlockState state) {
+        int outcomeId = state.get(SET_OUTCOME);
+        if (outcomeId != 0) {
+            JsonObject outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
+            if (outcome != null) {
+                return outcome;
+            }
+        }
+        return LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(world.getRandom(), state.get(LUCK) - 100).getRight();
     }
 
     @Override
     public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient) {
-            int outcomeId = state.get(SET_OUTCOME);
-            if (outcomeId != 0) {
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
-                if (outcome != null) {
-                    outcome.runOutcome(new OutcomeContext(world, pos, state, player));
-                    return super.onBreak(world, pos, state, player);
-                }
+            Outcome.Context context = new Outcome.Context(world, pos, state, player);
+            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state), context);
+            if (outcome != null) {
+                outcome.runOutcome(context);
             }
-            LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(world.getRandom(), state.get(LUCK) - 100).runOutcome(new OutcomeContext(world, pos, state, player));
         }
         return super.onBreak(world, pos, state, player);
     }
@@ -58,19 +66,12 @@ public class LuckyBlock extends Block {
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient) {
-            if (!LuckyBlockMod.OUTCOME_MANAGER.isEmpty()) {
-                int outcomeId = state.get(SET_OUTCOME);
-                if (outcomeId != 0) {
-                    Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
-                    if (outcome != null) {
-                        world.breakBlock(pos, false, player);
-                        outcome.runOutcome(new OutcomeContext(world, pos, state, player));
-                        return ActionResult.success(world.isClient);
-                    }
-                }
-                world.breakBlock(pos, false, player);
-                LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(world.getRandom(), state.get(LUCK) - 100).runOutcome(new OutcomeContext(world, pos, state, player));
-            }
+            Outcome.Context context = new Outcome.Context(world, pos, state, player);
+            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state), context);
+            if (outcome != null) {
+                outcome.runOutcome(context);
+                world.breakBlock(pos, false);
+            } else return ActionResult.PASS;
         }
         return ActionResult.success(world.isClient);
     }
@@ -78,18 +79,11 @@ public class LuckyBlock extends Block {
     @Override
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
         if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-            if (!LuckyBlockMod.OUTCOME_MANAGER.isEmpty()) {
-                int outcomeId = state.get(SET_OUTCOME);
-                if (outcomeId != 0) {
-                    Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
-                    if (outcome != null) {
-                        world.breakBlock(pos, false);
-                        outcome.runOutcome(new OutcomeContext(world, pos, state, null));
-                        return;
-                    }
-                }
+            Outcome.Context context = new Outcome.Context(world, pos, state, null);
+            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state), context);
+            if (outcome != null) {
+                outcome.runOutcome(context);
                 world.breakBlock(pos, false);
-                LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(world.getRandom(), state.get(LUCK) - 100).runOutcome(new OutcomeContext(world, pos, state, null));
             }
         }
     }

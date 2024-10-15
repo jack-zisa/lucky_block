@@ -1,10 +1,9 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
@@ -22,30 +21,29 @@ public class FeatureOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPos),
-                LuckyBlockCodecs.IDENTIFIER.fieldOf("feature").forGetter(outcome -> outcome.featureId),
+                createGlobalPosField(Outcome::getPosProvider),
+                Identifier.CODEC.fieldOf("feature").forGetter(outcome -> outcome.featureId),
                 PlacementModifier.CODEC.listOf().fieldOf("placement").orElse(List.of()).forGetter(outcome -> outcome.placementModifiers)
         ).apply(instance, FeatureOutcome::new);
     });
-    private final String featureId;
+    private final Identifier featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String featureId, List<PlacementModifier> placementModifiers) {
+    public FeatureOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
         super(OutcomeType.RANDOM, luck, chance, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;
     }
 
     @Override
-    public void run(OutcomeContext context) {
+    public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            Identifier featureId = Identifier.tryParse(context.processString(this.featureId));
             ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).get(featureId);
             if (configuredFeature == null) {
                 LuckyBlockMod.LOGGER.error("Feature identifier '{}' is invalid", featureId);
                 return;
             }
-            BlockPos place = getPos(context);
+            BlockPos place = getPosProvider(context).getPos(context);
             if (!placementModifiers.isEmpty()) {
                 PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).getEntry(featureId).get(), placementModifiers);
                 if (!placedFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {

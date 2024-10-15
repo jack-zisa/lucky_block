@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.outcome.OutcomeContext;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -19,15 +19,15 @@ public class Cube extends Shape {
     });
     private final boolean hollow;
 
-    public Cube(String size, boolean hollow) {
+    public Cube(PosProvider size, boolean hollow) {
         super(ShapeType.CUBE, size);
         this.hollow = hollow;
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome outcome, OutcomeContext context) {
+    public List<BlockPos> getBlockPositions(Outcome outcome, Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
-        Vec3d size = context.parseVec3d(this.size);
+        Vec3d size = this.size.getVec(context);
         BlockPos from = new BlockPos((int) Math.round(-size.x), (int) Math.round(-size.y), (int) Math.round(-size.z));
         BlockPos to = new BlockPos((int) Math.round(size.x), (int) Math.round(size.y), (int) Math.round(size.z));
         for (int z = from.getZ() + 1; z <= to.getZ() - 1; ++z) {
@@ -46,7 +46,7 @@ public class Cube extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome outcome, OutcomeContext context) {
+    public List<Vec3d> getVecPositions(Outcome outcome, Outcome.Context context) {
         return List.of();
     }
 }

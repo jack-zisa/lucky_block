@@ -1,8 +1,9 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,17 +20,17 @@ public class SoundOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPos),
+                createGlobalPosField(Outcome::getPosProvider),
                 SoundEvent.CODEC.fieldOf("sound_event").forGetter(outcome -> outcome.soundEvent),
-                LuckyBlockCodecs.DOUBLE.fieldOf("volume").orElse("1").forGetter(outcome -> outcome.volume),
-                LuckyBlockCodecs.DOUBLE.fieldOf("pitch").orElse("1").forGetter(outcome -> outcome.pitch)
+                Codec.DOUBLE.fieldOf("volume").orElse(1d).forGetter(outcome -> outcome.volume),
+                Codec.DOUBLE.fieldOf("pitch").orElse(1d).forGetter(outcome -> outcome.pitch)
         ).apply(instance, SoundOutcome::new);
     });
     private final SoundEvent soundEvent;
-    private final String volume;
-    private final String pitch;
+    private final double volume;
+    private final double pitch;
 
-    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, SoundEvent soundEvent, String volume, String pitch) {
+    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, SoundEvent soundEvent, double volume, double pitch) {
         super(OutcomeType.SOUND, luck, chance, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;
@@ -37,11 +38,9 @@ public class SoundOutcome extends Outcome {
     }
 
     @Override
-    public void run(OutcomeContext context) {
-        Vec3d pos = getPos().isPresent() ? context.parseVec3d(getPos().get()) : context.pos().toCenterPos();
+    public void run(Context context) {
+        Vec3d pos = getPosProvider().isPresent() ? getPosProvider().get().getVec(context) : context.pos().toCenterPos();
 
-        double volume = context.parseDouble(this.volume);
-        double pitch = context.parseDouble(this.pitch);
         double d = MathHelper.square(soundEvent.getDistanceToTravel((float) volume));
 
         List<ServerPlayerEntity> players = context.world().getServer().getPlayerManager().getPlayerList().stream().filter(serverPlayer -> {
@@ -53,7 +52,7 @@ public class SoundOutcome extends Outcome {
         for (ServerPlayerEntity serverPlayer : players) {
             Vec3d vec3d;
             float j;
-            while(true) {
+            while (true) {
                 double e = pos.x - serverPlayer.getX();
                 double f = pos.y - serverPlayer.getY();
                 double g = pos.z - serverPlayer.getZ();

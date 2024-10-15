@@ -22,7 +22,7 @@ public class RandomOutcome extends Outcome {
     }
 
     @Override
-    public void run(OutcomeContext context) {
+    public void run(Context context) {
         outcomes.get(context.world().getRandom().nextInt(outcomes.size())).runOutcome(context);
     }
 }

@@ -3,10 +3,13 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.position.ConstantPosProvider;
+import dev.creoii.luckyblock.util.position.PosProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -17,14 +20,14 @@ public abstract class Outcome {
     private final int luck;
     private final float chance;
     private final Optional<Integer> delay;
-    private final Optional<String> pos;
+    private final Optional<PosProvider> pos;
     private final boolean reinit;
 
     public Outcome(OutcomeType type) {
         this(type, 0, 1f, Optional.of(0), Optional.empty(), false);
     }
 
-    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit) {
+    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, boolean reinit) {
         this.type = type;
         this.luck = luck;
         this.chance = chance;
@@ -53,16 +56,12 @@ public abstract class Outcome {
         return delay;
     }
 
-    public Optional<String> getPos() {
+    public Optional<PosProvider> getPosProvider() {
         return pos;
     }
 
-    public BlockPos getPos(OutcomeContext context) {
-        return getPos().isPresent() ? context.parseBlockPos(getPos().get()) : context.pos();
-    }
-
-    public Vec3d getVec(OutcomeContext context) {
-        return getPos().isPresent() ? context.parseVec3d(getPos().get()) : context.pos().toCenterPos();
+    public PosProvider getPosProvider(Context context) {
+        return pos.orElseGet(() -> new ConstantPosProvider(context.pos().toCenterPos()));
     }
 
     public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
@@ -77,19 +76,21 @@ public abstract class Outcome {
         return Codec.INT.optionalFieldOf("delay").forGetter(getter);
     }
 
-    public static <O> RecordCodecBuilder<O, Optional<String>> createGlobalPosField(Function<O, Optional<String>> getter) {
-        return LuckyBlockCodecs.BLOCK_POS.optionalFieldOf("pos").forGetter(getter);
+    public static <O> RecordCodecBuilder<O, Optional<PosProvider>> createGlobalPosField(Function<O, Optional<PosProvider>> getter) {
+        return PosProvider.VALUE_CODEC.optionalFieldOf("pos").forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Boolean> createGlobalReinitField(Function<O, Boolean> getter) {
         return Codec.BOOL.fieldOf("reinit").orElse(false).forGetter(getter);
     }
 
-    public void runOutcome(OutcomeContext context) {
+    public void runOutcome(Context context) {
         if (getDelay().orElse(0) == 0) {
             run(context);
         } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay().orElse(0));
     }
 
-    public abstract void run(OutcomeContext context);
+    public abstract void run(Context context);
+
+    public record Context(World world, BlockPos pos, BlockState state, PlayerEntity player) {}
 }

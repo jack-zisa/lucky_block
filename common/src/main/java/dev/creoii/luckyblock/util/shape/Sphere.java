@@ -4,8 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.outcome.OutcomeContext;
-import dev.creoii.luckyblock.util.LuckyBlockUtils;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -20,15 +19,15 @@ public class Sphere extends Shape {
     });
     private final boolean hollow;
 
-    public Sphere(String size, boolean hollow) {
+    public Sphere(PosProvider size, boolean hollow) {
         super(ShapeType.SPHERE, size);
         this.hollow = hollow;
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome outcome, OutcomeContext context) {
+    public List<BlockPos> getBlockPositions(Outcome outcome, Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
-        Vec3d size = context.parseVec3d(this.size);
+        Vec3d size = this.size.getVec(context);
 
         for (int x = (int) Math.round(-size.x) + 1; x <= Math.round(size.x) - 1; x++) {
             for (int y = (int) Math.round(-size.y) + 1; y <= Math.round(size.y) - 1; y++) {
@@ -53,7 +52,7 @@ public class Sphere extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome outcome, OutcomeContext context) {
+    public List<Vec3d> getVecPositions(Outcome outcome, Outcome.Context context) {
         return List.of();
     }
 }

@@ -25,7 +25,7 @@
         "id": "minecraft:player_head"
       }
     ],
-    "CustomName": "{'text':'Baby Player'}",
+    "CustomName": "{'text':'Baby {playerName}'}",
     "CustomNameVisible": true
   }
 }

@@ -26,7 +26,7 @@ public class GroupOutcome extends Outcome {
     }
 
     @Override
-    public void run(OutcomeContext context) {
+    public void run(Context context) {
         Collections.shuffle(outcomes);
         int count = this.count.map(intProvider -> intProvider.get(context.world().getRandom())).orElseGet(outcomes::size);
         if (shouldReinit()) {

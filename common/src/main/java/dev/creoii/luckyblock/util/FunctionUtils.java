@@ -1,137 +1,111 @@
 package dev.creoii.luckyblock.util;
 
 import com.google.common.collect.ImmutableMap;
-import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.outcome.OutcomeContext;
-import dev.creoii.luckyblock.util.shape.Cube;
-import dev.creoii.luckyblock.util.shape.Sphere;
-import net.minecraft.util.math.BlockPos;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.random.RandomGenerator;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FunctionUtils {
-    private static final Map<String, BiFunction<String[], OutcomeContext, String>> FUNCTIONS = new ImmutableMap.Builder<String, BiFunction<String[], OutcomeContext, String>>()
-            .put("random", (args, context) -> {
-                if (args.length == 0)
-                    return String.valueOf(context.world().getRandom().nextInt());
-
-                double[] numbers = new double[args.length];
-                for (int i = 0; i < args.length; i++) {
-                    numbers[i] = context.evaluateExpression(args[i].trim());
-                }
-
-                return String.valueOf(numbers[context.world().getRandom().nextInt(numbers.length)]);
+    private static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
+    private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
+    private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
+    public static final Map<String, Function<Outcome.Context, String>> PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
+            .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().getName())
+            .put("playerPos", context -> context.player() == null ? context.pos().getX() + " " + context.pos().getY() + " " + context.pos().getZ() : context.player().getBlockX() + " " + context.player().getBlockY() + " " + context.player().getBlockZ())
+            .put("playerPosX", context -> context.player() == null ? String.valueOf(context.pos().getX()) : String.valueOf(context.player().getBlockX()))
+            .put("playerPosY", context -> context.player() == null ? String.valueOf(context.pos().getY()) : String.valueOf(context.player().getBlockY()))
+            .put("playerPosZ", context -> context.player() == null ? String.valueOf(context.pos().getZ()) : String.valueOf(context.player().getBlockZ()))
+            .put("playerVec", context -> {
+                Vec3d fallback = context.pos().toCenterPos();
+                return context.player() == null ? fallback.x + " " + fallback.y + " " + fallback.z : context.player().getX() + " " + context.player().getY() + " " + context.player().getZ();
             })
-            .put("randomBetween", (args, context) -> {
-                if (args.length != 2)
-                    throw new IllegalArgumentException("Function 'randomBetween' requires 2 arguments, found " + args.length);
-
-                double[] numbers = new double[args.length];
-                for (int i = 0; i < args.length; i++) {
-                    numbers[i] = context.evaluateExpression(args[i].trim());
-                }
-
-                return String.valueOf(context.world().getRandom().nextBetween((int) numbers[0], (int) numbers[1]));
+            .put("playerVecX", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getX()) : String.valueOf(context.player().getX()))
+            .put("playerVecY", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getY()) : String.valueOf(context.player().getY()))
+            .put("playerVecZ", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getZ()) : String.valueOf(context.player().getZ()))
+            .put("playerX", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getX()) : String.valueOf(context.player().getX()))
+            .put("playerY", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getY()) : String.valueOf(context.player().getY()))
+            .put("playerZ", context -> context.player() == null ? String.valueOf(context.pos().toCenterPos().getZ()) : String.valueOf(context.player().getZ()))
+            .put("blockPos", context -> context.pos().getX() + " " + context.pos().getY() + " " + context.pos().getZ())
+            .put("blockPosX", context -> String.valueOf(context.pos().getX()))
+            .put("blockPosY", context -> String.valueOf(context.pos().getY()))
+            .put("blockPosZ", context -> String.valueOf(context.pos().getZ()))
+            .put("blockX", context -> String.valueOf(context.pos().getX()))
+            .put("blockY", context -> String.valueOf(context.pos().getY()))
+            .put("blockZ", context -> String.valueOf(context.pos().getZ()))
+            .put("blockVec", context -> {
+                Vec3d center = context.pos().toCenterPos();
+                return center.x + " " + center.y + " " + center.z;
             })
-            .put("randomVelocity", (args, context) -> {
-                if (args.length != 2 && args.length != 0)
-                    return "0";
-
-                double power;
-                double pitch;
-                if (args.length == 0) {
-                    power = .9d;
-                    pitch = 15d;
-                } else {
-                    double[] numbers = new double[args.length];
-                    for (int i = 0; i < args.length; i++) {
-                        numbers[i] = context.evaluateExpression(args[i].trim());
-                    }
-                    power = numbers[0];
-                    pitch = numbers[1];
-                }
-
-                float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
-                float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween((int) -pitch, (int) pitch));
-
-                Vec3d motion = new Vec3d(-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad) * power, -MathHelper.sin(pitchRad) * power, MathHelper.cos(yawRad) * MathHelper.cos(pitchRad) * power);
-                return motion.x + "," + motion.y + "," + motion.z;
-            })
-            .put("randomInCube", (args, context) -> {
-                if (args.length < 4 || args.length > 5)
-                    return "0";
-
-                boolean hollow = false;
-                if (args.length == 5) {
-                    hollow = Boolean.parseBoolean(args[4]);
-                }
-
-                double[] numbers = new double[args.length];
-                for (int i = 0; i < args.length - 1; i++) { // no need to evaluate 'size'
-                    numbers[i] = context.evaluateExpression(args[i].trim());
-                }
-                Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
-
-                Cube cube = new Cube(args[3], hollow);
-                List<BlockPos> positions = cube.getBlockPositions(null, context);
-                if (positions.isEmpty()) {
-                    return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
-                }
-                BlockPos pos = positions.get(context.world().getRandom().nextInt(positions.size())).add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
-                return pos.getX() + "," + pos.getY() + "," + pos.getZ();
-            })
-            .put("randomInSphere", (args, context) -> {
-                if (args.length < 4 || args.length > 5)
-                    return "0";
-
-                boolean hollow = false;
-                if (args.length == 5) {
-                    hollow = Boolean.parseBoolean(args[4]);
-                }
-
-                double[] numbers = new double[args.length];
-                for (int i = 0; i < args.length - 1; i++) { // no need to evaluate 'size'
-                    numbers[i] = context.evaluateExpression(args[i].trim());
-                }
-                Vec3d center = new Vec3d(numbers[0], numbers[1], numbers[2]);
-                Sphere sphere = new Sphere(args[3], hollow);
-                List<BlockPos> positions = sphere.getBlockPositions(null, context);
-                if (positions.isEmpty()) {
-                    return context.pos().getX() + "," + context.pos().getY() + "," + context.pos().getZ();
-                }
-                BlockPos pos = positions.get(context.world().getRandom().nextInt(positions.size())).add((int) Math.round(center.x), (int) Math.round(center.y), (int) Math.round(center.z));
-                return pos.getX() + "," + pos.getY() + "," + pos.getZ();
-            })
+            .put("blockVecX", context -> String.valueOf(context.pos().toCenterPos().getX()))
+            .put("blockVecY", context -> String.valueOf(context.pos().toCenterPos().getY()))
+            .put("blockVecZ", context -> String.valueOf(context.pos().toCenterPos().getZ()))
+            .put("playerDistance", context -> context.player() == null ? "0" : String.valueOf(context.player().getPos().distanceTo(context.pos().toCenterPos())))
+            .put("playerSquaredDistance", context -> context.player() == null ? "0" : String.valueOf(context.player().getPos().squaredDistanceTo(context.pos().toCenterPos())))
+            .put("playerPitch", context -> context.player() == null ? "0" : String.valueOf(context.player().getPitch()))
+            .put("playerYaw", context -> context.player() == null ? "0" : String.valueOf(context.player().getYaw()))
+            .put("playerUUID", context -> context.player() == null ? "" : String.valueOf(context.player().getUuidAsString()))
+            .build();
+    public static final Map<String, BiFunction<String[], Outcome.Context, String>> FUNCTIONS = new ImmutableMap.Builder<String, BiFunction<String[], Outcome.Context, String>>()
+            .put("random", (args, context) -> String.valueOf(args[context.world().getRandom().nextInt(args.length)]))
+            .put("randomBetween", FunctionUtils::getRandomBetween)
+            .put("randomVelocity", FunctionUtils::getRandomVelocity)
             .build();
 
-    public static String processFunctions(String expression, OutcomeContext context) {
-        for (int i = 1; i < expression.length(); ++i) {
-            if (expression.charAt(i - 1) == '{') {
-                int end = expression.indexOf("}", i);
-                String function;
-                try {
-                    function = expression.substring(i, end);
-                } catch (IndexOutOfBoundsException e) {
-                    LuckyBlockMod.LOGGER.error("No enclosing parenthesis found in expression '{}'", expression);
-                    throw e;
-                }
+    private static String getRandomBetween(String[] args, Outcome.Context context) {
+        if (args.length != 2)
+            throw new IllegalArgumentException("Function 'randomBetween' requires 2 arguments, found " + args.length);
 
-                if (function.contains("(")) {
-                    int k = expression.indexOf('(', i);
-                    String functionId = expression.substring(i, k);
-                    if (FUNCTIONS.containsKey(functionId)) {
-                        String arguments = expression.substring(k + 1, expression.indexOf(")", k + 1));
-                        return expression.substring(0, Math.max(0, i - 2)) + FUNCTIONS.get(functionId).apply(OutcomeContext.split(arguments), context) + expression.substring(end + 1);
-                    } else throw new IllegalArgumentException("Unknown function: '" + functionId + "'");
-                }
-            }
+        int from = Integer.parseInt(parseString(args[0], context));
+        int to = Integer.parseInt(parseString(args[1], context));
+
+        return String.valueOf(context.world().getRandom().nextBetween(from, to));
+    }
+
+    private static String getRandomVelocity(String[] args, Outcome.Context context) {
+        if (args.length != 2 && args.length != 0)
+            return "0";
+
+        double power;
+        double pitch;
+        if (args.length == 0) {
+            power = .9d;
+            pitch = 15d;
+        } else {
+            power = Double.parseDouble(parseString(args[0], context));
+            pitch = Double.parseDouble(parseString(args[1], context));
         }
-        return expression;
+
+        float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
+        float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween((int) -pitch, (int) pitch));
+
+        Vec3d motion = new Vec3d(-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad) * power, -MathHelper.sin(pitchRad) * power, MathHelper.cos(yawRad) * MathHelper.cos(pitchRad) * power);
+        return motion.x + "," + motion.y + "," + motion.z;
+    }
+
+    /**
+     * @param string a json object in string format
+     * @return the string with all parameters and functions replaced with their values, based on the context
+     */
+    public static String parseString(String string, Outcome.Context context) {
+        StringBuilder result = new StringBuilder();
+
+        Matcher matcher = PARAM_PATTERN.matcher(string);
+        while (matcher.find()) {
+            String param = matcher.group(1);
+
+            if (FunctionUtils.PARAMS.containsKey(param)) {
+                matcher.appendReplacement(result, FunctionUtils.PARAMS.get(param).apply(context));
+            } else throw new IllegalArgumentException("Error parsing param '" + param + "'");
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
     }
 }

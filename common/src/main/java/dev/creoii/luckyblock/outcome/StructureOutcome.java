@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKeys;
@@ -24,22 +24,21 @@ public class StructureOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPos),
-                LuckyBlockCodecs.IDENTIFIER.fieldOf("structure").forGetter(outcome -> outcome.structureId)
+                createGlobalPosField(Outcome::getPosProvider),
+                Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId)
         ).apply(instance, StructureOutcome::new);
     });
-    private final String structureId;
+    private final Identifier structureId;
 
-    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, String structureId) {
+    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, Identifier structureId) {
         super(OutcomeType.STRUCTURE, luck, chance, delay, pos, false);
         this.structureId = structureId;
     }
 
     @Override
-    public void run(OutcomeContext context) {
+    public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            Identifier structureId = Identifier.tryParse(context.processString(this.structureId));
-            BlockPos pos = getPos(context);
+            BlockPos pos = getPosProvider(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
             if (template.isPresent()) {
                 /* TODO: create a codec for structure placement data */

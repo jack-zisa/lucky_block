@@ -2,11 +2,10 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.position.PosProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -21,18 +20,18 @@ public class EntityOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                createGlobalPosField(Outcome::getPos),
+                createGlobalPosField(Outcome::getPosProvider),
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
+                NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;
     private final IntProvider count;
-    private final Optional<ContextualNbtCompound> nbt;
+    private final Optional<NbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<String> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
+    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<PosProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
         super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
@@ -40,26 +39,22 @@ public class EntityOutcome extends Outcome {
     }
 
     @Override
-    public void run(OutcomeContext context) {
-        Vec3d spawnPos = getVec(context);
+    public void run(Context context) {
+        Vec3d spawnPos = getPosProvider(context).getVec(context);
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
             if (shouldReinit()) {
-                spawnPos = getVec(context);
+                spawnPos = getPosProvider(context).getVec(context);
             }
         }
     }
 
-    private Entity spawnEntity(EntityType<?> entityType, OutcomeContext context, Vec3d spawnPos, @Nullable NbtCompound nbtCompound) {
+    private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable NbtCompound nbtCompound) {
         Entity entity = entityType.create(context.world());
         if (entity != null) {
             if (nbtCompound != null) {
-                if (nbtCompound instanceof ContextualNbtCompound contextual) {
-                    contextual.setContext(context);
-                }
-
                 if (nbtCompound.contains("nbt")) {
                     NbtCompound nbt = nbtCompound.getCompound("nbt");
                     entity.readNbt(nbt);

@@ -1,7 +1,11 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.FunctionUtils;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 
@@ -12,21 +16,28 @@ public class MessageOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
-                TextCodecs.CODEC.fieldOf("message").forGetter(outcome -> outcome.message)
+                TextCodecs.CODEC.fieldOf("message").forGetter(outcome -> outcome.message),
+                Codec.BOOL.fieldOf("overlay").orElse(false).forGetter(outcome -> outcome.overlay)
         ).apply(instance, MessageOutcome::new);
     });
     private final Text message;
+    private final boolean overlay;
 
-    public MessageOutcome(int luck, float chance, Optional<Integer> delay, Text message) {
+    public MessageOutcome(int luck, float chance, Optional<Integer> delay, Text message, boolean overlay) {
         super(OutcomeType.MESSAGE, luck, chance, delay, Optional.empty(), false);
         this.message = message;
+        this.overlay = overlay;
     }
 
     @Override
-    public void run(OutcomeContext context) {
+    public void run(Context context) {
         context.world().getPlayers().forEach(player -> {
             if (player.getWorld() == context.world()) {
-                player.sendMessage(context.processText(message), false);
+                if (message.getString() == null)
+                    return;
+
+                String parsed = FunctionUtils.parseString(message.getString(), context);
+                player.sendMessage(MutableText.of(PlainTextContent.of(parsed)).setStyle(message.getStyle()), overlay);
             }
         });
     }
