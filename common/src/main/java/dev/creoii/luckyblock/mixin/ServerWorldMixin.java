@@ -17,7 +17,7 @@ public abstract class ServerWorldMixin {
     @Shadow @NotNull public abstract MinecraftServer getServer();
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void gbw$tickOutcomeDelays(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+    private void lucky$tickOutcomeDelays(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         LuckyBlockMod.OUTCOME_MANAGER.tickDelays(getServer());
     }
 }

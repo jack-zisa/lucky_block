@@ -1,0 +1,43 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:message",
+      "message": {
+        "text": "Your wish came true! If you like potatoes",
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:beacon"
+        }
+      },
+      "pos": ["{blockX}", "{blockY}+2", "{blockZ}"]
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:potato",
+      "count": 128,
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:baked_potato",
+      "count": 64,
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:poisonous_potato",
+      "count": 32,
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    }
+  ]
+}

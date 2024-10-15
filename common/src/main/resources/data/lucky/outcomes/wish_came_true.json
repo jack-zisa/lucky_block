@@ -1,0 +1,34 @@
+{
+  "type": "lucky:group",
+  "luck": 2,
+  "outcomes": [
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:wishing_well",
+      "pos": ["{blockX}-1", "{blockY}-2", "{blockZ}-1"]
+    },
+    {
+      "type": "lucky:message",
+      "message": {
+        "text": "A wishing well? Maybe you should throw in a coin..."
+      }
+    },
+    {
+      "type": "lucky:command",
+      "command": "/give {playerName} gold_nugget[custom_name='[\"\",{\"text\":\"Coin\",\"italic\":false,\"color\":\"gold\"}]']"
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "lucky:test_lucky_block",
+          "Properties": {
+            "set_outcome": "1"
+          }
+        }
+      },
+      "pos": ["{blockX}", "{blockY}-3", "{blockZ}"]
+    }
+  ]
+}

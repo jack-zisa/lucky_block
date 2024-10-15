@@ -1,0 +1,93 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:message",
+      "message": {
+        "text": "Your wish came true!",
+        "color": "aqua"
+      }
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:beacon"
+        }
+      },
+      "pos": ["{blockX}", "{blockY}+2", "{blockZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "entity_type": "minecraft:firework_rocket",
+      "nbt": {
+        "lifetime": 20,
+        "FireworksItem": {
+          "id": "minecraft:firework_rocket",
+          "components": {
+            "minecraft:fireworks": {
+              "flight_duration": 2,
+              "explosions": [
+                {
+                  "shape": "large_ball",
+                  "colors": [1973019, 11743532, 3887386, 5320730, 2437522, 8073150, 2651799, 11250603, 4408131, 14188952, 4312372, 14602026, 6719955, 12801229, 15435844, 15790320],
+                  "fade_colors": [1973019, 11743532, 3887386, 5320730, 2437522, 8073150, 2651799, 11250603, 4408131, 14188952, 4312372, 14602026, 6719955, 12801229, 15435844, 15790320],
+                  "has_twinkle": true,
+                  "has_trail": true
+                }
+              ]
+            }
+          }
+        }
+      },
+      "pos": "{randomInSphere({blockX},{blockY}+3,{blockZ},[2,1,2])}",
+      "count": 20,
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:gold_ingot",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 20,
+        "max_inclusive": 30
+      },
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:diamond",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 20,
+        "max_inclusive": 30
+      },
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:emerald",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 20,
+        "max_inclusive": 30
+      },
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:lapis_lazuli",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 20,
+        "max_inclusive": 30
+      },
+      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "reinit": true
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.profiler.Profiler;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +22,37 @@ import java.util.Map;
 
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
+    public static final Identifier EMPTY_OUTCOME = new Identifier("lucky:empty");
     private List<Pair<Identifier, Outcome>> outcomes;
+    private List<Identifier> ids;
     private final Map<Pair<Outcome, OutcomeContext>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
         super(GSON, "outcomes");
     }
 
+    public List<Identifier> getIds() {
+        return ids;
+    }
+
     @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
         ImmutableList.Builder<Pair<Identifier, Outcome>> builder = ImmutableList.builder();
+        ImmutableList.Builder<Identifier> builder1 = ImmutableList.builder();
+
+        builder.add(new Pair<>(EMPTY_OUTCOME, NoneOutcome.INSTANCE));
+        builder1.add(EMPTY_OUTCOME);
+
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
             dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome '{}': {}", entry.getKey(), string)).ifPresent(outcome -> {
                 LuckyBlockMod.LOGGER.info("Loading outcome '{}' with chance {}", entry.getKey(), outcome.getChance());
                 builder.add(new Pair<>(entry.getKey(), outcome));
+                builder1.add(entry.getKey());
             });
         }
         outcomes = builder.build();
+        ids = builder1.build();
     }
 
     public void tickDelays(MinecraftServer server) {
@@ -67,6 +81,21 @@ public class OutcomeManager extends JsonDataLoader {
         return outcomes.isEmpty();
     }
 
+    @Nullable
+    public Outcome getOutcome(Identifier id) {
+        if (outcomes.isEmpty()) {
+            throw new IllegalArgumentException("No outcomes found");
+        }
+
+        for (Pair<Identifier, Outcome> outcome : outcomes) {
+            if (outcome.getLeft().equals(id)) {
+                return outcome.getRight();
+            }
+        }
+
+        return null;
+    }
+
     public Outcome getRandomOutcome(Random random, int luck) {
         if (outcomes.isEmpty()) {
             throw new IllegalArgumentException("No outcomes found");
@@ -74,11 +103,11 @@ public class OutcomeManager extends JsonDataLoader {
 
         int lowest = 0, highest = 0;
 
-        for (Pair<Identifier, Outcome> drop : outcomes) {
-            if (drop.getRight().getLuck() < lowest)
-                lowest = drop.getRight().getLuck();
-            if (drop.getRight().getLuck() > highest)
-                highest = drop.getRight().getLuck();
+        for (Pair<Identifier, Outcome> outcome : outcomes) {
+            if (outcome.getRight().getLuck() < lowest)
+                lowest = outcome.getRight().getLuck();
+            if (outcome.getRight().getLuck() > highest)
+                highest = outcome.getRight().getLuck();
         }
 
         highest += -1 * lowest + 1;

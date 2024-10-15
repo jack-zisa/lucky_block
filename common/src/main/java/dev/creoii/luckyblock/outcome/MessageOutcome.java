@@ -24,6 +24,10 @@ public class MessageOutcome extends Outcome {
 
     @Override
     public void run(OutcomeContext context) {
-        context.player().sendMessage(context.processText(message), false);
+        context.world().getPlayers().forEach(player -> {
+            if (player.getWorld() == context.world()) {
+                player.sendMessage(context.processText(message), false);
+            }
+        });
     }
 }

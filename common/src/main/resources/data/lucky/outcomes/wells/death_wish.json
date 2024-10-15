@@ -1,0 +1,33 @@
+{
+  "type": "lucky:group",
+  "outcomes": [
+    {
+      "type": "lucky:message",
+      "message": {
+        "text": "Your death wish came true!",
+        "color": "dark_red"
+      }
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:beacon"
+        }
+      },
+      "pos": ["{blockX}", "{blockY}+2", "{blockZ}"]
+    },
+    {
+      "type": "lucky:entity",
+      "luck": -2,
+      "entity_type": "minecraft:tnt",
+      "nbt": {
+        "Motion": "{randomVelocity(0.9,15)}",
+        "fuse": 50
+      },
+      "pos": ["{blockX}", "{blockY}+7", "{blockZ}"],
+      "count": 20
+    }
+  ]
+}
