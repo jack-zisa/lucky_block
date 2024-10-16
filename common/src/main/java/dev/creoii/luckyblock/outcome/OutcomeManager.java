@@ -22,9 +22,8 @@ import java.util.stream.Collectors;
 
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
-    public static final Identifier EMPTY_OUTCOME = new Identifier("lucky:empty");
-    private Map<Identifier, JsonObject> outcomes;
-    private Map<Identifier, JsonObject> indexedOutcomes;
+    private Map<Identifier, JsonObject> randomOutcomes;
+    private Map<Identifier, JsonObject> nonrandomOutcomes;
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
@@ -32,7 +31,7 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     public Set<Identifier> getIds() {
-        return outcomes.keySet();
+        return randomOutcomes.keySet();
     }
 
     @Override
@@ -41,12 +40,12 @@ public class OutcomeManager extends JsonDataLoader {
         ImmutableMap.Builder<Identifier, JsonObject> builder1 = ImmutableMap.builder();
         for (Map.Entry<Identifier, JsonObject> entry : prepared.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), entry.getValue().getAsJsonObject())).collect(Collectors.toSet())) {
             LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
-            if (entry.getKey().getPath().startsWith("indexed/")) {
+            if (entry.getKey().getPath().startsWith("nonrandom/")) {
                 builder1.put(entry.getKey(), entry.getValue());
             } else builder.put(entry.getKey(), entry.getValue());
         }
-        outcomes = builder.build();
-        indexedOutcomes = builder1.build();
+        randomOutcomes = builder.build();
+        nonrandomOutcomes = builder1.build();
     }
 
     public void tickDelays(MinecraftServer server) {
@@ -72,32 +71,42 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     public boolean isEmpty() {
-        return outcomes.isEmpty();
+        return randomOutcomes.isEmpty();
     }
 
     @Nullable
-    public JsonObject getIndexedOutcome(Identifier id) {
-        if (outcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found");
+    public JsonObject getOutcomeById(Identifier id) {
+        if (nonrandomOutcomes.isEmpty()) {
+            throw new IllegalArgumentException("No nonrandom outcomes found");
         }
 
-        for (Map.Entry<Identifier, JsonObject> outcome : indexedOutcomes.entrySet()) {
+        for (Map.Entry<Identifier, JsonObject> outcome : nonrandomOutcomes.entrySet()) {
             if (outcome.getKey().equals(id)) {
                 return outcome.getValue();
             }
         }
 
-        return null;
+        if (randomOutcomes.isEmpty()) {
+            throw new IllegalArgumentException("No random outcomes found");
+        }
+
+        for (Map.Entry<Identifier, JsonObject> outcome : randomOutcomes.entrySet()) {
+            if (outcome.getKey().equals(id)) {
+                return outcome.getValue();
+            }
+        }
+
+        throw new IllegalArgumentException("Outcome '" + id.toString() + "' does not exist");
     }
 
     public Pair<Identifier, JsonObject> getRandomOutcome(Random random, int luck) {
-        if (outcomes.isEmpty()) {
+        if (randomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No outcomes found");
         }
 
         int lowest = 0, highest = 0;
 
-        for (Map.Entry<Identifier, JsonObject> outcome : outcomes.entrySet()) {
+        for (Map.Entry<Identifier, JsonObject> outcome : randomOutcomes.entrySet()) {
             int outcomeLuck;
             try {
                 outcomeLuck = outcome.getValue().getAsJsonPrimitive("luck").getAsInt();
@@ -117,7 +126,7 @@ public class OutcomeManager extends JsonDataLoader {
         List<Double> weights = new ArrayList<>();
         weights.add(0d);
 
-        for (Map.Entry<Identifier, JsonObject> outcome : outcomes.entrySet()) {
+        for (Map.Entry<Identifier, JsonObject> outcome : randomOutcomes.entrySet()) {
             int outcomeLuck;
             try {
                 outcomeLuck = outcome.getValue().getAsJsonPrimitive("luck").getAsInt() + (-1 * lowest) + 1;
@@ -147,7 +156,7 @@ public class OutcomeManager extends JsonDataLoader {
         if (index == -1)
             index = weights.size() - 2;
 
-        @SuppressWarnings("unchecked") Map.Entry<Identifier, JsonObject> entry = outcomes.entrySet().toArray(new Map.Entry[]{})[index];
+        @SuppressWarnings("unchecked") Map.Entry<Identifier, JsonObject> entry = randomOutcomes.entrySet().toArray(new Map.Entry[]{})[index];
         return new Pair<>(entry.getKey(), entry.getValue());
     }
 
