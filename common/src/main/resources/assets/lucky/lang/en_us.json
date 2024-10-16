@@ -1,5 +1,5 @@
 {
-  "block.lucky.test_lucky_block": "Test Lucky Block",
+  "block.lucky.lucky_block": "Lucky Block",
 
   "lucky.item.luck": "Luck: %s"
 }
