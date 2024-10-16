@@ -7,14 +7,22 @@
       "entity_type": "minecraft:egg",
       "count": 40,
       "nbt": {
-        "Motion": "{randomVelocity(0.6,15)}"
+        "Motion": {
+          "type": "lucky:random_velocity",
+          "power": 0.6,
+          "pitch": 15
+        }
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:diamond",
       "count": 20,
-      "velocity": "{randomVelocity(0.7,18)}",
+      "velocity": {
+        "type": "lucky:random_velocity",
+        "power": 0.7,
+        "pitch": 18
+      },
       "delay": 15,
       "reinit": true
     }

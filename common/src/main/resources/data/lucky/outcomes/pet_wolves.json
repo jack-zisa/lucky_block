@@ -6,11 +6,22 @@
       "type": "lucky:entity",
       "entity_type": "minecraft:wolf",
       "nbt": {
-        "CollarColor": "{randomBetween(0,15)}",
-        "Owner": "{playerUUID}",
+        "CollarColor": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 0,
+          "max_inclusive": 15
+        },
+        "Owner": "{playerName}",
         "Sitting": true
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 5,
@@ -24,7 +35,14 @@
         "type": "minecraft:heart",
         "count": 20
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "count": 20,
       "reinit": true
     }

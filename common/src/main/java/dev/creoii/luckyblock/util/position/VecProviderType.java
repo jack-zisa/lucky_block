@@ -6,18 +6,20 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 @FunctionalInterface
-public interface PosProviderType<T extends VecProvider> {
-    PosProviderType<ConstantVecProvider> CONSTANT = () -> ConstantVecProvider.CODEC;
-    PosProviderType<RandomInShapeVecProvider> RANDOM_IN_SHAPE = () -> RandomInShapeVecProvider.CODEC;
+public interface VecProviderType<T extends VecProvider> {
+    VecProviderType<ConstantVecProvider> CONSTANT = () -> ConstantVecProvider.CODEC;
+    VecProviderType<RandomInShapeVecProvider> RANDOM_IN_SHAPE = () -> RandomInShapeVecProvider.CODEC;
+    VecProviderType<RandomVelocityVecProvider> RANDOM_VELOCITY = () -> RandomVelocityVecProvider.CODEC;
 
     MapCodec<T> codec();
 
     static void init() {
         register(new Identifier(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);
         register(new Identifier(LuckyBlockMod.NAMESPACE, "random_in_shape"), RANDOM_IN_SHAPE);
+        register(new Identifier(LuckyBlockMod.NAMESPACE, "random_velocity"), RANDOM_VELOCITY);
     }
 
-    static void register(Identifier id, PosProviderType<?> type) {
+    static void register(Identifier id, VecProviderType<?> type) {
         Registry.register(LuckyBlockMod.POS_PROVIDER_TYPES, id, type);
     }
 }

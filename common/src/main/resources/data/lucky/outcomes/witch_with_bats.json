@@ -14,7 +14,14 @@
       "type": "lucky:entity",
       "entity_type": "minecraft:bat",
       "count": 64,
-      "pos": "{randomInSphere({blockX},{blockY}+1,{blockZ},[1,2,1])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}-1", "{blockY}-1", "{blockZ}1"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [1, 2, 1]
+        }
+      },
       "reinit": true
     }
   ]

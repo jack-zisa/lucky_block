@@ -38,7 +38,7 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
         registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "explosion"), EXPLOSION);
     }
 
-    public static void registerOutcomeType(Identifier id, OutcomeType outcomeType) {
+    private static void registerOutcomeType(Identifier id, OutcomeType outcomeType) {
         Registry.register(LuckyBlockMod.OUTCOME_TYPES, id, outcomeType);
     }
 }

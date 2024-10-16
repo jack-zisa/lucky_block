@@ -2,22 +2,21 @@ package dev.creoii.luckyblock;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
-import dev.creoii.luckyblock.luckyblock.LuckyBlockItem;
-import dev.creoii.luckyblock.luckyblock.LuckyBlock;
+import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.outcome.*;
-import dev.creoii.luckyblock.util.position.PosProviderType;
+import dev.creoii.luckyblock.util.position.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.component.DataComponentType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.dynamic.Codecs;
-import net.minecraft.util.math.intprovider.IntProviderType;
 import org.slf4j.Logger;
 
 /**
@@ -26,7 +25,11 @@ import org.slf4j.Logger;
  *     <li>Outcome referencing</li>
  *     <li>.mcfunction Outcome</li>
  *     <li>ensure game events are properly thrown in outcomes</li>
- *     <li>contextual int providers?</li>
+ *     <li>Hand/Armor Items do not work</li>
+ *     <li>Collar colors are all the same</li>
+ *     <li>Explosion outcome does not break blocks</li>
+ *     <li>Passengers do not work again</li>
+ *     <li>Well drops are broken again</li>
  * </ul>
  */
 public final class LuckyBlockMod {
@@ -43,16 +46,16 @@ public final class LuckyBlockMod {
     public static final RegistryKey<Registry<ShapeType>> SHAPE_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "shape_types"));
     public static final Registry<ShapeType> SHAPE_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", SHAPE_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static final RegistryKey<Registry<PosProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "pos_provider_types"));
-    public static final Registry<PosProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
+    public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "pos_provider_types"));
+    public static final Registry<VecProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
     public static final Block TEST_LUCKY_BLOCK = new LuckyBlock(AbstractBlock.Settings.create().hardness(.1f).resistance(20f).mapColor(MapColor.TERRACOTTA_YELLOW));
-    public static final Item TEST_LUCKY_BLOCK_ITEM = new LuckyBlockItem(TEST_LUCKY_BLOCK, new Item.Settings().rarity(Rarity.RARE).component(LUCK, 0));
+    public static final Item TEST_LUCKY_BLOCK_ITEM = new BlockItem(TEST_LUCKY_BLOCK, new Item.Settings().rarity(Rarity.RARE).component(LUCK, 0));
 
     public static void init() {
         OutcomeType.init();
         ShapeType.init();
-        PosProviderType.init();
+        VecProviderType.init();
         Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(NAMESPACE, "luck"), LUCK);
         Registry.register(Registries.BLOCK, new Identifier(NAMESPACE, "test_lucky_block"), TEST_LUCKY_BLOCK);
         Registry.register(Registries.ITEM, new Identifier(NAMESPACE, "test_lucky_block"), TEST_LUCKY_BLOCK_ITEM);

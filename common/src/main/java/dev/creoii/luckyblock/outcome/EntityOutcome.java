@@ -2,10 +2,12 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -24,14 +26,14 @@ public class EntityOutcome extends Outcome {
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
+                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;
     private final IntProvider count;
-    private final Optional<NbtCompound> nbt;
+    private final Optional<ContextualNbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<NbtCompound> nbt) {
+    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
         super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
@@ -51,23 +53,27 @@ public class EntityOutcome extends Outcome {
         }
     }
 
-    private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable NbtCompound nbtCompound) {
+    private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
         Entity entity = entityType.create(context.world());
         if (entity != null) {
             if (nbtCompound != null) {
-                if (nbtCompound.contains("nbt")) {
-                    NbtCompound nbt = nbtCompound.getCompound("nbt");
+                nbtCompound.setContext(context);
+
+                if (nbtCompound.contains("nbt", 10)) {
+                    ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
                     entity.readNbt(nbt);
-                    if (nbt.contains(Entity.PASSENGERS_KEY)) {
-                        NbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+
+                    if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
+                        ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                         EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
                         Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
                         if (passenger != null)
                             passenger.startRiding(entity);
                     }
-                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY)) {
+                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
                     entity.readNbt(nbtCompound);
-                    NbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+
+                    ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
                     Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
                     if (passenger != null)

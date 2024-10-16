@@ -2,11 +2,12 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.position.VecProvider;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -21,18 +22,18 @@ public class BlockOutcome extends Outcome {
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
-                NbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntityNbt),
+                ContextualNbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntity),
                 Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape)
         ).apply(instance, BlockOutcome::new);
     });
     private final BlockStateProvider stateProvider;
-    private final Optional<NbtCompound> blockEntityNbt;
+    private final Optional<ContextualNbtCompound> blockEntity;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, BlockStateProvider stateProvider, Optional<NbtCompound> blockEntityNbt, Optional<Shape> shape) {
+    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
         super(OutcomeType.BLOCK, luck, chance, delay, pos, reinit);
         this.stateProvider = stateProvider;
-        this.blockEntityNbt = blockEntityNbt;
+        this.blockEntity = blockEntity;
         this.shape = shape;
     }
 
@@ -42,16 +43,24 @@ public class BlockOutcome extends Outcome {
         if (shape.isPresent()) {
             shape.get().getBlockPositions(this, context).forEach(pos -> {
                 BlockState state = stateProvider.get(context.world().getRandom(), place.getValue().add(pos));
-                context.world().setBlockState(place.getValue().add(pos), state);
-                blockEntityNbt.ifPresent(nbtCompound -> context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound, context.world().getRegistryManager())));
-                if (shouldReinit()) {
-                    place.setValue(getPos(context).getPos(context));
+                if (context.world().setBlockState(place.getValue().add(pos), state)) {
+                    blockEntity.ifPresent(nbtCompound -> {
+                        nbtCompound.setContext(context);
+                        context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound, context.world().getRegistryManager()));
+                    });
+                    if (shouldReinit()) {
+                        place.setValue(getPos(context).getPos(context));
+                    }
                 }
             });
         } else {
             BlockState state = stateProvider.get(context.world().getRandom(), place.getValue());
-            context.world().setBlockState(place.getValue(), state);
-            blockEntityNbt.ifPresent(nbtCompound -> context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue(), state, nbtCompound, context.world().getRegistryManager())));
+            if (context.world().setBlockState(place.getValue(), state)) {
+                blockEntity.ifPresent(nbtCompound -> {
+                    nbtCompound.setContext(context);
+                    context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue(), state, nbtCompound, context.world().getRegistryManager()));
+                });
+            }
         }
     }
 }

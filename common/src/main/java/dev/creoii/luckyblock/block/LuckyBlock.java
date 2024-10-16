@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.luckyblock;
+package dev.creoii.luckyblock.block;
 
 import com.google.gson.JsonObject;
 import dev.creoii.luckyblock.LuckyBlockMod;
@@ -6,12 +6,16 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -23,11 +27,20 @@ import java.util.List;
 public class LuckyBlock extends Block {
     public static final IntProperty LUCK = IntProperty.of("luck", 0, 200);
     public static final IntProperty SET_OUTCOME = IntProperty.of("set_outcome", 0, 3);
-    public static final List<String> WELL_OUTCOME_IDS = List.of(OutcomeManager.EMPTY_OUTCOME.toString(), "lucky:wells/wish_came_true", "lucky:wells/potato_wish", "lucky:wells/death_wish");
+    public static final List<String> WELL_OUTCOME_IDS = List.of(OutcomeManager.EMPTY_OUTCOME.toString(), "lucky:indexed/wish_came_true", "lucky:indexed/potato_wish", "lucky:indexed/death_wish");
 
     public LuckyBlock(Settings settings) {
         super(settings);
         setDefaultState(stateManager.getDefaultState().with(LUCK, 100).with(SET_OUTCOME, 0));
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
+        if (stack.contains(LuckyBlockMod.LUCK)) {
+            int luck = stack.get(LuckyBlockMod.LUCK);
+            Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
+            tooltip.add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
+        }
     }
 
     @Override
@@ -43,7 +56,7 @@ public class LuckyBlock extends Block {
     private JsonObject getOutcomeFromState(World world, BlockState state) {
         int outcomeId = state.get(SET_OUTCOME);
         if (outcomeId != 0) {
-            JsonObject outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
+            JsonObject outcome = LuckyBlockMod.OUTCOME_MANAGER.getIndexedOutcome(Identifier.tryParse(WELL_OUTCOME_IDS.get(outcomeId)));
             if (outcome != null) {
                 return outcome;
             }
@@ -69,9 +82,9 @@ public class LuckyBlock extends Block {
             Outcome.Context context = new Outcome.Context(world, pos, state, player);
             Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state), context);
             if (outcome != null) {
-                outcome.runOutcome(context);
                 world.breakBlock(pos, false);
-            } else return ActionResult.PASS;
+                outcome.runOutcome(context);
+            }
         }
         return ActionResult.success(world.isClient);
     }
@@ -82,8 +95,8 @@ public class LuckyBlock extends Block {
             Outcome.Context context = new Outcome.Context(world, pos, state, null);
             Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state), context);
             if (outcome != null) {
-                outcome.runOutcome(context);
                 world.breakBlock(pos, false);
+                outcome.runOutcome(context);
             }
         }
     }

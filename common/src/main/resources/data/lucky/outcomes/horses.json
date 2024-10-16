@@ -7,9 +7,22 @@
       "entity_type": "minecraft:horse",
       "nbt": {
         "Tame": true,
-        "Owner": "{playerUUID}"
+        "Owner": "{playerUUID}",
+        "Variant": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 0,
+          "max_inclusive": 6
+        }
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
+      "reinit": true
     },
     {
       "type": "lucky:entity",
@@ -18,7 +31,14 @@
         "Tame": true,
         "Owner": "{playerUUID}"
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      }
     },
     {
       "type": "lucky:entity",
@@ -27,7 +47,14 @@
         "Tame": true,
         "Owner": "{playerUUID}"
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}"
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      }
     }
   ],
   "count": 12,

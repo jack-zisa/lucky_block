@@ -10,7 +10,7 @@
           "Name": "minecraft:lava"
         }
       },
-      "pos": ["{playerX}", "{playerY}+3", "{playerZ}"]
+      "pos": ["{playerX}", "{playerY}+2", "{playerZ}"]
     },
     {
       "type": "lucky:structure",

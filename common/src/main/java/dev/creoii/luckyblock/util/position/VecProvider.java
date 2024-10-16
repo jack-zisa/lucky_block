@@ -5,12 +5,13 @@ import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.function.Function;
 
 public abstract class VecProvider {
-    private static final Codec<Either<Vec3d, VecProvider>> VEC_3D_CODEC = Codec.either(Vec3d.CODEC, LuckyBlockMod.POS_PROVIDER_TYPES.getCodec().dispatch(VecProvider::getType, PosProviderType::codec));
+    private static final Codec<Either<Vec3d, VecProvider>> VEC_3D_CODEC = Codec.either(Vec3d.CODEC, LuckyBlockMod.POS_PROVIDER_TYPES.getCodec().dispatch(VecProvider::getType, VecProviderType::codec));
     public static final Codec<VecProvider> VALUE_CODEC = VEC_3D_CODEC.xmap(either -> {
         return either.map(ConstantVecProvider::new, provider -> provider);
     }, provider -> {
@@ -26,9 +27,9 @@ public abstract class VecProvider {
         return fromVec(getVec(context));
     }
 
-    public abstract PosProviderType<?> getType();
+    public abstract VecProviderType<?> getType();
 
     public static BlockPos fromVec(Vec3d vec3d) {
-        return new BlockPos((int) Math.round(vec3d.x), (int) Math.round(vec3d.y), (int) Math.round(vec3d.z));
+        return new BlockPos(MathHelper.floor(vec3d.x), MathHelper.floor(vec3d.y), MathHelper.floor(vec3d.z));
     }
 }

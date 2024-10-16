@@ -5,9 +5,20 @@
   "nbt": {
     "CustomName": "[{'text':'Mr','color':'yellow'},{'text':'.','color':'gold'},{'text':'R','color':'red'},{'text':'a','color':'light_purple'},{'text':'i','color':'dark_purple'},{'text':'n','color':'blue'},{'text':'b','color':'dark_aqua'},{'text':'o','color':'aqua'},{'text':'w','color':'green'}]",
     "CustomNameVisible": true,
-    "Color": "{randomBetween(0,15)}"
+    "Color": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 0,
+      "max_inclusive": 15
+    }
   },
-  "pos": "{randomInSphere({blockX},{blockY},{blockZ},[4,1,4])}",
+  "pos": {
+    "type": "lucky:random_in_shape",
+    "center": ["{blockX}", "{blockY}", "{blockZ}"],
+    "shape": {
+      "type": "lucky:sphere",
+      "size": [4, 1, 4]
+    }
+  },
   "count": 16,
   "reinit": true
 }

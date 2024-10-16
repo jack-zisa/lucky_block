@@ -23,7 +23,7 @@ public class ConstantVecProvider extends VecProvider {
     }
 
     @Override
-    public PosProviderType<?> getType() {
-        return PosProviderType.CONSTANT;
+    public VecProviderType<?> getType() {
+        return VecProviderType.CONSTANT;
     }
 }

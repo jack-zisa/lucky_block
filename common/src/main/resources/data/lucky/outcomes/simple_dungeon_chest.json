@@ -10,5 +10,6 @@
   "block_entity": {
     "id": "minecraft:chest",
     "LootTable": "minecraft:chests/simple_dungeon"
-  }
+  },
+  "pos": ["{blockX}", "{blockY}", "{blockZ}"]
 }

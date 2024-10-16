@@ -41,7 +41,14 @@
           }
         }
       },
-      "pos": "{randomInSphere({blockX},{blockY}+3,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+3", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "count": 20,
       "reinit": true
     },
@@ -53,7 +60,14 @@
         "min_inclusive": 20,
         "max_inclusive": 30
       },
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     },
     {
@@ -61,10 +75,17 @@
       "item": "minecraft:diamond",
       "count": {
         "type": "minecraft:uniform",
-        "min_inclusive": 20,
-        "max_inclusive": 30
+        "min_inclusive": 10,
+        "max_inclusive": 20
       },
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     },
     {
@@ -75,7 +96,14 @@
         "min_inclusive": 20,
         "max_inclusive": 30
       },
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     },
     {
@@ -86,7 +114,32 @@
         "min_inclusive": 20,
         "max_inclusive": 30
       },
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
+      "reinit": true
+    },
+    {
+      "type": "lucky:item",
+      "item": "minecraft:netherite_ingot",
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 5
+      },
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     }
   ]

@@ -2,14 +2,11 @@ package dev.creoii.luckyblock.util;
 
 import com.google.common.collect.ImmutableMap;
 import dev.creoii.luckyblock.outcome.Outcome;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,44 +46,8 @@ public class FunctionUtils {
             .put("playerPitch", context -> context.player() == null ? 0d : context.player().getPitch())
             .put("playerYaw", context -> context.player() == null ? 0d : context.player().getYaw())
             .build();
-    public static final Map<String, BiFunction<String[], Outcome.Context, String>> FUNCTIONS = new ImmutableMap.Builder<String, BiFunction<String[], Outcome.Context, String>>()
-            .put("random", (args, context) -> String.valueOf(args[context.world().getRandom().nextInt(args.length)]))
-            .put("randomBetween", FunctionUtils::getRandomBetween)
-            .put("randomVelocity", FunctionUtils::getRandomVelocity)
-            .build();
     private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
     private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
-
-    private static String getRandomBetween(String[] args, Outcome.Context context) {
-        if (args.length != 2)
-            throw new IllegalArgumentException("Function 'randomBetween' requires 2 arguments, found " + args.length);
-
-        int from = Integer.parseInt(parseString(args[0], context));
-        int to = Integer.parseInt(parseString(args[1], context));
-
-        return String.valueOf(context.world().getRandom().nextBetween(from, to));
-    }
-
-    private static String getRandomVelocity(String[] args, Outcome.Context context) {
-        if (args.length != 2 && args.length != 0)
-            return "0";
-
-        double power;
-        double pitch;
-        if (args.length == 0) {
-            power = .9d;
-            pitch = 15d;
-        } else {
-            power = Double.parseDouble(parseString(args[0], context));
-            pitch = Double.parseDouble(parseString(args[1], context));
-        }
-
-        float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
-        float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween((int) -pitch, (int) pitch));
-
-        Vec3d motion = new Vec3d(-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad) * power, -MathHelper.sin(pitchRad) * power, MathHelper.cos(yawRad) * MathHelper.cos(pitchRad) * power);
-        return motion.x + "," + motion.y + "," + motion.z;
-    }
 
     /**
      * @param string a json object in string format

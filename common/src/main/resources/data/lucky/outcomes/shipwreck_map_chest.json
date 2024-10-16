@@ -10,5 +10,6 @@
   "block_entity": {
     "id": "minecraft:chest",
     "LootTable": "minecraft:chests/shipwreck_map"
-  }
+  },
+  "pos": ["{blockX}", "{blockY}", "{blockZ}"]
 }

@@ -5,7 +5,7 @@
     {
       "type": "lucky:structure",
       "structure": "lucky:wishing_well",
-      "pos": ["{blockX}-1", "{blockY}-2", "{blockZ}-1"]
+      "pos": ["{blockPosX}-1", "{blockPosY}-2", "{blockPosZ}-1"]
     },
     {
       "type": "lucky:message",
@@ -28,7 +28,7 @@
           }
         }
       },
-      "pos": ["{blockX}", "{blockY}-3", "{blockZ}"]
+      "pos": ["{blockPosX}", "{blockPosY}-3", "{blockPosZ}"]
     }
   ]
 }

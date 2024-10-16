@@ -22,21 +22,42 @@
       "type": "lucky:item",
       "item": "minecraft:potato",
       "count": 128,
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     },
     {
       "type": "lucky:item",
       "item": "minecraft:baked_potato",
       "count": 64,
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     },
     {
       "type": "lucky:item",
       "item": "minecraft:poisonous_potato",
       "count": 32,
-      "pos": "{randomInSphere({blockX},{blockY}+10,{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "reinit": true
     }
   ]

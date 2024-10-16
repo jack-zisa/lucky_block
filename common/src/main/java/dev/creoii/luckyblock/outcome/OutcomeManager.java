@@ -20,23 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Replacement for convoluted function parsing system:
- *  - Store JsonObjects rather than Outcomes in list <code>outcomes</code> DONE
- *  - When activating a lucky block, evaluate any {} functions in <code>entry.getValue()</code> WIP
- *  - Parse the JsonObject into an Outcome using: DONE
- *  <p>
- *      <code>
- *          DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, entry.getValue());
- *          dataResult.resultOrPartial()
- *      </code>
- *  </p>
- *  - Run the outcome as normal DONE
- */
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     public static final Identifier EMPTY_OUTCOME = new Identifier("lucky:empty");
     private Map<Identifier, JsonObject> outcomes;
+    private Map<Identifier, JsonObject> indexedOutcomes;
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
@@ -50,18 +38,15 @@ public class OutcomeManager extends JsonDataLoader {
     @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
         ImmutableMap.Builder<Identifier, JsonObject> builder = ImmutableMap.builder();
-
-        JsonObject empty = new JsonObject();
-        empty.add("type", new JsonPrimitive("lucky:none"));
-        builder.put(EMPTY_OUTCOME, empty);
-
+        ImmutableMap.Builder<Identifier, JsonObject> builder1 = ImmutableMap.builder();
         for (Map.Entry<Identifier, JsonObject> entry : prepared.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), entry.getValue().getAsJsonObject())).collect(Collectors.toSet())) {
             LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
-            if (!entry.getKey().getPath().startsWith("wells/")) {
-                builder.put(entry.getKey(), entry.getValue());
-            }
+            if (entry.getKey().getPath().startsWith("indexed/")) {
+                builder1.put(entry.getKey(), entry.getValue());
+            } else builder.put(entry.getKey(), entry.getValue());
         }
         outcomes = builder.build();
+        indexedOutcomes = builder1.build();
     }
 
     public void tickDelays(MinecraftServer server) {
@@ -91,12 +76,12 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     @Nullable
-    public JsonObject getOutcome(Identifier id) {
+    public JsonObject getIndexedOutcome(Identifier id) {
         if (outcomes.isEmpty()) {
             throw new IllegalArgumentException("No outcomes found");
         }
 
-        for (Map.Entry<Identifier, JsonObject> outcome : outcomes.entrySet()) {
+        for (Map.Entry<Identifier, JsonObject> outcome : indexedOutcomes.entrySet()) {
             if (outcome.getKey().equals(id)) {
                 return outcome.getValue();
             }
@@ -172,8 +157,8 @@ public class OutcomeManager extends JsonDataLoader {
 
         String result = FunctionUtils.parseString(object.toString(), context);
 
-        System.out.println("AFTER: " + result);
         JsonObject parsedObject = GSON.fromJson(result, JsonObject.class);
+        System.out.println("AFTER: " + parsedObject.toString());
         DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, parsedObject);
         Optional<Outcome> outcome = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome: {}", string));
         return outcome.orElse(null);

@@ -88,7 +88,14 @@
           }
         }
       },
-      "pos": "{randomInSphere({blockX},{blockY},{blockZ},[2,1,2])}",
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "center": ["{blockX}-1", "{blockY}", "{blockZ}-1"],
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [2, 1, 2]
+        }
+      },
       "count": 20,
       "reinit": true
     }
