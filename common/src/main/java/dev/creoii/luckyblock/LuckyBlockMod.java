@@ -25,12 +25,10 @@ import org.slf4j.Logger;
  *     <li>Outcome referencing</li>
  *     <li>.mcfunction Outcome</li>
  *     <li>ensure game events are properly thrown in outcomes</li>
- *     <li>Hand/Armor Items do not work</li>
  *     <li>Collar colors are all the same</li>
- *     <li>Explosion outcome does not break blocks</li>
- *     <li>Passengers do not work again</li>
  *     <li>Well drops are broken again</li>
  * </ul>
+ * <a href="https://alexsocha.github.io/luckyblock/#/property-values">Lucky Block Docs</a>
  */
 public final class LuckyBlockMod {
     public static final String NAMESPACE = "lucky";

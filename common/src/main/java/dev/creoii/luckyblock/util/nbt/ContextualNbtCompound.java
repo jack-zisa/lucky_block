@@ -214,16 +214,17 @@ public class ContextualNbtCompound extends NbtCompound {
     }
 
     public ContextualNbtList getList(String key, int type) {
-        ContextualNbtList list = new ContextualNbtList();
         try {
             if (getType(key) == 9) {
-                ContextualNbtList nbtList = (ContextualNbtList) entries.get(key);
+                ContextualNbtList nbtList = new ContextualNbtList().copyFrom((NbtList) entries.get(key));
                 if (!nbtList.isEmpty() && nbtList.getHeldType() != type) {
+                    ContextualNbtList list = new ContextualNbtList();
+                    list.setContext(context);
                     return list;
                 }
-
-                list = nbtList;
-            } else if (contains(key, 10) && context != null) {
+                nbtList.setContext(context);
+                return nbtList;
+            } else if (getType(key) == 10 && context != null) {
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
@@ -233,11 +234,12 @@ public class ContextualNbtCompound extends NbtCompound {
                     nbtList.add(NbtDouble.of(vec3d.x));
                     nbtList.add(NbtDouble.of(vec3d.y));
                     nbtList.add(NbtDouble.of(vec3d.z));
-                    list = nbtList;
+                    return nbtList;
                 }
             }
         } catch (ClassCastException ignored) {}
 
+        ContextualNbtList list = new ContextualNbtList();
         list.setContext(context);
         return list;
     }

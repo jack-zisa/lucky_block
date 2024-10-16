@@ -16,6 +16,7 @@ import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class ContextualNbtList extends NbtList {
     }
 
     public ContextualNbtList() {
-        this(Lists.newArrayList(), (byte)0, null);
+        this(Lists.newArrayList(), (byte) 0, null);
     }
 
     public void setContext(@Nullable Outcome.Context context) {
@@ -42,39 +43,33 @@ public class ContextualNbtList extends NbtList {
     }
 
     public ContextualNbtCompound getCompound(int index) {
-        ContextualNbtCompound compound = new ContextualNbtCompound();
-        if (index >= 0 && index < value.size()) {
-            NbtElement nbtElement = value.get(index);
-            if (nbtElement.getType() == 10) {
-                compound = (ContextualNbtCompound) nbtElement;
-            }
-        }
-
-        compound.setContext(context);
-        return compound;
+        NbtCompound compound = super.getCompound(index);
+        return new ContextualNbtCompound().copyFrom(compound);
     }
 
     public ContextualNbtList getList(int index) {
-        ContextualNbtList list = new ContextualNbtList();
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 9) {
-                list = (ContextualNbtList) nbtElement;
+                ((ContextualNbtList) nbtElement).setContext(context);
+                return (ContextualNbtList) nbtElement;
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     ContextualNbtList nbtList = new ContextualNbtList();
+                    nbtList.setContext(context);
                     Vec3d vec3d = vecProvider.get().getVec(context);
                     nbtList.add(NbtDouble.of(vec3d.x));
                     nbtList.add(NbtDouble.of(vec3d.y));
                     nbtList.add(NbtDouble.of(vec3d.z));
-                    list = nbtList;
+                    return nbtList;
                 }
             }
         }
 
+        ContextualNbtList list = new ContextualNbtList();
         list.setContext(context);
         return list;
     }
@@ -136,7 +131,7 @@ public class ContextualNbtList extends NbtList {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 12) {
-                return ((NbtLongArray)nbtElement).getLongArray();
+                return ((NbtLongArray) nbtElement).getLongArray();
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
@@ -203,5 +198,13 @@ public class ContextualNbtList extends NbtList {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), context);
+    }
+
+    public ContextualNbtList copyFrom(NbtList source) {
+        if (source instanceof ContextualNbtList contextual) {
+            setContext(contextual.getContext());
+        }
+        addAll(source.value);
+        return this;
     }
 }
