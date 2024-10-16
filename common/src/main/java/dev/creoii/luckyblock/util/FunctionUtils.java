@@ -1,11 +1,10 @@
 package dev.creoii.luckyblock.util;
 
+import com.ezylang.evalex.Expression;
 import com.google.common.collect.ImmutableMap;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.Direction;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -15,7 +14,6 @@ import java.util.regex.Pattern;
 public class FunctionUtils {
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
     private static final Pattern MATH_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?([*/+-]\\d+(\\.\\d+)?)+");
-    private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("graal.js");
     private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
     private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
     public static final Map<String, Function<Outcome.Context, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
@@ -98,7 +96,7 @@ public class FunctionUtils {
         StringBuilder result = new StringBuilder();
         while (matcher.find()) {
             try {
-                matcher.appendReplacement(result, SCRIPT_ENGINE.eval(matcher.group()).toString());
+                matcher.appendReplacement(result, new Expression(matcher.group()).evaluate().getStringValue());
             } catch (Exception e) {
                 throw new IllegalArgumentException("Error evaluating math expression: " + matcher.group(), e);
             }

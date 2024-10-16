@@ -37,8 +37,7 @@ subprojects {
             it.mappings("net.fabricmc:yarn:$rootProject.yarn_mappings:v2")
             it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$rootProject.yarn_mappings_patch_neoforge_version")
         }
-        implementation 'org.graalvm.js:js:22.0.0.2'
-        implementation 'org.graalvm.js:js-scriptengine:22.0.0.2'
+        implementation 'com.ezylang:EvalEx:3.4.0'
     }
 
     java {
