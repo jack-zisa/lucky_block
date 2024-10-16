@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util;
 
 import com.google.common.collect.ImmutableMap;
 import dev.creoii.luckyblock.outcome.Outcome;
+import net.minecraft.util.math.Direction;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -15,9 +16,20 @@ public class FunctionUtils {
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
     private static final Pattern MATH_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?([*/+-]\\d+(\\.\\d+)?)+");
     private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("graal.js");
+    private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
+    private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
     public static final Map<String, Function<Outcome.Context, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
             .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().getName())
             .put("playerUUID", context -> context.player() == null ? "" : String.valueOf(context.player().getUuidAsString()))
+            .put("playerDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getFacing().asString()))
+            .put("playerHorizontalDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getHorizontalFacing().asString()))
+            .put("randomDirection", context -> String.valueOf(Direction.random(context.world().getRandom())))
+            .put("randomHorizontalDirection", context -> String.valueOf(Direction.Type.HORIZONTAL.random(context.world().getRandom())))
+            .put("randomDyeColor", context -> String.valueOf(COLORS.get(context.world().getRandom().nextInt(COLORS.size()))))
+            .put("randomDye", context -> String.valueOf(COLORS.get(context.world().getRandom().nextInt(COLORS.size()))))
+            .put("randomWoodType", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
+            .put("randomWood", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
+            .put("randomAxis", context -> String.valueOf(Direction.Axis.pickRandomAxis(context.world().getRandom())))
             .build();
     public static final Map<String, Function<Outcome.Context, Integer>> INT_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Integer>>()
             .put("playerPosX", context -> context.player() == null ? context.pos().getX() : context.player().getBlockX())
@@ -46,8 +58,6 @@ public class FunctionUtils {
             .put("playerPitch", context -> context.player() == null ? 0d : context.player().getPitch())
             .put("playerYaw", context -> context.player() == null ? 0d : context.player().getYaw())
             .build();
-    private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
-    private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
 
     /**
      * @param string a json object in string format
@@ -72,7 +82,14 @@ public class FunctionUtils {
             } else throw new IllegalArgumentException("Error parsing param '" + param + "'");
         }
 
-        return evaluateExpressions(matcher.appendTail(result).toString().replaceAll("\"([\\-\\d\\.]+)\"", "$1"));
+        String parsed = matcher.appendTail(result).toString();
+        return replaceIgnoreProperties(parsed);
+    }
+
+    private static String replaceIgnoreProperties(String string) {
+        String parsed = string.replaceAll("(\"Properties\"\\s*:\\s*\\{[^}]*?)\"([\\-\\d.]+)\"", "$1@@$2@@");
+        parsed = evaluateExpressions(parsed.replaceAll("\"([\\-\\d.]+)\"", "$1"));
+        return parsed.replaceAll("@@([\\-\\d.]+)@@", "\"$1\"");
     }
 
     private static String evaluateExpressions(String input) {
