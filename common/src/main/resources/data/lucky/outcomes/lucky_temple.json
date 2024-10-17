@@ -2,5 +2,5 @@
   "type": "lucky:structure",
   "luck": 2,
   "structure": "lucky:lucky_temple",
-  "pos": ["{playerX}-3", "{playerY}-1", "{playerZ}-3"]
+  "pos": ["{playerPosX}-3", "{playerPosY}-1", "{playerPosZ}-3"]
 }

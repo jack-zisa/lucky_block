@@ -4,7 +4,7 @@
     {
       "type": "lucky:message",
       "message": {
-        "text": "Your wish came true! If you like potatoes",
+        "text": "Your wish came true! (If you like potatoes)",
         "color": "yellow"
       }
     },
@@ -16,7 +16,7 @@
           "Name": "minecraft:beacon"
         }
       },
-      "pos": ["{blockX}", "{blockY}+2", "{blockZ}"]
+      "pos": ["{blockPosX}", "{blockPosY}+2", "{blockPosZ}"]
     },
     {
       "type": "lucky:item",

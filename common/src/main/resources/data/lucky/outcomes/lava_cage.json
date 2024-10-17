@@ -10,12 +10,12 @@
           "Name": "minecraft:lava"
         }
       },
-      "pos": ["{playerX}", "{playerY}+2", "{playerZ}"]
+      "pos": ["{playerPosX}", "{playerPosY}+2", "{playerPosZ}"]
     },
     {
       "type": "lucky:structure",
       "structure": "lucky:cage",
-      "pos": ["{playerX}-1", "{playerY}-1", "{playerZ}-1"]
+      "pos": ["{playerPosX}-1", "{playerPosY}-1", "{playerPosZ}-1"]
     }
   ]
 }

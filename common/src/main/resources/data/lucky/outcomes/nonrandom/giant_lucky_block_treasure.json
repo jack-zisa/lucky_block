@@ -2,25 +2,53 @@
   "type": "lucky:group",
   "outcomes": [
     {
-      "type": "lucky:message",
-      "message": {
-        "text": "Your wish came true!",
-        "color": "aqua"
-      }
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/break_stage_1",
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/break_stage_2",
+      "delay": 20,
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/break_stage_3",
+      "delay": 40,
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/break_stage_4",
+      "delay": 60,
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
+    },
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/break_stage_5",
+      "delay": 80,
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
       "type": "lucky:block",
       "state_provider": {
         "type": "minecraft:simple_state_provider",
         "state": {
-          "Name": "minecraft:beacon"
+          "Name": "minecraft:air"
         }
       },
-      "pos": ["{blockPosX}", "{blockPosY}+2", "{blockPosZ}"]
+      "delay": 100,
+      "shape": {
+        "type": "lucky:cube",
+        "size": [8, 8, 8]
+      },
+      "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:firework_rocket",
+      "delay": 100,
       "nbt": {
         "lifetime": 20,
         "FireworksItem": {
@@ -43,7 +71,7 @@
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+3", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]
@@ -55,14 +83,15 @@
     {
       "type": "lucky:item",
       "item": "minecraft:gold_ingot",
+      "delay": 100,
       "count": {
         "type": "minecraft:uniform",
-        "min_inclusive": 20,
-        "max_inclusive": 30
+        "min_inclusive": 16,
+        "max_inclusive": 24
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]
@@ -73,14 +102,15 @@
     {
       "type": "lucky:item",
       "item": "minecraft:diamond",
+      "delay": 100,
       "count": {
         "type": "minecraft:uniform",
-        "min_inclusive": 10,
-        "max_inclusive": 20
+        "min_inclusive": 8,
+        "max_inclusive": 16
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]
@@ -91,14 +121,15 @@
     {
       "type": "lucky:item",
       "item": "minecraft:emerald",
+      "delay": 100,
       "count": {
         "type": "minecraft:uniform",
-        "min_inclusive": 20,
-        "max_inclusive": 30
+        "min_inclusive": 16,
+        "max_inclusive": 24
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]
@@ -109,14 +140,15 @@
     {
       "type": "lucky:item",
       "item": "minecraft:lapis_lazuli",
+      "delay": 100,
       "count": {
         "type": "minecraft:uniform",
-        "min_inclusive": 20,
-        "max_inclusive": 30
+        "min_inclusive": 16,
+        "max_inclusive": 24
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]
@@ -127,14 +159,15 @@
     {
       "type": "lucky:item",
       "item": "minecraft:netherite_ingot",
+      "delay": 100,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 1,
-        "max_inclusive": 5
+        "max_inclusive": 4
       },
       "pos": {
         "type": "lucky:random_in_shape",
-        "center": ["{blockX}", "{blockY}+10", "{blockZ}"],
+        "center": ["{blockX}-0.5", "{blockY}+7", "{blockZ}-2.5"],
         "shape": {
           "type": "lucky:sphere",
           "size": [2, 1, 2]

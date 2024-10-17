@@ -9,6 +9,5 @@
   "block_entity": {
     "id": "minecraft:chest",
     "LootTable": "minecraft:chests/spawn_bonus_chest"
-  },
-  "pos": ["{blockX}", "{blockY}", "{blockZ}"]
+  }
 }

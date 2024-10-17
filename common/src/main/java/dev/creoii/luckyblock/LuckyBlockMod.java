@@ -30,6 +30,7 @@ import org.slf4j.Logger;
  *     <li>.mcfunction Outcome</li>
  *     <li>ensure game events are properly thrown in outcomes</li>
  *     <li>Collar colors are all the same</li>
+ *     <li>Block outcome does not always set blocks???</li>
  * </ul>
  * <a href="https://alexsocha.github.io/luckyblock/#/property-values">Lucky Block Docs</a>
  */
@@ -60,8 +61,8 @@ public final class LuckyBlockMod {
         ShapeType.init();
         VecProviderType.init();
         Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(NAMESPACE, "luck"), LUCK);
-        Registry.register(Registries.BLOCK, new Identifier(NAMESPACE, "test_lucky_block"), TEST_LUCKY_BLOCK);
-        Registry.register(Registries.ITEM, new Identifier(NAMESPACE, "test_lucky_block"), TEST_LUCKY_BLOCK_ITEM);
+        Registry.register(Registries.BLOCK, new Identifier(NAMESPACE, "lucky_block"), TEST_LUCKY_BLOCK);
+        Registry.register(Registries.ITEM, new Identifier(NAMESPACE, "lucky_block"), TEST_LUCKY_BLOCK_ITEM);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(NAMESPACE, "lucky_block"), LUCKY_BLOCK_ENTITY);
     }
 }

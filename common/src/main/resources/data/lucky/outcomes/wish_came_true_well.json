@@ -22,7 +22,7 @@
       "state_provider": {
         "type": "minecraft:simple_state_provider",
         "state": {
-          "Name": "lucky:test_lucky_block"
+          "Name": "lucky:lucky_block"
         }
       },
       "block_entity": {

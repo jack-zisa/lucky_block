@@ -1,0 +1,28 @@
+{
+  "type": "lucky:group",
+  "luck": -2,
+  "outcomes": [
+    {
+      "type": "lucky:structure",
+      "structure": "lucky:giant_blocks/lucky_block",
+      "pos": ["{blockPosX}-4", "{blockPosY}", "{blockPosZ}-4"]
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "lucky:lucky_block",
+          "Properties": {
+            "luck": "0"
+          }
+        }
+      },
+      "block_entity": {
+        "id": "lucky:lucky_block",
+        "outcome": "lucky:nonrandom/giant_lucky_block_explosion"
+      },
+      "pos": ["{blockPosX}", "{blockPosY}+3", "{blockPosZ}+2"]
+    }
+  ]
+}

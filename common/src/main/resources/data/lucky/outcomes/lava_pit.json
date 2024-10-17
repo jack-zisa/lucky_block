@@ -1,6 +1,7 @@
 {
   "type": "lucky:group",
   "luck": -2,
+  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:block",
@@ -12,9 +13,9 @@
       },
       "shape": {
         "type": "lucky:cube",
-        "size": [2, 10, 2]
+        "size": [3, 20, 3]
       },
-      "pos": ["{playerPosX}", "{playerPosY}-10", "{playerPosZ}"]
+      "pos": ["{playerPosX}-1", "{playerPosY}-20", "{playerPosZ}-1"]
     },
     {
       "type": "lucky:block",
@@ -26,9 +27,9 @@
       },
       "shape": {
         "type": "lucky:cube",
-        "size": [2, 1, 2]
+        "size": [3, 1, 3]
       },
-      "pos": ["{playerPosX}", "{playerPosY}-20", "{playerPosZ}"]
+      "pos": ["{playerPosX}-1", "{playerPosY}-20", "{playerPosZ}-1"]
     },
     {
       "type": "lucky:block",
@@ -40,9 +41,9 @@
       },
       "shape": {
         "type": "lucky:cube",
-        "size": [2, 1, 2]
+        "size": [3, 1, 3]
       },
-      "pos": ["{playerPosX}", "{playerPosY}-19", "{playerPosZ}"]
+      "pos": ["{playerPosX}-1", "{playerPosY}-19", "{playerPosZ}-1"]
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
   "type": "lucky:structure",
   "structure": "lucky:bouncing_castle",
-  "pos": ["{playerX}-2", "{playerY}-1", "{playerZ}-2"]
+  "pos": ["{playerPosX}-2", "{playerPosY}-1", "{playerPosZ}-2"]
 }

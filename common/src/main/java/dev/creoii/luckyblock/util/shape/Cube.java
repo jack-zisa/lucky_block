@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class Cube extends Shape {
     public List<BlockPos> getBlockPositions(Outcome outcome, Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
         Vec3d size = this.size.getVec(context);
-        BlockPos from = new BlockPos((int) Math.round(-size.x), (int) Math.round(-size.y), (int) Math.round(-size.z));
-        BlockPos to = new BlockPos((int) Math.round(size.x), (int) Math.round(size.y), (int) Math.round(size.z));
-        for (int z = from.getZ() + 1; z <= to.getZ() - 1; ++z) {
-            for (int y = from.getY() + 1; y <= to.getY() - 1; ++y) {
-                for (int x = from.getX() + 1; x <= to.getX() - 1; ++x) {
+        BlockPos to = new BlockPos(Math.max(MathHelper.floor(size.x) - 1, 0), Math.max(MathHelper.floor(size.y) - 1, 0), Math.max(MathHelper.floor(size.z) - 1, 0));
+
+        for (int z = 0; z <= to.getZ(); ++z) {
+            for (int y = 0; y <= to.getY(); ++y) {
+                for (int x = 0; x <= to.getX(); ++x) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (hollow) {
-                        if (pos.getX() == from.getX() || pos.getX() == to.getX() || pos.getY() == from.getY() || pos.getY() == to.getY() || pos.getZ() == from.getZ() || pos.getZ() == to.getZ()) {
+                        if (pos.getX() == 0 || pos.getX() == to.getX() || pos.getY() == 0 || pos.getY() == to.getY() || pos.getZ() == 0 || pos.getZ() == to.getZ()) {
                             positions.add(pos);
                         }
                     } else positions.add(pos);
