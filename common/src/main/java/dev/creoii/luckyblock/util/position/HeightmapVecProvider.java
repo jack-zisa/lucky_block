@@ -3,25 +3,24 @@ package dev.creoii.luckyblock.util.position;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Heightmap;
 
-import java.util.List;
 import java.util.Optional;
 
-public class RandomInShapeVecProvider extends VecProvider {
-    public static final MapCodec<RandomInShapeVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+public class HeightmapVecProvider extends VecProvider {
+    public static final MapCodec<HeightmapVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(VecProvider.VALUE_CODEC.optionalFieldOf("center").forGetter(provider -> provider.center),
-                Shape.CODEC.fieldOf("shape").forGetter(provider -> provider.shape)
-        ).apply(instance, RandomInShapeVecProvider::new);
+                Heightmap.Type.CODEC.fieldOf("heightmap").forGetter(provider -> provider.heightmap)
+        ).apply(instance, HeightmapVecProvider::new);
     });
     private final Optional<VecProvider> center;
-    private final Shape shape;
+    private final Heightmap.Type heightmap;
 
-    private RandomInShapeVecProvider(Optional<VecProvider> center, Shape shape) {
+    private HeightmapVecProvider(Optional<VecProvider> center, Heightmap.Type heightmap) {
         this.center = center;
-        this.shape = shape;
+        this.heightmap = heightmap;
     }
 
     @Override
@@ -31,16 +30,12 @@ public class RandomInShapeVecProvider extends VecProvider {
 
     @Override
     public BlockPos getPos(Outcome.Context context) {
-        List<BlockPos> positions = shape.getBlockPositions(null, context);
-        if (positions.isEmpty()) {
-            return ConstantVecProvider.ZERO.getPos(context);
-        }
         BlockPos center = this.center.isPresent() ? this.center.get().getPos(context) : context.pos();
-        return positions.get(context.world().getRandom().nextInt(positions.size())).add(center);
+        return context.world().getTopPosition(heightmap, center);
     }
 
     @Override
     public VecProviderType<?> getType() {
-        return VecProviderType.RANDOM_IN_SHAPE;
+        return VecProviderType.HEIGHTMAP;
     }
 }

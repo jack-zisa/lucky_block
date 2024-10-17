@@ -10,6 +10,7 @@ public interface VecProviderType<T extends VecProvider> {
     VecProviderType<ConstantVecProvider> CONSTANT = () -> ConstantVecProvider.CODEC;
     VecProviderType<RandomInShapeVecProvider> RANDOM_IN_SHAPE = () -> RandomInShapeVecProvider.CODEC;
     VecProviderType<RandomVelocityVecProvider> RANDOM_VELOCITY = () -> RandomVelocityVecProvider.CODEC;
+    VecProviderType<HeightmapVecProvider> HEIGHTMAP = () -> HeightmapVecProvider.CODEC;
 
     MapCodec<T> codec();
 
@@ -17,6 +18,7 @@ public interface VecProviderType<T extends VecProvider> {
         register(new Identifier(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);
         register(new Identifier(LuckyBlockMod.NAMESPACE, "random_in_shape"), RANDOM_IN_SHAPE);
         register(new Identifier(LuckyBlockMod.NAMESPACE, "random_velocity"), RANDOM_VELOCITY);
+        register(new Identifier(LuckyBlockMod.NAMESPACE, "heightmap"), HEIGHTMAP);
     }
 
     static void register(Identifier id, VecProviderType<?> type) {
