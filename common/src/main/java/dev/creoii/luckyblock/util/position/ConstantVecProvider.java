@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.List;
+
 public class ConstantVecProvider extends VecProvider {
     public static final ConstantVecProvider ZERO = new ConstantVecProvider(Vec3d.ZERO);
     public static final MapCodec<ConstantVecProvider> CODEC = Vec3d.CODEC.fieldOf("value").xmap(ConstantVecProvider::new, ConstantVecProvider::getValue);
@@ -20,6 +22,11 @@ public class ConstantVecProvider extends VecProvider {
     @Override
     public Vec3d getVec(Outcome.Context context) {
         return value;
+    }
+
+    @Override
+    public List<Vec3d> getVecs(Outcome.Context context) {
+        return List.of(getVec(context));
     }
 
     @Override

@@ -18,21 +18,12 @@ public class LuckyBlockEntity extends BlockEntity {
         outcomeId = null;
     }
 
-    public LuckyBlockEntity(BlockPos pos, BlockState state, Identifier outcomeId) {
-        super(LuckyBlockMod.LUCKY_BLOCK_ENTITY, pos, state);
-        this.outcomeId = outcomeId;
-    }
-
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
     public @Nullable Identifier getOutcomeId() {
         return outcomeId;
-    }
-
-    public void setOutcomeId(@Nullable Identifier outcomeId) {
-        this.outcomeId = outcomeId;
     }
 
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {

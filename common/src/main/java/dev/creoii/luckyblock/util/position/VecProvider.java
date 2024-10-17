@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.List;
 import java.util.function.Function;
 
 public abstract class VecProvider {
@@ -25,6 +26,12 @@ public abstract class VecProvider {
 
     public BlockPos getPos(Outcome.Context context) {
         return fromVec(getVec(context));
+    }
+
+    public abstract List<Vec3d> getVecs(Outcome.Context context);
+
+    public List<BlockPos> getPositions(Outcome.Context context) {
+        return getVecs(context).stream().map(VecProvider::fromVec).toList();
     }
 
     public abstract VecProviderType<?> getType();

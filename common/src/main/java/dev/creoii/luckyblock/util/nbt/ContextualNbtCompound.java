@@ -31,9 +31,7 @@ public class ContextualNbtCompound extends NbtCompound {
             ContextualNbtCompound contextualNbtCompound = new ContextualNbtCompound().copyFrom(nbtCompound);
             DataResult<ContextualNbtCompound> result = DataResult.success(contextualNbtCompound == dynamic.getValue() ? contextualNbtCompound.copy() : contextualNbtCompound);
             return result.map(nbtCompound1 -> new ContextualNbtCompound(nbtCompound1.entries, null));
-        } else {
-            return DataResult.error(() -> "Not a compound tag: " + nbtElement);
-        }
+        } else return DataResult.error(() -> "Not a compound tag: " + nbtElement);
     }, nbt -> new Dynamic<>(NbtOps.INSTANCE, nbt.copy()));
     @Nullable
     private Outcome.Context context;

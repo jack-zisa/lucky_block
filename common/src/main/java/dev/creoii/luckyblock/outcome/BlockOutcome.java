@@ -40,7 +40,7 @@ public class BlockOutcome extends Outcome {
     public void run(Context context) {
         MutableObject<BlockPos> place = new MutableObject<>(getPos(context).getPos(context));
         if (shape.isPresent()) {
-            shape.get().getBlockPositions(this, context).forEach(pos -> {
+            shape.get().getBlockPositions(context).forEach(pos -> {
                 BlockState state = stateProvider.get(context.world().getRandom(), place.getValue().add(pos));
                 if (context.world().setBlockState(place.getValue().add(pos), state)) {
                     blockEntity.ifPresent(nbtCompound -> {

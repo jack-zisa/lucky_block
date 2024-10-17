@@ -5,12 +5,17 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.position.VecProvider;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Cube extends Shape {
     public static final MapCodec<Cube> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -26,7 +31,7 @@ public class Cube extends Shape {
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome outcome, Outcome.Context context) {
+    public List<BlockPos> getBlockPositions(Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
         Vec3d size = this.size.getVec(context);
         BlockPos to = new BlockPos(Math.max(MathHelper.floor(size.x) - 1, 0), Math.max(MathHelper.floor(size.y) - 1, 0), Math.max(MathHelper.floor(size.z) - 1, 0));
@@ -47,7 +52,25 @@ public class Cube extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome outcome, Outcome.Context context) {
+    public List<Vec3d> getVecPositions(Outcome.Context context) {
         return List.of();
+    }
+
+    @Override
+    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+        List<Entity> entities = new ArrayList<>();
+        Vec3d size = this.size.getVec(context);
+        BlockPos from = VecProvider.fromVec(center.subtract(size.x / 2d, size.y / 2d, size.z / 2d));
+        if (context.world() instanceof ServerWorld serverWorld) {
+            for (Entity entity : serverWorld.getEntitiesByClass(Entity.class, Box.of(center, size.x, size.y, size.z), filter)) {
+                for (BlockPos pos : getBlockPositions(context)) {
+                    if (entity.squaredDistanceTo(pos.add(from).toCenterPos()) <= 1d) {
+                        entities.add(entity);
+                        break;
+                    }
+                }
+            }
+        }
+        return entities;
     }
 }

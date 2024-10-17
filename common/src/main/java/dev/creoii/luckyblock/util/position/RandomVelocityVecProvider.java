@@ -10,6 +10,8 @@ import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 
+import java.util.List;
+
 public class RandomVelocityVecProvider extends VecProvider {
     public static final MapCodec<RandomVelocityVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(FloatProvider.VALUE_CODEC.fieldOf("power").orElse(ConstantFloatProvider.create(.9f)).forGetter(provider -> provider.power),
@@ -32,6 +34,11 @@ public class RandomVelocityVecProvider extends VecProvider {
         float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
         float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween(-pitch, pitch));
         return new Vec3d(-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad) * power, -MathHelper.sin(pitchRad) * power, MathHelper.cos(yawRad) * MathHelper.cos(pitchRad) * power);
+    }
+
+    @Override
+    public List<Vec3d> getVecs(Outcome.Context context) {
+        return List.of(getVec(context));
     }
 
     @Override
