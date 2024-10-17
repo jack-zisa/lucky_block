@@ -30,7 +30,6 @@ import org.slf4j.Logger;
  *     <li>.mcfunction Outcome</li>
  *     <li>ensure game events are properly thrown in outcomes</li>
  *     <li>Collar colors are all the same</li>
- *     <li>Block outcome does not always set blocks???</li>
  * </ul>
  * <a href="https://alexsocha.github.io/luckyblock/#/property-values">Lucky Block Docs</a>
  */
