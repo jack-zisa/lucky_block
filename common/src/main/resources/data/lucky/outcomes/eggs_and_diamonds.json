@@ -1,6 +1,7 @@
 {
   "type": "lucky:group",
   "luck": 2,
+  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:entity",
@@ -18,12 +19,14 @@
       "type": "lucky:item",
       "item": "minecraft:diamond",
       "count": 20,
-      "velocity": {
-        "type": "lucky:random_velocity",
-        "power": 0.7,
-        "pitch": 18
+      "pos": {
+        "type": "lucky:random_in_shape",
+        "shape": {
+          "type": "lucky:sphere",
+          "size": [6, 1, 6]
+        }
       },
-      "delay": 15,
+      "delay": 165,
       "reinit": true
     }
   ]

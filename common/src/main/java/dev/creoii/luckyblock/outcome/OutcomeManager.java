@@ -162,12 +162,7 @@ public class OutcomeManager extends JsonDataLoader {
 
     @Nullable
     public Outcome parseJsonOutcome(JsonObject object, Outcome.Context context) {
-        System.out.println("BEFORE: " + object.toString());
-
-        String result = FunctionUtils.parseString(object.toString(), context);
-
-        JsonObject parsedObject = GSON.fromJson(result, JsonObject.class);
-        System.out.println("AFTER: " + parsedObject.toString());
+        JsonObject parsedObject = GSON.fromJson(FunctionUtils.parseString(object.toString(), context), JsonObject.class);
         DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, parsedObject);
         Optional<Outcome> outcome = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome: {}", string));
         return outcome.orElse(null);
