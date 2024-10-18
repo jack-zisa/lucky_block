@@ -29,10 +29,16 @@ import java.util.List;
 
 public class LuckyBlock extends BlockWithEntity {
     public static final IntProperty LUCK = IntProperty.of("luck", 0, 200);
+    private final String namespace;
 
-    public LuckyBlock(Settings settings) {
+    public LuckyBlock(String namespace, Settings settings) {
         super(settings);
+        this.namespace = namespace;
         setDefaultState(stateManager.getDefaultState().with(LUCK, 100));
+    }
+
+    public String getNamespace() {
+        return namespace;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class LuckyBlock extends BlockWithEntity {
             }
         }
 
-        return LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(world.getRandom(), state.get(LUCK) - 100).getRight();
+        return LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100).getRight();
     }
 
     @Override

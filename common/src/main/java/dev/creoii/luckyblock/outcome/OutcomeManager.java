@@ -1,10 +1,13 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.FunctionUtils;
 import net.minecraft.resource.JsonDataLoader;
@@ -17,35 +20,35 @@ import net.minecraft.util.profiler.Profiler;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class OutcomeManager extends JsonDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
-    private Map<Identifier, JsonObject> randomOutcomes;
-    private Map<Identifier, JsonObject> nonrandomOutcomes;
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
         super(GSON, "outcomes");
     }
 
-    public Set<Identifier> getIds() {
-        return randomOutcomes.keySet();
-    }
-
     @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
-        ImmutableMap.Builder<Identifier, JsonObject> builder = ImmutableMap.builder();
-        ImmutableMap.Builder<Identifier, JsonObject> builder1 = ImmutableMap.builder();
-        for (Map.Entry<Identifier, JsonObject> entry : prepared.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), entry.getValue().getAsJsonObject())).collect(Collectors.toSet())) {
+        for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
+            if (!entry.getValue().isJsonObject())
+                continue;
+
+
+            LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(entry.getKey().getNamespace());
+            if (container == null)
+                continue;
+
             LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
             if (entry.getKey().getPath().startsWith("nonrandom/")) {
-                builder1.put(entry.getKey(), entry.getValue());
-            } else builder.put(entry.getKey(), entry.getValue());
+                container.addNonRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
+            } else container.addRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
         }
-        randomOutcomes = builder.build();
-        nonrandomOutcomes = builder1.build();
     }
 
     public void tickDelays(MinecraftServer server) {
@@ -70,12 +73,13 @@ public class OutcomeManager extends JsonDataLoader {
         delays.put(new Pair<>(outcome, context), new MutableInt(delay));
     }
 
-    public boolean isEmpty() {
-        return randomOutcomes.isEmpty();
-    }
-
     @Nullable
     public JsonObject getOutcomeById(Identifier id) {
+        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(id.getNamespace());
+        if (container == null) {
+            throw new IllegalArgumentException("Lucky Block container '" + id.getNamespace() + "' not found");
+        }
+        Map<Identifier, JsonObject> nonrandomOutcomes = container.getNonrandomOutcomes();
         if (nonrandomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No nonrandom outcomes found");
         }
@@ -86,6 +90,7 @@ public class OutcomeManager extends JsonDataLoader {
             }
         }
 
+        Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No random outcomes found");
         }
@@ -96,10 +101,15 @@ public class OutcomeManager extends JsonDataLoader {
             }
         }
 
-        throw new IllegalArgumentException("Outcome '" + id.toString() + "' does not exist");
+        throw new IllegalArgumentException("Outcome '" + id + "' does not exist");
     }
 
-    public Pair<Identifier, JsonObject> getRandomOutcome(Random random, int luck) {
+    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck) {
+        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(namespace);
+        if (container == null) {
+            throw new IllegalArgumentException("Lucky Block container '" + namespace + "' not found");
+        }
+        Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No outcomes found");
         }

@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
@@ -22,15 +23,17 @@ public final class LuckyBlockFabric implements ModInitializer {
         LuckyBlockMod.init();
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {
-            entries.add(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
+            for (Item item : LuckyBlockMod.LUCKY_BLOCK_MANAGER.getAllItems()) {
+                entries.add(item);
 
-            ItemStack positive = new ItemStack(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
-            positive.set(LuckyBlockMod.LUCK, 100);
-            entries.add(positive);
+                ItemStack positive = item.getDefaultStack();
+                positive.set(LuckyBlockMod.LUCK, 100);
+                entries.add(positive);
 
-            ItemStack negative = new ItemStack(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
-            negative.set(LuckyBlockMod.LUCK, -100);
-            entries.add(negative);
+                ItemStack negative = item.getDefaultStack();
+                negative.set(LuckyBlockMod.LUCK, -100);
+                entries.add(negative);
+            }
         });
 
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {

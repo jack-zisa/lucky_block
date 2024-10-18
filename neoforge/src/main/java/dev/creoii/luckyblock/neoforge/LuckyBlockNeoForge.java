@@ -1,5 +1,6 @@
 package dev.creoii.luckyblock.neoforge;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.neoforged.fml.common.Mod;
@@ -18,22 +19,22 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onAddReloadListeners(AddReloadListenerEvent event) {
-        event.addListener((synchronizer, manager, prepareProfiler, applyProfiler, prepareExecutor, applyExecutor) -> {
-            return LuckyBlockMod.OUTCOME_MANAGER.reload(synchronizer, manager, prepareProfiler, applyProfiler, prepareExecutor, applyExecutor);
-        });
+        event.addListener(LuckyBlockMod.OUTCOME_MANAGER);
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == ItemGroups.BUILDING_BLOCKS) {
-            event.add(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
+            for (Item item : LuckyBlockMod.LUCKY_BLOCK_MANAGER.getAllItems()) {
+                event.add(item);
 
-            ItemStack positive = new ItemStack(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
-            positive.set(LuckyBlockMod.LUCK, 100);
-            event.add(positive);
+                ItemStack positive = item.getDefaultStack();
+                positive.set(LuckyBlockMod.LUCK, 100);
+                event.add(positive);
 
-            ItemStack negative = new ItemStack(LuckyBlockMod.TEST_LUCKY_BLOCK_ITEM);
-            negative.set(LuckyBlockMod.LUCK, -100);
-            event.add(negative);
+                ItemStack negative = item.getDefaultStack();
+                negative.set(LuckyBlockMod.LUCK, -100);
+                event.add(negative);
+            }
         }
     }
 }
