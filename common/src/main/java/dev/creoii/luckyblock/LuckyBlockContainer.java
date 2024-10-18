@@ -1,10 +1,13 @@
 package dev.creoii.luckyblock;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
@@ -15,21 +18,24 @@ public class LuckyBlockContainer {
     public static final Codec<LuckyBlockContainer> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
                 Codec.BOOL.fieldOf("right_click_open").orElse(true).forGetter(container -> container.rightClickOpen),
-                Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings)
+                Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
+                Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck)
         ).apply(instance, LuckyBlockContainer::new);
     });
     private final Identifier id;
     private final boolean rightClickOpen;
     private final Settings settings;
+    public final Map<Item, Integer> itemLuck;
     private final Map<Identifier, JsonObject> randomOutcomes;
     private final Map<Identifier, JsonObject> nonrandomOutcomes;
     private LuckyBlock block;
     private BlockItem blockItem;
 
-    public LuckyBlockContainer(Identifier id, boolean rightClickOpen, Settings settings) {
+    public LuckyBlockContainer(Identifier id, boolean rightClickOpen, Settings settings, Map<Item, Integer> itemLuck) {
         this.id = id;
         this.rightClickOpen = rightClickOpen;
         this.settings = settings;
+        this.itemLuck = itemLuck;
         randomOutcomes = new HashMap<>();
         nonrandomOutcomes = new HashMap<>();
     }
@@ -60,6 +66,14 @@ public class LuckyBlockContainer {
 
     public void addNonRandomOutcome(Identifier id, JsonObject outcome) {
         nonrandomOutcomes.put(id, outcome);
+    }
+
+    public void setLuckValue(Item item, int luck) {
+        itemLuck.put(item, luck);
+    }
+
+    public int getLuckValue(Item item) {
+        return itemLuck.get(item);
     }
 
     public void setBlock(LuckyBlock block) {
