@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.block;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
+import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.block.Block;
@@ -106,15 +107,19 @@ public class LuckyBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (!world.isClient) {
-            Outcome.Context context = new Outcome.Context(world, pos, state, player);
-            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos), context);
-            if (outcome != null) {
-                world.breakBlock(pos, false);
-                outcome.runOutcome(context);
+        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(namespace);
+        if (container != null && container.doesRightClickOpen()) {
+            if (!world.isClient) {
+                Outcome.Context context = new Outcome.Context(world, pos, state, player);
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos), context);
+                if (outcome != null) {
+                    world.breakBlock(pos, false);
+                    outcome.runOutcome(context);
+                }
             }
+            return ActionResult.success(world.isClient);
         }
-        return ActionResult.success(world.isClient);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override

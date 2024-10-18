@@ -16,8 +16,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -57,13 +55,16 @@ public class LuckyBlockManager {
                                     String file = Files.readString(path);
                                     JsonElement element = JsonParser.parseString(file);
                                     if (element.isJsonObject()) {
-                                        DataResult<Identifier> dataResult = Identifier.CODEC.parse(JsonOps.INSTANCE, ((JsonObject) element).get("id"));
-                                        dataResult.resultOrPartial().ifPresent(identifier -> {
-                                            LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", identifier.getNamespace());
-                                            LuckyBlockContainer container = new LuckyBlockContainer(identifier);
-                                            container.setBlock(Registry.register(Registries.BLOCK, identifier, new LuckyBlock(identifier.getNamespace(), AbstractBlock.Settings.create().hardness(.1f).resistance(20f).mapColor(MapColor.TERRACOTTA_YELLOW))));
-                                            container.setBlockItem(Registry.register(Registries.ITEM, identifier, new BlockItem(container.getBlock(), new Item.Settings().rarity(Rarity.RARE).component(LuckyBlockMod.LUCK, 0))));
-                                            builder.put(identifier.getNamespace(), container);
+                                        DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
+                                        dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", string)).ifPresent(container -> {
+                                            LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
+
+                                            AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
+                                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
+
+                                            container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
+                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK, 0))));
+                                            builder.put(container.getId().getNamespace(), container);
                                         });
                                     }
                                 } catch (IOException e) {
