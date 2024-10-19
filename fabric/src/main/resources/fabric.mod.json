@@ -3,12 +3,12 @@
   "id": "lucky",
   "version": "${version}",
   "name": "Lucky Block",
-  "description": "A modern Lucky Block mod utilizing the datapack system.\n",
+  "description": "A modern Lucky Block mod recreation utilizing the datapack system.",
   "authors": [
-    "Me!"
+    "creoii"
   ],
   "contact": {
-    "homepage": "https://creoii.dev/",
+    "homepage": "https://creoii.dev/projects/modern-lucky-block",
     "sources": "https://github.com/jack-zisa/lucky_block"
   },
   "license": "CC0-1.0",

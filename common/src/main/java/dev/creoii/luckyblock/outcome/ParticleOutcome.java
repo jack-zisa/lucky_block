@@ -10,6 +10,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.Optional;
@@ -24,15 +25,15 @@ public class ParticleOutcome extends Outcome {
                 ParticleTypes.TYPE_CODEC.fieldOf("particle_type").forGetter(outcome -> outcome.particle),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity),
-                Codec.DOUBLE.optionalFieldOf("speed").forGetter(outcome -> outcome.speed)
+                FloatProvider.VALUE_CODEC.optionalFieldOf("speed").forGetter(outcome -> outcome.speed)
         ).apply(instance, ParticleOutcome::new);
     });
     private final ParticleEffect particle;
     private final IntProvider count;
     private final Optional<VecProvider> velocity;
-    private final Optional<Double> speed;
+    private final Optional<FloatProvider> speed;
 
-    public ParticleOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<Double> speed) {
+    public ParticleOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<FloatProvider> speed) {
         super(OutcomeType.PARTICLE, luck, chance, delay, pos, reinit);
         this.particle = particle;
         this.count = count;
@@ -43,6 +44,7 @@ public class ParticleOutcome extends Outcome {
     @Override
     public void run(Context context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
+        float speed = this.speed.map(floatProvider -> floatProvider.get(context.world().getRandom())).orElse(0f);
 
         Vec3d velocity = Vec3d.ZERO;
         if (this.velocity.isPresent()) {
@@ -51,7 +53,7 @@ public class ParticleOutcome extends Outcome {
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
-                ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed.orElse(0d));
+                ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed);
 
                 if (shouldReinit()) {
                     pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
