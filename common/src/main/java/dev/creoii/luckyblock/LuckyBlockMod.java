@@ -5,12 +5,15 @@ import com.mojang.serialization.Lifecycle;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import dev.creoii.luckyblock.outcome.OutcomeType;
+import dev.creoii.luckyblock.recipe.LuckyRecipe;
 import dev.creoii.luckyblock.util.position.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -26,6 +29,8 @@ public final class LuckyBlockMod {
 
     public static final LuckyBlockManager LUCKY_BLOCK_MANAGER = new LuckyBlockManager();
     public static final OutcomeManager OUTCOME_MANAGER = new OutcomeManager();
+
+    public static final RecipeSerializer<LuckyRecipe> LUCKY_RECIPE_SERIALIZER = new SpecialRecipeSerializer<>(LuckyRecipe::new);
 
     public static final DataComponentType<Integer> LUCK = new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
 
@@ -44,6 +49,7 @@ public final class LuckyBlockMod {
         OutcomeType.init();
         ShapeType.init();
         VecProviderType.init();
+        Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(NAMESPACE, "crafting_special_lucky"), LUCKY_RECIPE_SERIALIZER);
         Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(NAMESPACE, "luck"), LUCK);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(NAMESPACE, "lucky_block"), LUCKY_BLOCK_ENTITY);
     }

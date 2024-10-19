@@ -25,7 +25,7 @@ public class LuckyBlockContainer {
     private final Identifier id;
     private final boolean rightClickOpen;
     private final Settings settings;
-    public final Map<Item, Integer> itemLuck;
+    private final Map<Item, Integer> itemLuck;
     private final Map<Identifier, JsonObject> randomOutcomes;
     private final Map<Identifier, JsonObject> nonrandomOutcomes;
     private LuckyBlock block;
@@ -52,6 +52,10 @@ public class LuckyBlockContainer {
         return settings;
     }
 
+    public Map<Item, Integer> getItemLuck() {
+        return itemLuck;
+    }
+
     public Map<Identifier, JsonObject> getRandomOutcomes() {
         return randomOutcomes;
     }
@@ -73,7 +77,7 @@ public class LuckyBlockContainer {
     }
 
     public int getLuckValue(Item item) {
-        return itemLuck.get(item);
+        return itemLuck.getOrDefault(item, 0);
     }
 
     public void setBlock(LuckyBlock block) {

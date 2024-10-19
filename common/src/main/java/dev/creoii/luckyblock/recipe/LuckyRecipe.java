@@ -1,0 +1,59 @@
+package dev.creoii.luckyblock.recipe;
+
+import dev.creoii.luckyblock.LuckyBlockContainer;
+import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.block.LuckyBlock;
+import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.item.*;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.SpecialCraftingRecipe;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.world.World;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class LuckyRecipe extends SpecialCraftingRecipe {
+    public LuckyRecipe(CraftingRecipeCategory category) {
+        super(category);
+    }
+
+    @Override
+    public boolean matches(RecipeInputInventory inventory, World world) {
+        Set<ItemStack> luckyBlocks = inventory.getHeldStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet());
+        if (luckyBlocks.size() == 1) {
+            LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(Registries.ITEM.getId(luckyBlocks.iterator().next().getItem()).getNamespace());
+            Set<ItemStack> luckItems = inventory.getHeldStacks().stream().filter(stack -> container.getItemLuck().containsKey(stack.getItem())).collect(Collectors.toSet());
+            return !luckItems.isEmpty();
+        }
+        return false;
+    }
+
+    @Override
+    public ItemStack craft(RecipeInputInventory inventory, RegistryWrapper.WrapperLookup lookup) {
+        ItemStack luckyBlock = inventory.getHeldStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet()).iterator().next();
+        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(Registries.ITEM.getId(luckyBlock.getItem()).getNamespace());
+
+        ItemStack result = luckyBlock.copy();
+        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.LUCK, 0);
+        if (container != null) {
+            for (ItemStack stack : inventory.getHeldStacks()) {
+                luck = Math.clamp(luck + container.getLuckValue(stack.getItem()), -100, 100);
+            }
+            result.set(LuckyBlockMod.LUCK, luck);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean fits(int width, int height) {
+        return width * height >= 2;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return LuckyBlockMod.LUCKY_RECIPE_SERIALIZER;
+    }
+}
