@@ -10,12 +10,14 @@ public record ShapeType(MapCodec<? extends Shape> codec) {
     public static final ShapeType CUBE = new ShapeType(Cube.CODEC);
     public static final ShapeType SPHERE = new ShapeType(Sphere.CODEC);
     public static final ShapeType LINE = new ShapeType(Line.CODEC);
+    public static final ShapeType TRIANGLE = new ShapeType(Triangle.CODEC);
 
     public static void init() {
         registerShapeType(new Identifier(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
         registerShapeType(new Identifier(LuckyBlockMod.NAMESPACE, "cube"), CUBE);
         registerShapeType(new Identifier(LuckyBlockMod.NAMESPACE, "sphere"), SPHERE);
         registerShapeType(new Identifier(LuckyBlockMod.NAMESPACE, "line"), LINE);
+        registerShapeType(new Identifier(LuckyBlockMod.NAMESPACE, "triangle"), TRIANGLE);
     }
 
     public static void registerShapeType(Identifier id, ShapeType shapeType) {

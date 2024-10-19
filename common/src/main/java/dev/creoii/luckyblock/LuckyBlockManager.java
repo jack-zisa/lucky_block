@@ -33,15 +33,6 @@ public class LuckyBlockManager {
     private Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
-        init();
-    }
-
-    @Nullable
-    public LuckyBlockContainer getContainer(String namespace) {
-        return luckyBlocks.getOrDefault(namespace, null);
-    }
-
-    private void init() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
         FabricLoader.getInstance().getAllMods().forEach(modContainer -> {
             if (!IGNORED_MODS.contains(modContainer.getMetadata().getId())) {
@@ -78,6 +69,11 @@ public class LuckyBlockManager {
             }
         });
         luckyBlocks = builder.build();
+    }
+
+    @Nullable
+    public LuckyBlockContainer getContainer(String namespace) {
+        return luckyBlocks.getOrDefault(namespace, null);
     }
 
     public Block[] getAllBlocks() {

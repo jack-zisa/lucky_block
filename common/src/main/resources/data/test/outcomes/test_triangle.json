@@ -1,0 +1,52 @@
+{
+  "type": "lucky:random",
+  "chance": 100,
+  "outcomes": [
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:birch_planks"
+        }
+      },
+      "shape": {
+        "type": "lucky:triangle",
+        "triangle_type": "side",
+        "size": [5, 5, 5],
+        "base": 5
+      }
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:birch_planks"
+        }
+      },
+      "shape": {
+        "type": "lucky:triangle",
+        "triangle_type": "middle",
+        "size": [5, 5, 5],
+        "base": 5
+      }
+    },
+    {
+      "type": "lucky:block",
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:birch_planks"
+        }
+      },
+      "shape": {
+        "type": "lucky:triangle",
+        "triangle_type": "point",
+        "size": [7, 7, 7],
+        "base": 7,
+        "depth": 7
+      }
+    }
+  ]
+}
