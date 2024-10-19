@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import dev.creoii.luckyblock.util.position.VecProvider;
+import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;

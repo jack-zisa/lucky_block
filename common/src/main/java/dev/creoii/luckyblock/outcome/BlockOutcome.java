@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
-import dev.creoii.luckyblock.util.position.VecProvider;
+import dev.creoii.luckyblock.util.vec.VecProvider;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

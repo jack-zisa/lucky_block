@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.position.VecProvider;
+import dev.creoii.luckyblock.util.vec.VecProvider;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;

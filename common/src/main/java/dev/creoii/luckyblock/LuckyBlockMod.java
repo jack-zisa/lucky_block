@@ -6,7 +6,7 @@ import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
-import dev.creoii.luckyblock.util.position.VecProviderType;
+import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentType;

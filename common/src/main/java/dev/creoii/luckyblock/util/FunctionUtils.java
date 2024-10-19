@@ -53,6 +53,7 @@ public class FunctionUtils {
             .put("blockZ", context -> context.pos().toCenterPos().getZ())
             .put("playerDistance", context -> context.player() == null ? 0d : context.player().getPos().distanceTo(context.pos().toCenterPos()))
             .put("playerSquaredDistance", context -> context.player() == null ? 0d : context.player().getPos().squaredDistanceTo(context.pos().toCenterPos()))
+            .put("playerDistance2", context -> context.player() == null ? 0d : context.player().getPos().squaredDistanceTo(context.pos().toCenterPos()))
             .put("playerPitch", context -> context.player() == null ? 0d : context.player().getPitch())
             .put("playerYaw", context -> context.player() == null ? 0d : context.player().getYaw())
             .build();

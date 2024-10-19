@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.position;
+package dev.creoii.luckyblock.util.vec;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;

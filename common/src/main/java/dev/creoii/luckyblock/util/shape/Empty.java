@@ -2,7 +2,7 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.position.ConstantVecProvider;
+import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
