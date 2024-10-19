@@ -11,7 +11,7 @@ authors = "Me!"
 description = '''
 A modern Lucky Block mod utilizing the datapack system.
 '''
-#logoFile = ""
+logoFile = "assets/lucky/icon.png"
 
 [[dependencies.lucky]]
 modId = "neoforge"
