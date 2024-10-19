@@ -1,8 +1,8 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.position.VecProvider;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -11,6 +11,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.floatprovider.FloatProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +23,15 @@ public class SoundOutcome extends Outcome {
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 SoundEvent.CODEC.fieldOf("sound_event").forGetter(outcome -> outcome.soundEvent),
-                Codec.DOUBLE.fieldOf("volume").orElse(1d).forGetter(outcome -> outcome.volume),
-                Codec.DOUBLE.fieldOf("pitch").orElse(1d).forGetter(outcome -> outcome.pitch)
+                FloatProvider.createValidatedCodec(0f, Float.MAX_VALUE).fieldOf("volume").orElse(LuckyBlockCodecs.ONE_F).forGetter(outcome -> outcome.volume),
+                FloatProvider.createValidatedCodec(0f, Float.MAX_VALUE).fieldOf("pitch").orElse(LuckyBlockCodecs.ONE_F).forGetter(outcome -> outcome.pitch)
         ).apply(instance, SoundOutcome::new);
     });
     private final SoundEvent soundEvent;
-    private final double volume;
-    private final double pitch;
+    private final FloatProvider volume;
+    private final FloatProvider pitch;
 
-    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, SoundEvent soundEvent, double volume, double pitch) {
+    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, SoundEvent soundEvent, FloatProvider volume, FloatProvider pitch) {
         super(OutcomeType.SOUND, luck, chance, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;
@@ -40,8 +41,10 @@ public class SoundOutcome extends Outcome {
     @Override
     public void run(Context context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
+        float volume = this.volume.get(context.world().getRandom());
+        float pitch = this.pitch.get(context.world().getRandom());
 
-        double d = MathHelper.square(soundEvent.getDistanceToTravel((float) volume));
+        double d = MathHelper.square(soundEvent.getDistanceToTravel(volume));
 
         List<ServerPlayerEntity> players = context.world().getServer().getPlayerManager().getPlayerList().stream().filter(serverPlayer -> {
             return pos.squaredDistanceTo(serverPlayer.getPos()) <= d;
@@ -58,13 +61,13 @@ public class SoundOutcome extends Outcome {
                 double g = pos.z - serverPlayer.getZ();
                 double h = e * e + f * f + g * g;
                 vec3d = pos;
-                j = (float) volume;
+                j = volume;
                 if (!(h > d)) {
                     break;
                 }
             }
 
-            serverPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(soundEvent), SoundCategory.NEUTRAL, vec3d.getX(), vec3d.getY(), vec3d.getZ(), j, (float) pitch, l));
+            serverPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(soundEvent), SoundCategory.NEUTRAL, vec3d.getX(), vec3d.getY(), vec3d.getZ(), j, pitch, l));
         }
     }
 }

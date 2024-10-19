@@ -14,6 +14,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
@@ -21,12 +22,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class LuckyBlockCodecs {
     public static final ConstantIntProvider ONE = ConstantIntProvider.create(1);
+    public static final ConstantFloatProvider ONE_F = ConstantFloatProvider.create(1f);
 
     public static final MapCodec<Explosion> EXPLOSION = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(Codec.STRING.fieldOf("behavior").orElse("default").forGetter(explosion -> explosion.explosionBehavior),
                 Codec.FLOAT.fieldOf("power").forGetter(explosion -> explosion.power),
                 Codec.BOOL.fieldOf("create_fire").orElse(false).forGetter(explosion -> explosion.createFire),
-                Codec.STRING.fieldOf("explosion_source_type").orElse("none").forGetter(explosion -> explosion.explosionSourceType),
+                Codec.STRING.fieldOf("explosion_source_type").orElse("block").forGetter(explosion -> explosion.explosionSourceType),
                 Codec.STRING.fieldOf("destruction_type").orElse("destroy").forGetter(explosion -> explosion.destructionType),
                 ParticleTypes.TYPE_CODEC.fieldOf("particle").orElse(ParticleTypes.EXPLOSION).forGetter(explosion -> explosion.particle),
                 ParticleTypes.TYPE_CODEC.fieldOf("emitter_particle").orElse(ParticleTypes.EXPLOSION_EMITTER).forGetter(explosion -> explosion.emitterParticle),
