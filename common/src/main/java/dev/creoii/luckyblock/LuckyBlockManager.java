@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class LuckyBlockManager {
-    private static final Pattern PATH_PATTERN = Pattern.compile("^/data/[a-z0-9_/]+/lucky_blocks/[a-z0-9_/]+\\.json$");
+    private static final Pattern PATH_PATTERN = Pattern.compile("^/data/[a-z0-9_/]+/lucky_block\\.json$");
     private static final List<String> IGNORED_MODS = new ImmutableList.Builder<String>()
             .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabric-api").add("fabricloader")
             .build();
