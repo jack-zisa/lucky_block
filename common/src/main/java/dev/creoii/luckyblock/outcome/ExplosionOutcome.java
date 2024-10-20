@@ -14,7 +14,7 @@ public class ExplosionOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
-                LuckyBlockCodecs.EXPLOSION.fieldOf("explosion").forGetter(outcome -> outcome.explosion)
+                LuckyBlockCodecs.Explosion.CODEC.fieldOf("explosion").forGetter(outcome -> outcome.explosion)
         ).apply(instance, ExplosionOutcome::new);
     });
     private final LuckyBlockCodecs.Explosion explosion;
