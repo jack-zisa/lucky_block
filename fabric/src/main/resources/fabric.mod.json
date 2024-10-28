@@ -3,7 +3,7 @@
   "id": "lucky",
   "version": "${version}",
   "name": "Lucky Block",
-  "description": "A modern Lucky Block mod recreation utilizing the datapack system.",
+  "description": "A Lucky Block mod recreation for modern Minecraft utilizing the datapack system.",
   "authors": [
     "creoii"
   ],

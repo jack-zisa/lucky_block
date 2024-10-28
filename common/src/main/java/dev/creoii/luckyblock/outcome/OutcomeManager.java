@@ -10,6 +10,7 @@ import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.FunctionUtils;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
@@ -104,7 +105,7 @@ public class OutcomeManager extends JsonDataLoader {
         throw new IllegalArgumentException("Outcome '" + id + "' does not exist");
     }
 
-    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck) {
+    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable PlayerEntity player) {
         LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(namespace);
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + namespace + "' not found");

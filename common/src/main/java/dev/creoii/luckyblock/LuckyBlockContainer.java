@@ -72,11 +72,11 @@ public class LuckyBlockContainer {
         nonrandomOutcomes.put(id, outcome);
     }
 
-    public void setLuckValue(Item item, int luck) {
+    public void addItemLuckValue(Item item, int luck) {
         itemLuck.put(item, luck);
     }
 
-    public int getLuckValue(Item item) {
+    public int getItemLuckValue(Item item) {
         return itemLuck.getOrDefault(item, 0);
     }
 

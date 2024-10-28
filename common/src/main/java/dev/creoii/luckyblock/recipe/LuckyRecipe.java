@@ -40,7 +40,7 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
         Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.LUCK, 0);
         if (container != null) {
             for (ItemStack stack : inventory.getHeldStacks()) {
-                luck = Math.clamp(luck + container.getLuckValue(stack.getItem()), -100, 100);
+                luck = Math.clamp(luck + container.getItemLuckValue(stack.getItem()), -100, 100);
             }
             result.set(LuckyBlockMod.LUCK, luck);
         }

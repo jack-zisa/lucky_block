@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "Lucky Block"
 authors = "Me!"
 description = '''
-A modern Lucky Block mod utilizing the datapack system.
+A Lucky Block mod recreation for modern Minecraft utilizing the datapack system.
 '''
 logoFile = "assets/lucky/icon.png"
 

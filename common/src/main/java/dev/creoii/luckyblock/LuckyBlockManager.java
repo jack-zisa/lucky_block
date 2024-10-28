@@ -30,7 +30,7 @@ public class LuckyBlockManager {
     private static final List<String> IGNORED_MODS = new ImmutableList.Builder<String>()
             .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabric-api").add("fabricloader")
             .build();
-    private Map<String, LuckyBlockContainer> luckyBlocks;
+    private final Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
