@@ -35,4 +35,4 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "lucky_block.mixins.json"
+config = "lucky.mixins.json"

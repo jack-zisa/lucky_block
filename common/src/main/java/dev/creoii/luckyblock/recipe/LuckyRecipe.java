@@ -24,7 +24,7 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
     public boolean matches(RecipeInputInventory inventory, World world) {
         Set<ItemStack> luckyBlocks = inventory.getHeldStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet());
         if (luckyBlocks.size() == 1) {
-            LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(Registries.ITEM.getId(luckyBlocks.iterator().next().getItem()).getNamespace());
+            LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(Registries.ITEM.getId(luckyBlocks.iterator().next().getItem()).getNamespace());
             Set<ItemStack> luckItems = inventory.getHeldStacks().stream().filter(stack -> container.getItemLuck().containsKey(stack.getItem())).collect(Collectors.toSet());
             return !luckItems.isEmpty();
         }
@@ -34,15 +34,15 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
     @Override
     public ItemStack craft(RecipeInputInventory inventory, RegistryWrapper.WrapperLookup lookup) {
         ItemStack luckyBlock = inventory.getHeldStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet()).iterator().next();
-        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(Registries.ITEM.getId(luckyBlock.getItem()).getNamespace());
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(Registries.ITEM.getId(luckyBlock.getItem()).getNamespace());
 
         ItemStack result = luckyBlock.copy();
-        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.LUCK, 0);
+        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.luckComponent, 0);
         if (container != null) {
             for (ItemStack stack : inventory.getHeldStacks()) {
                 luck = Math.clamp(luck + container.getItemLuckValue(stack.getItem()), -100, 100);
             }
-            result.set(LuckyBlockMod.LUCK, luck);
+            result.set(LuckyBlockMod.luckComponent, luck);
         }
         return result;
     }
@@ -54,6 +54,6 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return LuckyBlockMod.LUCKY_RECIPE_SERIALIZER;
+        return LuckyBlockMod.luckyRecipeSerializer;
     }
 }

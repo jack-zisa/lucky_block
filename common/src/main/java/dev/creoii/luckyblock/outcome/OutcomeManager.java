@@ -41,7 +41,7 @@ public class OutcomeManager extends JsonDataLoader {
                 continue;
 
 
-            LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(entry.getKey().getNamespace());
+            LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(entry.getKey().getNamespace());
             if (container == null)
                 continue;
 
@@ -76,7 +76,7 @@ public class OutcomeManager extends JsonDataLoader {
 
     @Nullable
     public JsonObject getOutcomeById(Identifier id) {
-        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(id.getNamespace());
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(id.getNamespace());
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + id.getNamespace() + "' not found");
         }
@@ -106,7 +106,7 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable PlayerEntity player) {
-        LuckyBlockContainer container = LuckyBlockMod.LUCKY_BLOCK_MANAGER.getContainer(namespace);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + namespace + "' not found");
         }
