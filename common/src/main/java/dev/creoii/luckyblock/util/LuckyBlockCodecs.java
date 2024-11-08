@@ -55,7 +55,7 @@ public class LuckyBlockCodecs {
             }
             return switch (explosionBehavior.toLowerCase()) {
                 case "entity" -> new EntityExplosionBehavior(context.player());
-                case "wind_charge" -> new WindChargeEntity.WindChargeExplosionBehavior();
+                case "wind_charge" -> WindChargeEntity.EXPLOSION_BEHAVIOR;
                 default -> new net.minecraft.world.explosion.ExplosionBehavior();
             };
         }
@@ -83,7 +83,6 @@ public class LuckyBlockCodecs {
             structurePlacementData.setMirror(mirror);
             structurePlacementData.setRotation(rotation);
             structurePlacementData.setIgnoreEntities(ignoreEntities);
-            structurePlacementData.setPlaceFluids(placeFluids);
             structurePlacementData.setUpdateNeighbors(updateNeighbors);
             structurePlacementData.setInitializeMobs(initializeMobs);
             if (processor != null)

@@ -22,20 +22,20 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
     public static final OutcomeType EXPLOSION = new OutcomeType(ExplosionOutcome.CODEC);
 
     public static void init() {
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "none"), NONE);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "group"), GROUP);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "message"), MESSAGE);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "command"), COMMAND);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "block"), BLOCK);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "item"), ITEM);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "entity"), ENTITY);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "feature"), FEATURE);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "structure"), STRUCTURE);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "particle"), PARTICLE);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "sound"), SOUND);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "effect"), EFFECT);
-        registerOutcomeType(new Identifier(LuckyBlockMod.NAMESPACE, "explosion"), EXPLOSION);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "none"), NONE);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "group"), GROUP);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "message"), MESSAGE);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "command"), COMMAND);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "block"), BLOCK);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "item"), ITEM);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "entity"), ENTITY);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "feature"), FEATURE);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "structure"), STRUCTURE);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "particle"), PARTICLE);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "sound"), SOUND);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "effect"), EFFECT);
+        registerOutcomeType(Identifier.of(LuckyBlockMod.NAMESPACE, "explosion"), EXPLOSION);
     }
 
     private static void registerOutcomeType(Identifier id, OutcomeType outcomeType) {

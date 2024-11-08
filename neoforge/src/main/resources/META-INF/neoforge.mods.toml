@@ -16,14 +16,14 @@ logoFile = "assets/lucky/icon.png"
 [[dependencies.lucky]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.6,)"
+versionRange = "[21.0.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.lucky]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.20.6,)"
+versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
 

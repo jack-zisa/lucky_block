@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -37,7 +37,7 @@ public final class LuckyBlockFabric implements ModInitializer {
     private static final LuckyBlockManager LUCKY_BLOCK_MANAGER = new FabricLuckyBlockManager();
     private static final BlockEntityType<LuckyBlockEntity> LUCKY_BLOCK_ENTITY = BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block"));
     private static final RecipeSerializer<LuckyRecipe> LUCKY_RECIPE_SERIALIZER = new SpecialRecipeSerializer<>(LuckyRecipe::new);
-    private static final DataComponentType<Integer> LUCK_COMPONENT = new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
+    private static final ComponentType<Integer> LUCK_COMPONENT = new ComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
 
     @Override
     public void onInitialize() {
@@ -61,7 +61,7 @@ public final class LuckyBlockFabric implements ModInitializer {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public Identifier getFabricId() {
-                return new Identifier(LuckyBlockMod.NAMESPACE, "outcomes");
+                return Identifier.of(LuckyBlockMod.NAMESPACE, "outcomes");
             }
 
             @Override
@@ -75,8 +75,8 @@ public final class LuckyBlockFabric implements ModInitializer {
         OutcomeType.init();
         ShapeType.init();
         VecProviderType.init();
-        Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LUCKY_RECIPE_SERIALIZER);
-        Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(LuckyBlockMod.NAMESPACE, "luck"), LUCK_COMPONENT);
-        Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(LuckyBlockMod.NAMESPACE, "lucky_block"), LUCKY_BLOCK_ENTITY);
+        Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LUCKY_RECIPE_SERIALIZER);
+        Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LUCK_COMPONENT);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), LUCKY_BLOCK_ENTITY);
     }
 }

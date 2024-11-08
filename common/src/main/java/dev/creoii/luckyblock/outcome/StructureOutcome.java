@@ -24,7 +24,7 @@ import net.minecraft.world.gen.structure.Structure;
 import java.util.Optional;
 
 public class StructureOutcome extends Outcome {
-    public static final Identifier EMPTY_TARGET = new Identifier("minecraft", "empty");
+    public static final Identifier EMPTY_TARGET = Identifier.of("minecraft", "empty");
     public static final MapCodec<StructureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),

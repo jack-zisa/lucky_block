@@ -16,11 +16,11 @@ public interface VecProviderType<T extends VecProvider> {
     MapCodec<T> codec();
 
     static void init() {
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "random_in_shape"), RANDOM_IN_SHAPE);
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "random_velocity"), RANDOM_VELOCITY);
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "heightmap"), HEIGHTMAP);
-        register(new Identifier(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "random_in_shape"), RANDOM_IN_SHAPE);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "random_velocity"), RANDOM_VELOCITY);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "heightmap"), HEIGHTMAP);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
     }
 
     static void register(Identifier id, VecProviderType<?> type) {

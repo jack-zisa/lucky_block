@@ -7,7 +7,7 @@ import dev.creoii.luckyblock.recipe.LuckyRecipe;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -38,7 +38,7 @@ public final class LuckyBlockNeoForge {
         modBus.addListener(LuckyBlockNeoForge::onRegister);
 
         register();
-        LuckyBlockMod.init(LUCKY_BLOCK_MANAGER, (BlockEntityType<LuckyBlockEntity>) Registries.BLOCK_ENTITY_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block")), (RecipeSerializer<LuckyRecipe>) Registries.RECIPE_SERIALIZER.get(Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky")), (DataComponentType<Integer>) Registries.DATA_COMPONENT_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "luck")));
+        LuckyBlockMod.init(LUCKY_BLOCK_MANAGER, (BlockEntityType<LuckyBlockEntity>) Registries.BLOCK_ENTITY_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block")), (RecipeSerializer<LuckyRecipe>) Registries.RECIPE_SERIALIZER.get(Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky")), (ComponentType<Integer>) Registries.DATA_COMPONENT_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "luck")));
 
         NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onAddReloadListeners);
         modBus.addListener(LuckyBlockNeoForge::onBuildCreativeModTabContents);
@@ -46,15 +46,15 @@ public final class LuckyBlockNeoForge {
 
     private static void onRegister(RegisterEvent event) {
         event.register(RegistryKeys.BLOCK_ENTITY_TYPE, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "lucky_block"), BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block")));
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block")));
         });
 
         event.register(RegistryKeys.RECIPE_SERIALIZER, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), new SpecialRecipeSerializer<>(LuckyRecipe::new));
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), new SpecialRecipeSerializer<>(LuckyRecipe::new));
         });
 
         event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "luck"), new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build());
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), new ComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build());
         });
     }
 
