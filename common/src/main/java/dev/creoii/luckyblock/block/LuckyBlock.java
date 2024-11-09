@@ -64,8 +64,8 @@ public class LuckyBlock extends BlockWithEntity {
 
     @Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
-        if (stack.contains(LuckyBlockMod.luckComponent)) {
-            int luck = stack.get(LuckyBlockMod.luckComponent);
+        if (stack.contains(LuckyBlockMod.LUCK_COMPONENT)) {
+            int luck = stack.get(LuckyBlockMod.LUCK_COMPONENT);
             Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
             tooltip.add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
         }
@@ -74,7 +74,7 @@ public class LuckyBlock extends BlockWithEntity {
     @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
         ItemStack stack = ctx.getStack();
-        Integer luck = stack.get(LuckyBlockMod.luckComponent);
+        Integer luck = stack.get(LuckyBlockMod.LUCK_COMPONENT);
         if (luck != null) {
             return getDefaultState().with(LUCK, luck + 100);
         }

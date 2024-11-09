@@ -47,7 +47,8 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                                             Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
 
                                             container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
-                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.luckComponent, 0))));
+                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
+
                                             builder.put(container.getId().getNamespace(), container);
                                         });
                                     }
