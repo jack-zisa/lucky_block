@@ -7,9 +7,6 @@ import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -37,10 +34,6 @@ public abstract class Outcome {
         this.delay = delay;
         this.pos = pos;
         this.reinit = reinit;
-    }
-
-    public static void bootstrap(Registerable<Outcome> registerable) {
-        registerable.register(RegistryKey.of(LuckyBlockMod.OUTCOMES_KEY, Identifier.of(LuckyBlockMod.NAMESPACE, "none")), NoneOutcome.INSTANCE);
     }
 
     public OutcomeType getType() {
