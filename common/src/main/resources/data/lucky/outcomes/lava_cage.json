@@ -3,6 +3,11 @@
   "luck": -2,
   "outcomes": [
     {
+      "type": "lucky:structure",
+      "structure": "lucky:cage",
+      "pos": ["{playerPosX}-1", "{playerPosY}-1", "{playerPosZ}-1"]
+    },
+    {
       "type": "lucky:block",
       "state_provider": {
         "type": "minecraft:simple_state_provider",
@@ -11,11 +16,6 @@
         }
       },
       "pos": ["{playerPosX}", "{playerPosY}+2", "{playerPosZ}"]
-    },
-    {
-      "type": "lucky:structure",
-      "structure": "lucky:cage",
-      "pos": ["{playerPosX}-1", "{playerPosY}-1", "{playerPosZ}-1"]
     }
   ]
 }
