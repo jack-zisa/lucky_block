@@ -9,6 +9,7 @@ import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.fabricmc.api.ModInitializer;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -43,6 +44,8 @@ public final class LuckyBlockFabric implements ModInitializer {
     public void onInitialize() {
         register();
         LuckyBlockMod.init(LUCKY_BLOCK_MANAGER, LUCKY_BLOCK_ENTITY, LUCKY_RECIPE_SERIALIZER, LUCK_COMPONENT);
+
+        ServerTickEvents.END_SERVER_TICK.register(LuckyBlockMod.OUTCOME_MANAGER::tickDelays);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {

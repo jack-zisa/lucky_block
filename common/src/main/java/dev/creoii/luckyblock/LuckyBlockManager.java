@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public abstract class LuckyBlockManager {
-    public static final Pattern PATH_PATTERN = Pattern.compile("^/data/[a-z0-9_/]+/lucky_block\\.json$");
+    public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
     private final Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
