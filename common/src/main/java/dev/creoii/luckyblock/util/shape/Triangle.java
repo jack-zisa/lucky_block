@@ -82,6 +82,7 @@ public class Triangle extends Shape {
         MIDDLE("middle"),
         POINT("point");
 
+        @SuppressWarnings("deprecation")
         public static final StringIdentifiable.EnumCodec<Type> CODEC = StringIdentifiable.createCodec(Type::values);
         private final String name;
 

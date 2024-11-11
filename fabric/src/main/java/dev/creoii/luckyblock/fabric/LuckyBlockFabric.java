@@ -10,6 +10,7 @@ import net.fabricmc.api.ModInitializer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntityType;
@@ -23,14 +24,13 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.profiler.Profiler;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public final class LuckyBlockFabric implements ModInitializer {
     private static final LuckyBlockManager LUCKY_BLOCK_MANAGER = new FabricLuckyBlockManager();
-    private static final BlockEntityType<LuckyBlockEntity> luckyBlockEntity = BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block"));
+    private static final BlockEntityType<LuckyBlockEntity> luckyBlockEntity = FabricBlockEntityTypeBuilder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block"));
 
     @Override
     public void onInitialize() {
@@ -60,8 +60,8 @@ public final class LuckyBlockFabric implements ModInitializer {
             }
 
             @Override
-            public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
-                return LuckyBlockMod.OUTCOME_MANAGER.reload(synchronizer, manager, prepareProfiler, applyProfiler, prepareExecutor, applyExecutor);
+            public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
+                return LuckyBlockMod.OUTCOME_MANAGER.reload(synchronizer, manager, prepareExecutor, applyExecutor);
             }
         });
     }

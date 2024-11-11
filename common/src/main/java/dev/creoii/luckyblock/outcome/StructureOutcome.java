@@ -51,7 +51,7 @@ public class StructureOutcome extends Outcome {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
             BlockPos pos = getPos(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
-            Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.get(RegistryKeys.TEMPLATE_POOL).getEntry(structureId);
+            Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.getOptional(RegistryKeys.TEMPLATE_POOL).get().getEntry(structureId);
             if (template.isPresent()) {
                 if (!template.get().place(serverWorld, pos, pos, structurePlacementData.create(), StructureBlockBlockEntity.createRandom(serverWorld.getSeed()), 2)) {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
@@ -61,7 +61,7 @@ public class StructureOutcome extends Outcome {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }
             } else {
-                Structure structure = dynamicRegistryManager.get(RegistryKeys.STRUCTURE).get(structureId);
+                Structure structure = dynamicRegistryManager.getOptional(RegistryKeys.STRUCTURE).get().get(structureId);
                 if (structure == null) {
                     LuckyBlockMod.LOGGER.error("Structure identifier '{}' is invalid", structureId);
                     return;

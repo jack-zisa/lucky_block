@@ -38,14 +38,14 @@ public class FeatureOutcome extends Outcome {
     @Override
     public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).get(featureId);
+            ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().get(featureId);
             if (configuredFeature == null) {
                 LuckyBlockMod.LOGGER.error("Feature identifier '{}' is invalid", featureId);
                 return;
             }
             BlockPos place = getPos(context).getPos(context);
             if (!placementModifiers.isEmpty()) {
-                PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).getEntry(featureId).get(), placementModifiers);
+                PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().getEntry(featureId).get(), placementModifiers);
                 if (!placedFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate feature '{}' at '{}'", featureId, place.toShortString());
                 }

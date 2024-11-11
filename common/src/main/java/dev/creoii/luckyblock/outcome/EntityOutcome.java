@@ -7,6 +7,7 @@ import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
@@ -52,7 +53,7 @@ public class EntityOutcome extends Outcome {
     }
 
     private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
-        Entity entity = entityType.create(context.world());
+        Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
         if (entity != null) {
             if (nbtCompound != null) {
                 nbtCompound.setContext(context);

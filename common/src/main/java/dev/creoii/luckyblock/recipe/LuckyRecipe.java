@@ -47,13 +47,13 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
         return result;
     }
 
-    @Override
+    /*@Override
     public boolean fits(int width, int height) {
         return width * height >= 2;
-    }
+    }*/
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
         return LuckyBlockMod.LUCKY_RECIPE_SERIALIZER;
     }
 }

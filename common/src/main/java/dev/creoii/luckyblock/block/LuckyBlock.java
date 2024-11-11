@@ -24,6 +24,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -116,14 +117,15 @@ public class LuckyBlock extends BlockWithEntity {
                     world.breakBlock(pos, false);
                     outcome.runOutcome(context);
                 }
+                return ActionResult.SUCCESS_SERVER;
             }
-            return ActionResult.success(world.isClient);
+            return ActionResult.SUCCESS;
         }
         return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         if (!world.isClient && world.isReceivingRedstonePower(pos)) {
             Outcome.Context context = new Outcome.Context(world, pos, state, null);
             Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);

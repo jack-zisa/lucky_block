@@ -1,10 +1,7 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
@@ -14,26 +11,68 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.JsonDataLoader;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.profiler.Profiler;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.*;
 
-public class OutcomeManager extends JsonDataLoader {
+public class OutcomeManager extends JsonDataLoader<JsonElement> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
-        super(GSON, "outcomes");
+        super(null, "outcomes");
+    }
+
+    @Override
+    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
+        Map<Identifier, JsonElement> map = new HashMap<>();
+        load(resourceManager, dataType, GSON, map);
+        return map;
+    }
+
+    public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {
+        ResourceFinder resourceFinder = ResourceFinder.json(dataType);
+        for (Map.Entry<Identifier, Resource> identifierResourceEntry : resourceFinder.findResources(manager).entrySet()) {
+            Identifier identifier = identifierResourceEntry.getKey();
+            Identifier identifier2 = resourceFinder.toResourceId(identifier);
+
+            try {
+                Reader reader = identifierResourceEntry.getValue().getReader();
+                try {
+                    JsonElement jsonElement = JsonHelper.deserialize(gson, reader, JsonElement.class);
+                    JsonElement jsonElement2 = results.put(identifier2, jsonElement);
+                    if (jsonElement2 != null) {
+                        throw new IllegalStateException("Duplicate data file ignored with ID " + identifier2);
+                    }
+                } catch (Throwable var13) {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (Throwable var12) {
+                            var13.addSuppressed(var12);
+                        }
+                    }
+
+                    throw var13;
+                }
+
+                reader.close();
+            } catch (IllegalArgumentException | IOException | JsonParseException var14) {
+                LuckyBlockMod.LOGGER.error("Couldn't parse data file {} from {}", identifier2, identifier, (Exception) var14);
+            }
+        }
     }
 
     @Override
@@ -41,7 +80,6 @@ public class OutcomeManager extends JsonDataLoader {
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             if (!entry.getValue().isJsonObject())
                 continue;
-
 
             LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(entry.getKey().getNamespace());
             if (container == null)

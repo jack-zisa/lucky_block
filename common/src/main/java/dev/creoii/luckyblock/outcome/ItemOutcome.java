@@ -10,6 +10,7 @@ import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -61,7 +62,7 @@ public class ItemOutcome extends Outcome {
 
         if (shouldReinit()) {
             for (int i = 0; i < total; ++i) {
-                ItemEntity entity = EntityType.ITEM.create(context.world());
+                ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
                 if (entity != null) {
                     ItemStack newStack = stack.copy();
                     if (components != ComponentChanges.EMPTY)
@@ -88,7 +89,7 @@ public class ItemOutcome extends Outcome {
         }
 
         for (int i = 0; i < total / stack.getMaxCount(); ++i) {
-            ItemEntity entity = EntityType.ITEM.create(context.world());
+            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack newStack = stack.copy();
                 if (components != ComponentChanges.EMPTY)
@@ -111,7 +112,7 @@ public class ItemOutcome extends Outcome {
         }
 
         if (total % stack.getMaxCount() > 0) {
-            ItemEntity entity = EntityType.ITEM.create(context.world());
+            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack remainder = stack.copy();
                 if (components != ComponentChanges.EMPTY)
