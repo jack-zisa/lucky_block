@@ -86,6 +86,7 @@ public class OutcomeManager extends JsonDataLoader {
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + id.getNamespace() + "' not found");
         }
+
         Map<Identifier, JsonObject> nonrandomOutcomes = container.getNonrandomOutcomes();
         if (nonrandomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No nonrandom outcomes found");

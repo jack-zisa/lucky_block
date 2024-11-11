@@ -1,0 +1,16 @@
+{
+  "type": "lucky:explosion",
+  "luck": -2,
+  "chance": 100,
+  "explosion": {
+    "power": 6,
+    "create_fire": true,
+    "particle": {
+      "type": "minecraft:sonic_boom"
+    },
+    "emitter_particle": {
+      "type": "minecraft:vibration"
+    },
+    "sound_event": "minecraft:entity.ghast.hurt"
+  }
+}

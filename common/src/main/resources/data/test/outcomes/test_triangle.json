@@ -1,6 +1,5 @@
 {
   "type": "lucky:random",
-  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:block",

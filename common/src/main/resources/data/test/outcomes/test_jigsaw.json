@@ -1,5 +1,4 @@
 {
   "type": "lucky:structure",
-  "chance": 100,
   "structure": "minecraft:ancient_city/city_center"
 }

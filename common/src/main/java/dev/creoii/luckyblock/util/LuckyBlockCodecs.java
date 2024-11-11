@@ -31,7 +31,7 @@ public class LuckyBlockCodecs {
     public record Explosion(String explosionBehavior, float power, boolean createFire, String explosionSourceType, String destructionType, ParticleEffect particle, ParticleEffect emitterParticle, RegistryEntry<SoundEvent> soundEvent) {
         public static final MapCodec<Explosion> CODEC = RecordCodecBuilder.mapCodec(instance -> {
             return instance.group(Codec.STRING.fieldOf("behavior").orElse("default").forGetter(explosion -> explosion.explosionBehavior),
-                    Codec.FLOAT.fieldOf("power").forGetter(explosion -> explosion.power),
+                    Codec.FLOAT.fieldOf("power").orElse(4f).forGetter(explosion -> explosion.power),
                     Codec.BOOL.fieldOf("create_fire").orElse(false).forGetter(explosion -> explosion.createFire),
                     Codec.STRING.fieldOf("explosion_source_type").orElse("block").forGetter(explosion -> explosion.explosionSourceType),
                     Codec.STRING.fieldOf("destruction_type").orElse("destroy").forGetter(explosion -> explosion.destructionType),
@@ -54,7 +54,7 @@ public class LuckyBlockCodecs {
                 return new EntityExplosionBehavior(entity);
             }
             return switch (explosionBehavior.toLowerCase()) {
-                case "entity" -> new EntityExplosionBehavior(context.player());
+                case "entity" -> context.player() == null ? new net.minecraft.world.explosion.ExplosionBehavior() : new EntityExplosionBehavior(context.player());
                 case "wind_charge" -> WindChargeEntity.EXPLOSION_BEHAVIOR;
                 default -> new net.minecraft.world.explosion.ExplosionBehavior();
             };
