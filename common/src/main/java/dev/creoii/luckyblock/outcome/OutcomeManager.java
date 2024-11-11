@@ -10,6 +10,8 @@ import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.FunctionUtils;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
@@ -46,6 +48,10 @@ public class OutcomeManager extends JsonDataLoader {
                 continue;
 
             LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
+            /**
+             * FOR LATER:
+             * - Define a custom prefix in lucky_block.json, which will then be used later for this
+             */
             if (entry.getKey().getPath().startsWith("nonrandom/")) {
                 container.addNonRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
             } else container.addRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
@@ -113,6 +119,19 @@ public class OutcomeManager extends JsonDataLoader {
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
             throw new IllegalArgumentException("No outcomes found");
+        }
+
+        if (player != null) {
+            StatusEffectInstance goodLuckEffect = player.getStatusEffect(StatusEffects.LUCK);
+            StatusEffectInstance badLuckEffect = player.getStatusEffect(StatusEffects.UNLUCK);
+
+            if (goodLuckEffect != null) {
+                luck += goodLuckEffect.getAmplifier() + 1;
+            }
+
+            if (badLuckEffect != null) {
+                luck -= badLuckEffect.getAmplifier() + 1;
+            }
         }
 
         int lowest = 0, highest = 0;

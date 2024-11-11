@@ -87,13 +87,13 @@ public final class LuckyBlockNeoForge {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 event.add(item);
 
-                ItemStack positive = item.getDefaultStack();
-                positive.set(LuckyBlockMod.LUCK_COMPONENT, 100);
-                event.add(positive);
+                ItemStack lucky = item.getDefaultStack();
+                lucky.set(LuckyBlockMod.LUCK_COMPONENT, 100);
+                event.add(lucky);
 
-                ItemStack negative = item.getDefaultStack();
-                negative.set(LuckyBlockMod.LUCK_COMPONENT, -100);
-                event.add(negative);
+                ItemStack unlucky = item.getDefaultStack();
+                unlucky.set(LuckyBlockMod.LUCK_COMPONENT, -100);
+                event.add(unlucky);
             }
         }
     }
