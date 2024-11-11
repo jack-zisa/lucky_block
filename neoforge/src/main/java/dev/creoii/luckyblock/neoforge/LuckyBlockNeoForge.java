@@ -64,7 +64,8 @@ public final class LuckyBlockNeoForge {
         });
 
         event.register(RegistryKeys.BLOCK_ENTITY_TYPE, registry -> {
-            luckyBlockEntity = BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block"));
+            luckyBlockEntity = new BlockEntityType<>(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks());
+            Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block");
             LuckyBlockMod.setLuckyBlockEntity(luckyBlockEntity);
             registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), luckyBlockEntity);
         });
