@@ -25,6 +25,7 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(LuckyBlockMod.NAMESPACE)
@@ -42,6 +43,7 @@ public final class LuckyBlockNeoForge {
 
         NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onAddReloadListeners);
         modBus.addListener(LuckyBlockNeoForge::onBuildCreativeModTabContents);
+        NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onServerTick);
     }
 
     private static void onRegister(RegisterEvent event) {
@@ -94,6 +96,10 @@ public final class LuckyBlockNeoForge {
                 event.add(negative);
             }
         }
+    }
+
+    private static void onServerTick(ServerTickEvent.Post event) {
+        LuckyBlockMod.OUTCOME_MANAGER.tickDelays(event.getServer());
     }
 
     public void register() {

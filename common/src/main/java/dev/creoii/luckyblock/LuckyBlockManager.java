@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public abstract class LuckyBlockManager {
-    public static final Pattern PATH_PATTERN = Pattern.compile("^data/[^/]+/lucky_block\\.json$");
+    public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
     private final Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
