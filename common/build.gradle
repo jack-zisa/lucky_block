@@ -14,7 +14,7 @@ dependencies {
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
-    compileOnly 'com.ezylang:EvalEx:3.4.0'
+    modCompileOnly 'com.ezylang:EvalEx:3.4.0'
 }
 
 jar {

@@ -52,7 +52,10 @@ dependencies {
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
-    forgeRuntimeLibrary(implementation include("com.ezylang:EvalEx:3.4.0"))
+    implementation("com.ezylang:EvalEx:3.4.0") {
+        exclude group: 'com.ezylang', module: 'EvalEx'
+    }
+    forgeRuntimeLibrary("com.ezylang:EvalEx:3.4.0")
     shadowBundle "com.ezylang:EvalEx:3.4.0"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
@@ -71,6 +74,7 @@ shadowJar {
     exclude "architectury.common.json"
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = 'dev-shadow'
+    relocate 'com.ezylang.evalex', 'shadowed.com.ezylang.evalex'
 }
 
 remapJar {
