@@ -34,8 +34,6 @@ public final class LuckyBlockNeoForge {
     private static BlockEntityType<LuckyBlockEntity> luckyBlockEntity;
 
     public LuckyBlockNeoForge(IEventBus modBus) {
-        System.out.println("please use fabric, forge f-ing sucks");
-
         modBus.addListener(LuckyBlockNeoForge::onRegister);
 
         register();
