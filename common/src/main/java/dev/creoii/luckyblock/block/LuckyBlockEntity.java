@@ -14,7 +14,7 @@ public class LuckyBlockEntity extends BlockEntity {
     @Nullable private Identifier outcomeId;
 
     public LuckyBlockEntity(BlockPos pos, BlockState state) {
-        super(LuckyBlockMod.luckyBlockEntity, pos, state);
+        super(LuckyBlockMod.LUCKY_BLOCK_ENTITY, pos, state);
         outcomeId = null;
     }
 

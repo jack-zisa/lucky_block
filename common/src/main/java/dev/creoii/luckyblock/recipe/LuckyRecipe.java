@@ -37,12 +37,12 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(Registries.ITEM.getId(luckyBlock.getItem()).getNamespace());
 
         ItemStack result = luckyBlock.copy();
-        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.luckComponent, 0);
+        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.LUCK_COMPONENT, 0);
         if (container != null) {
             for (ItemStack stack : inventory.getHeldStacks()) {
                 luck = Math.clamp(luck + container.getItemLuckValue(stack.getItem()), -100, 100);
             }
-            result.set(LuckyBlockMod.luckComponent, luck);
+            result.set(LuckyBlockMod.LUCK_COMPONENT, luck);
         }
         return result;
     }
@@ -54,6 +54,6 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return LuckyBlockMod.luckyRecipeSerializer;
+        return LuckyBlockMod.LUCKY_RECIPE_SERIALIZER;
     }
 }

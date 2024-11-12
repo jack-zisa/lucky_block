@@ -27,9 +27,9 @@ public final class LuckyBlockMod {
     public static LuckyBlockManager luckyBlockManager;
     public static final OutcomeManager OUTCOME_MANAGER = new OutcomeManager();
 
-    public static RecipeSerializer<LuckyRecipe> luckyRecipeSerializer = new SpecialRecipeSerializer<>(LuckyRecipe::new);
+    public static final RecipeSerializer<LuckyRecipe> LUCKY_RECIPE_SERIALIZER = new SpecialRecipeSerializer<>(LuckyRecipe::new);
 
-    public static DataComponentType<Integer> luckComponent = new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
+    public static final DataComponentType<Integer> LUCK_COMPONENT = new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
 
     public static final RegistryKey<Registry<OutcomeType>> OUTCOME_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "outcome_types"));
     public static final Registry<OutcomeType> OUTCOME_TYPES = new SimpleDefaultedRegistry<>("lucky:none", OUTCOME_TYPES_KEY, Lifecycle.stable(), false);
@@ -40,12 +40,13 @@ public final class LuckyBlockMod {
     public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "pos_provider_types"));
     public static final Registry<VecProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static BlockEntityType<LuckyBlockEntity> luckyBlockEntity;
+    public static BlockEntityType<LuckyBlockEntity> LUCKY_BLOCK_ENTITY;
 
-    public static void init(LuckyBlockManager luckyBlockManager, BlockEntityType<LuckyBlockEntity> luckyBlockEntity, RecipeSerializer<LuckyRecipe> luckyRecipeSerializer, DataComponentType<Integer> luckComponent) {
+    public static void init(LuckyBlockManager luckyBlockManager) {
         LuckyBlockMod.luckyBlockManager = luckyBlockManager;
-        LuckyBlockMod.luckyBlockEntity = luckyBlockEntity;
-        LuckyBlockMod.luckyRecipeSerializer = luckyRecipeSerializer;
-        LuckyBlockMod.luckComponent = luckComponent;
+    }
+
+    public static void setLuckyBlockEntity(BlockEntityType<LuckyBlockEntity> luckyBlockEntity) {
+        LUCKY_BLOCK_ENTITY = luckyBlockEntity;
     }
 }

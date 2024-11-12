@@ -1,21 +1,24 @@
 package dev.creoii.luckyblock.neoforge;
 
+import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
+import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialRecipeSerializer;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -33,13 +36,13 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 @Mod(LuckyBlockMod.NAMESPACE)
 public final class LuckyBlockNeoForge {
     private static final LuckyBlockManager LUCKY_BLOCK_MANAGER = new NeoForgeLuckyBlockManager();
+    private static BlockEntityType<LuckyBlockEntity> luckyBlockEntity;
 
-    @SuppressWarnings("unchecked")
     public LuckyBlockNeoForge(IEventBus modBus) {
         modBus.addListener(LuckyBlockNeoForge::onRegister);
 
         register();
-        LuckyBlockMod.init(LUCKY_BLOCK_MANAGER, (BlockEntityType<LuckyBlockEntity>) Registries.BLOCK_ENTITY_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block")), (RecipeSerializer<LuckyRecipe>) Registries.RECIPE_SERIALIZER.get(Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky")), (DataComponentType<Integer>) Registries.DATA_COMPONENT_TYPE.get(Identifier.of(LuckyBlockMod.NAMESPACE, "luck")));
+        LuckyBlockMod.init(LUCKY_BLOCK_MANAGER);
 
         NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onAddReloadListeners);
         modBus.addListener(LuckyBlockNeoForge::onBuildCreativeModTabContents);
@@ -47,18 +50,35 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onRegister(RegisterEvent event) {
+        event.register(RegistryKeys.BLOCK, registry -> {
+            for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
+                AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
+                container.setBlock(new LuckyBlock(container.getId().getNamespace(), blockSettings));
+                registry.register(container.getId(), container.getBlock());
+            }
+        });
+
+        event.register(RegistryKeys.ITEM, registry -> {
+            for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
+                Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
+                container.setBlockItem(new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0)));
+                registry.register(container.getId(), container.getBlockItem());
+            }
+        });
+
         event.register(RegistryKeys.BLOCK_ENTITY_TYPE, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "lucky_block"), BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block")));
+            luckyBlockEntity = BlockEntityType.Builder.create(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks()).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block"));
+            LuckyBlockMod.setLuckyBlockEntity(luckyBlockEntity);
+            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "lucky_block"), luckyBlockEntity);
         });
 
         event.register(RegistryKeys.RECIPE_SERIALIZER, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), new SpecialRecipeSerializer<>(LuckyRecipe::new));
+            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
         });
 
         event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry -> {
-            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "luck"), new DataComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build());
-        });
-    }
+            registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
+        });    }
 
     private static void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(LuckyBlockMod.OUTCOME_MANAGER);
@@ -70,11 +90,11 @@ public final class LuckyBlockNeoForge {
                 event.add(item);
 
                 ItemStack positive = item.getDefaultStack();
-                positive.set(LuckyBlockMod.luckComponent, 100);
+                positive.set(LuckyBlockMod.LUCK_COMPONENT, 100);
                 event.add(positive);
 
                 ItemStack negative = item.getDefaultStack();
-                negative.set(LuckyBlockMod.luckComponent, -100);
+                negative.set(LuckyBlockMod.LUCK_COMPONENT, -100);
                 event.add(negative);
             }
         }
