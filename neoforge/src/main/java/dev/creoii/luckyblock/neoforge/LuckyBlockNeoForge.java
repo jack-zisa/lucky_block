@@ -15,6 +15,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -47,7 +48,7 @@ public final class LuckyBlockNeoForge {
     private static void onRegister(RegisterEvent event) {
         event.register(RegistryKeys.BLOCK, registry -> {
             for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
-                AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
+                AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
                 container.setBlock(new LuckyBlock(container.getId().getNamespace(), blockSettings));
                 registry.register(container.getId(), container.getBlock());
             }
@@ -55,7 +56,7 @@ public final class LuckyBlockNeoForge {
 
         event.register(RegistryKeys.ITEM, registry -> {
             for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
-                Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
+                Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useItemPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
                 container.setBlockItem(new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0)));
                 registry.register(container.getId(), container.getBlockItem());
             }
