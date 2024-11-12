@@ -4,8 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -50,24 +48,20 @@ public class SoundOutcome extends Outcome {
             return pos.squaredDistanceTo(serverPlayer.getPos()) <= d;
         }).toList();
 
-        long l = context.world().getRandom().nextLong();
-
         for (ServerPlayerEntity serverPlayer : players) {
-            Vec3d vec3d;
             float j;
             while (true) {
                 double e = pos.x - serverPlayer.getX();
                 double f = pos.y - serverPlayer.getY();
                 double g = pos.z - serverPlayer.getZ();
                 double h = e * e + f * f + g * g;
-                vec3d = pos;
                 j = volume;
                 if (!(h > d)) {
                     break;
                 }
             }
 
-            serverPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(soundEvent), SoundCategory.NEUTRAL, vec3d.getX(), vec3d.getY(), vec3d.getZ(), j, pitch, l));
+            serverPlayer.playSoundToPlayer(soundEvent, SoundCategory.NEUTRAL, j, pitch);
         }
     }
 }

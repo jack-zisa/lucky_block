@@ -11,7 +11,7 @@
     "homepage": "https://creoii.dev/projects/modern-lucky-block",
     "sources": "https://github.com/jack-zisa/lucky_block"
   },
-  "license": "CC0-1.0",
+  "license": "ARR",
   "icon": "assets/lucky/icon.png",
   "environment": "*",
   "entrypoints": {
