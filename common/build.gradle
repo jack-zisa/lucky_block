@@ -23,6 +23,7 @@ jar {
         attributes 'Fabric-Loom-Remap': true
     }
 }
+
 sourcesJar {
     exclude "architectury.common.json"
 }
