@@ -19,5 +19,7 @@
         "text": "three"
       }
     }
-  ]
+  ],
+  "count": 2,
+  "duplicates": false
 }

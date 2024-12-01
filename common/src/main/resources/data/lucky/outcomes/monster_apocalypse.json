@@ -43,7 +43,7 @@
       "count": 1
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
           "type": "lucky:entity",
@@ -312,8 +312,7 @@
             }
           ]
         }
-      ],
-      "count": 1
+      ]
     }
   ]
 }

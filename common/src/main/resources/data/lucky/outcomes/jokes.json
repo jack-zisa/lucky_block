@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "luck": -1,
   "outcomes": [
     {
@@ -23,6 +23,5 @@
         "minecraft:custom_name": "{'text':'Oooooh!'}"
       }
     }
-  ],
-  "count": 1
+  ]
 }

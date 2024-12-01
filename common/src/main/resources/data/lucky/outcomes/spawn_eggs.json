@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "luck": 1,
   "outcomes": [
     {
@@ -331,10 +331,10 @@
       "item": "minecraft:zombified_piglin_spawn_egg"
     }
   ],
+  "duplicates": true,
   "count": {
     "type": "minecraft:uniform",
     "min_inclusive": 4,
     "max_inclusive": 8
-  },
-  "reinit": true
+  }
 }

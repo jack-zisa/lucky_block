@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "luck": 1,
   "outcomes": [
     {
@@ -66,6 +66,5 @@
         "max_inclusive": 12
       }
     }
-  ],
-  "count": 1
+  ]
 }

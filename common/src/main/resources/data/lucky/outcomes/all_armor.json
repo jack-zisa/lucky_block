@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "chance": 6,
   "outcomes": [
     {
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 1,
       "outcomes": [
         {
@@ -67,7 +67,6 @@
           "item": "minecraft:chainmail_boots"
         }
       ],
-      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 2,
@@ -75,7 +74,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 1,
       "outcomes": [
         {
@@ -95,7 +94,6 @@
           "item": "minecraft:iron_boots"
         }
       ],
-      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 2,
@@ -103,7 +101,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -123,7 +121,6 @@
           "item": "minecraft:diamond_boots"
         }
       ],
-      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 1,
@@ -131,7 +128,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -150,11 +147,7 @@
           "type": "lucky:item",
           "item": "minecraft:netherite_boots"
         }
-      ],
-      "reinit": true,
-      "count": 1
+      ]
     }
-  ],
-  "reinit": true,
-  "count": 1
+  ]
 }
