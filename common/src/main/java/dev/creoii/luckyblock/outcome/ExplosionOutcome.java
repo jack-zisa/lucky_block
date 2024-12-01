@@ -19,7 +19,7 @@ public class ExplosionOutcome extends Outcome {
     });
     private final LuckyBlockCodecs.Explosion explosion;
 
-    public ExplosionOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
+    public ExplosionOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
         super(OutcomeType.EXPLOSION, luck, chance, delay, pos, false);
         this.explosion = explosion;
     }

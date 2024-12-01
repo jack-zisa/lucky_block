@@ -25,7 +25,7 @@ public class EffectOutcome extends Outcome {
     private final Optional<Shape> shape;
     private final boolean excludePlayer;
 
-    public EffectOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, StatusEffectInstance statusEffectInstance, Optional<Shape> shape, boolean excludePlayer) {
+    public EffectOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, StatusEffectInstance statusEffectInstance, Optional<Shape> shape, boolean excludePlayer) {
         super(OutcomeType.EFFECT, luck, chance, delay, pos, false);
         this.statusEffectInstance = statusEffectInstance;
         this.shape = shape;

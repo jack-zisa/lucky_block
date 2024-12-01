@@ -29,7 +29,7 @@ public class SoundOutcome extends Outcome {
     private final FloatProvider volume;
     private final FloatProvider pitch;
 
-    public SoundOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, SoundEvent soundEvent, FloatProvider volume, FloatProvider pitch) {
+    public SoundOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, SoundEvent soundEvent, FloatProvider volume, FloatProvider pitch) {
         super(OutcomeType.SOUND, luck, chance, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;

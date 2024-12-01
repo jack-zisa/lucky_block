@@ -32,7 +32,7 @@ public class ParticleOutcome extends Outcome {
     private final Optional<VecProvider> velocity;
     private final Optional<FloatProvider> speed;
 
-    public ParticleOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<FloatProvider> speed) {
+    public ParticleOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<FloatProvider> speed) {
         super(OutcomeType.PARTICLE, luck, chance, delay, pos, reinit);
         this.particle = particle;
         this.count = count;

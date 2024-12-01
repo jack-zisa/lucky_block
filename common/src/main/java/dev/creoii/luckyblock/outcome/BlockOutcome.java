@@ -29,7 +29,7 @@ public class BlockOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> blockEntity;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
+    public BlockOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, boolean reinit, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
         super(OutcomeType.BLOCK, luck, chance, delay, pos, reinit);
         this.stateProvider = stateProvider;
         this.blockEntity = blockEntity;

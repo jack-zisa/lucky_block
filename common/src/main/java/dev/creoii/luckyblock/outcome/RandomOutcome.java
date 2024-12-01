@@ -16,7 +16,7 @@ public class RandomOutcome extends Outcome {
     });
     private final List<Outcome> outcomes;
 
-    public RandomOutcome(int luck, float chance, Optional<Integer> delay, List<Outcome> outcomes) {
+    public RandomOutcome(int luck, float chance, int delay, List<Outcome> outcomes) {
         super(OutcomeType.RANDOM, luck, chance, delay, Optional.empty(), false);
         this.outcomes = outcomes;
     }

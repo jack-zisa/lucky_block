@@ -6,12 +6,8 @@
     "XXX"
   ],
   "key": {
-    "X": {
-      "item": "minecraft:gold_ingot"
-    },
-    "D": {
-      "item": "minecraft:dropper"
-    }
+    "X": "minecraft:gold_ingot",
+    "D": "minecraft:dropper"
   },
   "result": {
     "id": "lucky:lucky_block"

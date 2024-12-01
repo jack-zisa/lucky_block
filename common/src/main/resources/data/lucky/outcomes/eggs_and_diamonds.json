@@ -1,6 +1,7 @@
 {
   "type": "lucky:group",
   "luck": 2,
+  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:entity",
@@ -25,7 +26,7 @@
           "size": [6, 1, 6]
         }
       },
-      "delay": 165,
+      "delay": 55,
       "reinit": true
     }
   ]

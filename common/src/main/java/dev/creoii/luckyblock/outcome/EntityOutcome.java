@@ -32,7 +32,7 @@ public class EntityOutcome extends Outcome {
     private final IntProvider count;
     private final Optional<ContextualNbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
+    public EntityOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
         super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;

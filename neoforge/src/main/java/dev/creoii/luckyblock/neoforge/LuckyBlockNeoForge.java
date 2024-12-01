@@ -57,7 +57,7 @@ public final class LuckyBlockNeoForge {
         event.register(RegistryKeys.ITEM, registry -> {
             for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
                 Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useItemPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
-                container.setBlockItem(new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0)));
+                container.setBlockItem(new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0).useBlockPrefixedTranslationKey()));
                 registry.register(container.getId(), container.getBlockItem());
             }
         });

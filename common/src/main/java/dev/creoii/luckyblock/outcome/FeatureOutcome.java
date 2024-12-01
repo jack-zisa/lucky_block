@@ -29,7 +29,7 @@ public class FeatureOutcome extends Outcome {
     private final Identifier featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
+    public FeatureOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
         super(OutcomeType.FEATURE, luck, chance, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;

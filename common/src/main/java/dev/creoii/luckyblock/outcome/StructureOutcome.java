@@ -39,7 +39,7 @@ public class StructureOutcome extends Outcome {
     private final Optional<IntProvider> depth;
     private final LuckyBlockCodecs.StructurePlacementData structurePlacementData;
 
-    public StructureOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, Identifier structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
+    public StructureOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, Identifier structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
         super(OutcomeType.STRUCTURE, luck, chance, delay, pos, false);
         this.structureId = structureId;
         this.depth = depth;

@@ -21,7 +21,7 @@ public class GroupOutcome extends Outcome {
     private final List<Outcome> outcomes;
     private final Optional<IntProvider> count;
 
-    public GroupOutcome(int luck, float chance, Optional<Integer> delay, boolean reinit, List<Outcome> outcomes, Optional<IntProvider> count) {
+    public GroupOutcome(int luck, float chance, int delay, boolean reinit, List<Outcome> outcomes, Optional<IntProvider> count) {
         super(OutcomeType.GROUP, luck, chance, delay, Optional.empty(), reinit);
         this.outcomes = outcomes instanceof ArrayList<Outcome> ? outcomes : new ArrayList<>(outcomes);
         this.count = count;

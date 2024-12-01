@@ -46,7 +46,7 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                                             LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
 
                                             AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
-                                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useItemPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
+                                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useBlockPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
 
                                             container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
                                             container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));

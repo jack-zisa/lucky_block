@@ -23,7 +23,7 @@ public class MessageOutcome extends Outcome {
     private final Text message;
     private final boolean overlay;
 
-    public MessageOutcome(int luck, float chance, Optional<Integer> delay, Text message, boolean overlay) {
+    public MessageOutcome(int luck, float chance, int delay, Text message, boolean overlay) {
         super(OutcomeType.MESSAGE, luck, chance, delay, Optional.empty(), false);
         this.message = message;
         this.overlay = overlay;
