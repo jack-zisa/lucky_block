@@ -19,7 +19,6 @@ public class BlockOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
-                createGlobalReinitField(Outcome::shouldReinit),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
                 ContextualNbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntity),
                 Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape)
@@ -29,8 +28,8 @@ public class BlockOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> blockEntity;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, boolean reinit, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
-        super(OutcomeType.BLOCK, luck, chance, delay, pos, reinit);
+    public BlockOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
+        super(OutcomeType.BLOCK, luck, chance, delay, pos, false);
         this.stateProvider = stateProvider;
         this.blockEntity = blockEntity;
         this.shape = shape;
@@ -47,9 +46,6 @@ public class BlockOutcome extends Outcome {
                         nbtCompound.setContext(context);
                         context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound, context.world().getRegistryManager()));
                     });
-                    if (shouldReinit()) {
-                        place.setValue(getPos(context).getPos(context));
-                    }
                 }
             });
         } else {

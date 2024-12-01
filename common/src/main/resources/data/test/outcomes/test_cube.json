@@ -6,7 +6,7 @@
       "Name": "minecraft:birch_planks"
     }
   },
-  "pos": "{playerPos}",
+  "pos": ["{playerPosX}", "{playerPosY}", "{playerPosZ}"],
   "shape": {
     "type": "lucky:cube",
     "offset": [0, -3, 0],
