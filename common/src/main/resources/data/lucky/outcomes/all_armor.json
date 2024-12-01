@@ -67,6 +67,7 @@
           "item": "minecraft:chainmail_boots"
         }
       ],
+      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 2,
@@ -94,6 +95,7 @@
           "item": "minecraft:iron_boots"
         }
       ],
+      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 2,
@@ -121,6 +123,7 @@
           "item": "minecraft:diamond_boots"
         }
       ],
+      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 1,
@@ -148,8 +151,10 @@
           "item": "minecraft:netherite_boots"
         }
       ],
+      "reinit": true,
       "count": 1
     }
   ],
+  "reinit": true,
   "count": 1
 }

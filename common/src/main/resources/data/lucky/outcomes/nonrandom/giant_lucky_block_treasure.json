@@ -9,25 +9,25 @@
     {
       "type": "lucky:structure",
       "structure": "lucky:giant_blocks/break_stage_2",
-      "delay": 20,
+      "delay": 10,
       "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
       "type": "lucky:structure",
       "structure": "lucky:giant_blocks/break_stage_3",
-      "delay": 40,
+      "delay": 20,
       "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
       "type": "lucky:structure",
       "structure": "lucky:giant_blocks/break_stage_4",
-      "delay": 60,
+      "delay": 30,
       "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
       "type": "lucky:structure",
       "structure": "lucky:giant_blocks/break_stage_5",
-      "delay": 80,
+      "delay": 40,
       "pos": ["{blockPosX}-4", "{blockPosY}-3", "{blockPosZ}-6"]
     },
     {
@@ -38,7 +38,7 @@
           "Name": "minecraft:air"
         }
       },
-      "delay": 100,
+      "delay": 50,
       "shape": {
         "type": "lucky:cube",
         "size": [8, 8, 8]
@@ -48,7 +48,7 @@
     {
       "type": "lucky:entity",
       "entity_type": "minecraft:firework_rocket",
-      "delay": 100,
+      "delay": 50,
       "nbt": {
         "lifetime": 20,
         "FireworksItem": {

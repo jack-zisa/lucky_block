@@ -105,6 +105,7 @@
           "item": "minecraft:iron_hoe"
         }
       ],
+      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 2,
@@ -136,6 +137,7 @@
           "item": "minecraft:diamond_hoe"
         }
       ],
+      "reinit": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 1,
@@ -167,8 +169,10 @@
           "item": "minecraft:netherite_hoe"
         }
       ],
+      "reinit": true,
       "count": 1
     }
   ],
+  "reinit": true,
   "count": 1
 }

@@ -1,7 +1,6 @@
 {
   "type": "lucky:group",
   "luck": 2,
-  "chance": 100,
   "outcomes": [
     {
       "type": "lucky:entity",
