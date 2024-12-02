@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "luck": -2,
   "outcomes": [
     {
@@ -16,6 +16,5 @@
         "Size": 10
       }
     }
-  ],
-  "count": 1
+  ]
 }

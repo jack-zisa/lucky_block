@@ -3,10 +3,10 @@
   "luck": 1,
   "outcomes": [
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
-          "type": "lucky:group",
+          "type": "lucky:random",
           "outcomes": [
             {
               "type": "lucky:item",
@@ -73,15 +73,15 @@
               "item": "minecraft:white_wool"
             }
           ],
+          "duplicates": true,
           "count": {
             "type": "minecraft:uniform",
             "min_inclusive": 32,
             "max_inclusive": 64
-          },
-          "reinit": true
+          }
         },
         {
-          "type": "lucky:group",
+          "type": "lucky:random",
           "outcomes": [
             {
               "type": "lucky:item",
@@ -148,15 +148,15 @@
               "item": "minecraft:white_terracotta"
             }
           ],
+          "duplicates": true,
           "count": {
             "type": "minecraft:uniform",
             "min_inclusive": 32,
             "max_inclusive": 64
-          },
-          "reinit": true
+          }
         },
         {
-          "type": "lucky:group",
+          "type": "lucky:random",
           "outcomes": [
             {
               "type": "lucky:item",
@@ -223,15 +223,15 @@
               "item": "minecraft:white_concrete"
             }
           ],
+          "duplicates": true,
           "count": {
             "type": "minecraft:uniform",
             "min_inclusive": 32,
             "max_inclusive": 64
-          },
-          "reinit": true
+          }
         },
         {
-          "type": "lucky:group",
+          "type": "lucky:random",
           "outcomes": [
             {
               "type": "lucky:item",
@@ -298,15 +298,14 @@
               "item": "minecraft:white_dye"
             }
           ],
+          "duplicates": true,
           "count": {
             "type": "minecraft:uniform",
             "min_inclusive": 32,
             "max_inclusive": 64
-          },
-          "reinit": true
+          }
         }
-      ],
-      "count": 1
+      ]
     },
     {
       "type": "lucky:particle",

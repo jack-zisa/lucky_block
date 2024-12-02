@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "outcomes": [
     {
       "type": "lucky:entity",
@@ -170,6 +170,6 @@
       }
     }
   ],
-  "count": 8,
-  "reinit": true
+  "duplicates": true,
+  "count": 8
 }

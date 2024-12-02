@@ -1,9 +1,9 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "luck": 1,
   "outcomes": [
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
           "type": "lucky:item",
@@ -139,6 +139,7 @@
           }
         }
       ],
+      "duplicates": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 4,
@@ -146,7 +147,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
           "type": "lucky:item",
@@ -282,6 +283,7 @@
           }
         }
       ],
+      "duplicates": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 4,
@@ -289,7 +291,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
           "type": "lucky:item",
@@ -425,12 +427,12 @@
           }
         }
       ],
+      "duplicates": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 4,
         "max_inclusive": 8
       }
     }
-  ],
-  "count": 1
+  ]
 }
