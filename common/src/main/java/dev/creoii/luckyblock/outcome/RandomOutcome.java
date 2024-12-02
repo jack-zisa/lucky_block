@@ -14,6 +14,7 @@ public class RandomOutcome extends Outcome {
     public static final MapCodec<RandomOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
@@ -24,8 +25,8 @@ public class RandomOutcome extends Outcome {
     private final IntProvider count;
     private final boolean duplicates;
 
-    public RandomOutcome(int luck, float chance, Optional<Integer> delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
-        super(OutcomeType.RANDOM, luck, chance, delay, Optional.empty(), false);
+    public RandomOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
+        super(OutcomeType.RANDOM, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes;
         this.count = count;
         this.duplicates = duplicates;

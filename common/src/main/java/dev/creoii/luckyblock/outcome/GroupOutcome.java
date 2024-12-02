@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +12,15 @@ public class GroupOutcome extends Outcome {
     public static final MapCodec<GroupOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes)
         ).apply(instance, GroupOutcome::new);
     });
     private final List<Outcome> outcomes;
 
-    public GroupOutcome(int luck, float chance, Optional<Integer> delay, List<Outcome> outcomes) {
-        super(OutcomeType.GROUP, luck, chance, delay, Optional.empty(), false);
+    public GroupOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome> outcomes) {
+        super(OutcomeType.GROUP, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes instanceof ArrayList<Outcome> ? outcomes : new ArrayList<>(outcomes);
     }
 

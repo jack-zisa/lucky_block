@@ -19,6 +19,7 @@ public class EntityOutcome extends Outcome {
     public static final MapCodec<EntityOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
@@ -31,8 +32,8 @@ public class EntityOutcome extends Outcome {
     private final IntProvider count;
     private final Optional<ContextualNbtCompound> nbt;
 
-    public EntityOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
-        super(OutcomeType.ENTITY, luck, chance, delay, pos, reinit);
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
+        super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
         this.nbt = nbt;

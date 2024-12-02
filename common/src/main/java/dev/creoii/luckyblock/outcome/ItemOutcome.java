@@ -23,6 +23,7 @@ public class ItemOutcome extends Outcome {
     public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
@@ -41,8 +42,8 @@ public class ItemOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
-        super(OutcomeType.ITEM, luck, chance, delay, pos, reinit);
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+        super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
         this.components = components;
