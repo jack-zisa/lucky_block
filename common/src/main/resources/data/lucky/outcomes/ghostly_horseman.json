@@ -32,54 +32,64 @@
                     "HandItems": [
                       {
                         "id": "minecraft:bow",
-                        "components": {
-                          "minecraft:enchantments": {
-                            "levels": {
-                              "minecraft:sharpness": 5
+                        "Count": 1,
+                        "tag": {
+                          "enchantments": [
+                            {
+                              "id": "minecraft:sharpness",
+                              "lvl": 5
                             }
-                          }
+                          ]
                         }
                       }
                     ],
                     "ArmorItems": [
                       {
                         "id": "minecraft:chainmail_boots",
-                        "components": {
-                          "minecraft:enchantments": {
-                            "levels": {
-                              "minecraft:protection": 4
+                        "Count": 1,
+                        "tag": {
+                          "enchantments": [
+                            {
+                              "id": "minecraft:protection",
+                              "lvl": 4
                             }
-                          }
+                          ]
                         }
                       },
                       {
                         "id": "minecraft:chainmail_leggings",
-                        "components": {
-                          "minecraft:enchantments": {
-                            "levels": {
-                              "minecraft:protection": 4
+                        "Count": 1,
+                        "tag": {
+                          "enchantments": [
+                            {
+                              "id": "minecraft:protection",
+                              "lvl": 4
                             }
-                          }
+                          ]
                         }
                       },
                       {
                         "id": "minecraft:chainmail_chestplate",
-                        "components": {
-                          "minecraft:enchantments": {
-                            "levels": {
-                              "minecraft:protection": 4
+                        "Count": 1,
+                        "tag": {
+                          "enchantments": [
+                            {
+                              "id": "minecraft:protection",
+                              "lvl": 4
                             }
-                          }
+                          ]
                         }
                       },
                       {
                         "id": "minecraft:chainmail_helmet",
-                        "components": {
-                          "minecraft:enchantments": {
-                            "levels": {
-                              "minecraft:protection": 4
+                        "Count": 1,
+                        "tag": {
+                          "enchantments": [
+                            {
+                              "id": "minecraft:protection",
+                              "lvl": 4
                             }
-                          }
+                          ]
                         }
                       }
                     ],

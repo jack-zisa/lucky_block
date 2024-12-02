@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "outcomes": [
     {
       "type": "lucky:entity",
@@ -57,6 +57,5 @@
         "CustomNameVisible": true
       }
     }
-  ],
-  "count": 1
+  ]
 }

@@ -13,57 +13,68 @@
         "HandItems": [
           {
             "id": "minecraft:diamond_sword",
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:sharpness": 5
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "id": "minecraft:sharpness",
+                  "lvl": 5
                 }
-              }
+              ]
             }
           },
           {
-            "id": "minecraft:shield"
+            "id": "minecraft:shield",
+            "Count": 1
           }
         ],
         "ArmorItems": [
           {
             "id": "minecraft:diamond_boots",
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:protection": 4
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "id": "minecraft:protection",
+                  "lvl": 4
                 }
-              }
+              ]
             }
           },
           {
             "id": "minecraft:diamond_leggings",
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:protection": 4
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "id": "minecraft:protection",
+                  "lvl": 4
                 }
-              }
+              ]
             }
           },
           {
             "id": "minecraft:diamond_chestplate",
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:protection": 4
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "id": "minecraft:protection",
+                  "lvl": 4
                 }
-              }
+              ]
             }
           },
           {
             "id": "minecraft:diamond_helmet",
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:protection": 4
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "id": "minecraft:protection",
+                  "lvl": 4
                 }
-              }
+              ]
             }
           }
         ],

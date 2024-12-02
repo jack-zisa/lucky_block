@@ -5,452 +5,457 @@
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:protection": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:protection",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:fire_protection": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:fire_protection",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:feather_falling": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:feather_falling",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:blast_protection": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:blast_protection",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:projectile_protection": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:projectile_protection",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:respiration": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:respiration",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:aqua_affinity": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:aqua_affinity",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:thorns": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:thorns",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:depth_strider": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:depth_strider",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:frost_walker": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:frost_walker",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:binding_curse": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:binding_curse",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:soul_speed": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:soul_speed",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:swift_sneak": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:swift_sneak",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:sharpness": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:sharpness",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:smite": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:smite",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:bane_of_arthropods": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:bane_of_arthropods",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:knockback": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:knockback",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:fire_aspect": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:fire_aspect",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:looting": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:looting",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:sweeping_edge": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:sweeping_edge",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:silk_touch": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:silk_touch",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:unbreaking": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:unbreaking",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:fortune": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:fortune",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:power": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:power",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:punch": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:punch",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:flame": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:flame",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:infinity": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:infinity",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:luck_of_the_sea": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:luck_of_the_sea",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:lure": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:lure",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:loyalty": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:loyalty",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:impaling": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:impaling",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:riptide": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:riptide",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:channeling": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:channeling",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:multishot": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:multishot",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:quick_charge": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:quick_charge",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:piercing": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:piercing",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:density": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:mending",
+            "lvl": 1
           }
-        }
+        ]
       }
     },
     {
       "type": "lucky:item",
       "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:breach": 1
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:vanishing_curse",
+            "lvl": 1
           }
-        }
-      }
-    },
-    {
-      "type": "lucky:item",
-      "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:wind_burst": 1
-          }
-        }
-      }
-    },
-    {
-      "type": "lucky:item",
-      "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:mending": 1
-          }
-        }
-      }
-    },
-    {
-      "type": "lucky:item",
-      "item": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:vanishing_curse": 1
-          }
-        }
+        ]
       }
     }
   ],

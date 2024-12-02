@@ -1,5 +1,6 @@
 {
   "type": "lucky:entity",
+  "chance": 1000,
   "entity_type": "minecraft:armor_stand",
   "nbt": {
     "Small": true,
@@ -7,39 +8,44 @@
     "ShowArms": true,
     "HandItems": [
       {
-        "id": "minecraft:stone_pickaxe"
+        "id": "minecraft:stone_pickaxe",
+        "Count": 1
       }
     ],
     "ArmorItems": [
       {
         "id": "minecraft:leather_boots",
-        "components": {
-          "minecraft:dyed_color": {
-            "rgb": "{randomRGBColor}"
+        "Count": 1,
+        "tag": {
+          "display": {
+            "color": "{randomRGBColor}"
           }
         }
       },
       {
         "id": "minecraft:leather_leggings",
-        "components": {
-          "minecraft:dyed_color": {
-            "rgb": "{randomRGBColor}"
+        "Count": 1,
+        "tag": {
+          "display": {
+            "color": "{randomRGBColor}"
           }
         }
       },
       {
         "id": "minecraft:leather_chestplate",
-        "components": {
-          "minecraft:dyed_color": {
-            "rgb": "{randomRGBColor}"
+        "Count": 1,
+        "tag": {
+          "display": {
+            "color": "{randomRGBColor}"
           }
         }
       },
       {
         "id": "minecraft:player_head",
-        "components": {
-          "minecraft:profile": {
-            "name": "{playerName}"
+        "Count": 1,
+        "tag": {
+          "display": {
+            "color": "{randomRGBColor}"
           }
         }
       }
