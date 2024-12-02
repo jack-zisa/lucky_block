@@ -40,7 +40,6 @@ public class OutcomeManager extends JsonDataLoader {
             if (!entry.getValue().isJsonObject())
                 continue;
 
-
             LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(entry.getKey().getNamespace());
             if (container == null)
                 continue;
