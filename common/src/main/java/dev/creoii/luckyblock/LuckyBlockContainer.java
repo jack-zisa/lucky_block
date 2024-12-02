@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.block.LuckyBlock;
+import dev.creoii.luckyblock.util.DispatchedMapCodec;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -22,7 +23,7 @@ public class LuckyBlockContainer {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
                 Activation.CODEC.listOf().fieldOf("activations").orElse(DEFAULT_ACTIVATIONS).forGetter(container -> container.activations),
                 Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
-                Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck),
+                DispatchedMapCodec.of(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck),
                 Codec.BOOL.fieldOf("debug").orElse(false).forGetter(container -> container.debug)
         ).apply(instance, LuckyBlockContainer::new);
     });
