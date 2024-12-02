@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ public class ExplosionOutcome extends Outcome {
     public static final Codec<ExplosionOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.Explosion.CODEC.fieldOf("explosion").forGetter(outcome -> outcome.explosion)
@@ -19,8 +21,8 @@ public class ExplosionOutcome extends Outcome {
     });
     private final LuckyBlockCodecs.Explosion explosion;
 
-    public ExplosionOutcome(int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
-        super(OutcomeType.EXPLOSION, luck, chance, delay, pos, false);
+    public ExplosionOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
+        super(OutcomeType.EXPLOSION, luck, chance, weightProvider, delay, pos, false);
         this.explosion = explosion;
     }
 
