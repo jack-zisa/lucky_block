@@ -78,16 +78,16 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == ItemGroups.BUILDING_BLOCKS) {
+        if (event.getTabKey() == ItemGroups.FUNCTIONAL) {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 event.add(item);
 
-                ItemStack positive = item.getDefaultStack();
+                ItemStack positive = item.getDefaultStack().copy();
                 LuckyBlockItem.setLuck(positive, 100);
                 event.add(positive);
 
-                ItemStack negative = item.getDefaultStack();
-                LuckyBlockItem.setLuck(positive, -100);
+                ItemStack negative = item.getDefaultStack().copy();
+                LuckyBlockItem.setLuck(negative, -100);
                 event.add(negative);
             }
         }

@@ -40,16 +40,16 @@ public final class LuckyBlockFabric implements ModInitializer {
 
         ServerTickEvents.END_SERVER_TICK.register(LuckyBlockMod.OUTCOME_MANAGER::tickDelays);
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 entries.add(item);
 
-                ItemStack positive = item.getDefaultStack();
+                ItemStack positive = item.getDefaultStack().copy();
                 LuckyBlockItem.setLuck(positive, 100);
                 entries.add(positive);
 
-                ItemStack negative = item.getDefaultStack();
-                LuckyBlockItem.setLuck(positive, -100);
+                ItemStack negative = item.getDefaultStack().copy();
+                LuckyBlockItem.setLuck(negative, -100);
                 entries.add(negative);
             }
         });

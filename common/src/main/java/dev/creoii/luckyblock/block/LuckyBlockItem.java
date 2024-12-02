@@ -18,8 +18,8 @@ public class LuckyBlockItem extends BlockItem {
     }
 
     public static int getLuck(ItemStack stack) {
-        NbtCompound nbtCompound = stack.getNbt();
-        return nbtCompound != null ? nbtCompound.getInt("luck") : 0;
+        NbtCompound nbt = stack.getNbt();
+        return nbt != null ? nbt.getInt("luck") : 0;
     }
 
     public static void setLuck(ItemStack stack, int luck) {
