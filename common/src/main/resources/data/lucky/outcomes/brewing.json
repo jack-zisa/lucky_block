@@ -1,6 +1,7 @@
 {
   "type": "lucky:group",
   "luck": 2,
+  "chance": 1000,
   "outcomes": [
     {
       "type": "lucky:item",
@@ -112,14 +113,12 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:item",
         "item": {
           "id": "minecraft:splash_potion",
-          "components": {
-            "potion_contents": {
-              "potion": "minecraft:fire_resistance"
-            }
+          "tag": {
+            "Potion": "minecraft:fire_resistance"
           }
         }
       },
@@ -127,7 +126,7 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:effect"
       },
       "count": 100

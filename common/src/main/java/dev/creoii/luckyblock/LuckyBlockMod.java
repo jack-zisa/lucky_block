@@ -17,6 +17,13 @@ import net.minecraft.registry.SimpleDefaultedRegistry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
+/**
+ * Broken outcomes:
+ * - redstone (json structure)
+ * - potions (json structure)
+ * - enchanted books (enchantment nbt)
+ * - resources + fireworks (firework nbt)
+ */
 public final class LuckyBlockMod {
     public static final String NAMESPACE = "lucky";
     public static final Logger LOGGER = LogUtils.getLogger();

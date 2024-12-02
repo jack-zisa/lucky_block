@@ -309,7 +309,7 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:effect"
       },
       "count": 10

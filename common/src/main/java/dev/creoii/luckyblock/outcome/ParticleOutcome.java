@@ -22,7 +22,7 @@ public class ParticleOutcome extends Outcome {
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
-                ParticleTypes.TYPE_CODEC.fieldOf("particle_type").forGetter(outcome -> outcome.particle),
+                ParticleTypes.TYPE_CODEC.fieldOf("particle").forGetter(outcome -> outcome.particle),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity),
                 FloatProvider.VALUE_CODEC.optionalFieldOf("speed").forGetter(outcome -> outcome.speed)

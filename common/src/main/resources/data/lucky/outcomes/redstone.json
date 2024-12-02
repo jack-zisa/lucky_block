@@ -135,14 +135,12 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:item",
         "item": {
           "id": "minecraft:splash_potion",
-          "components": {
-            "potion_contents": {
-              "potion": "minecraft:healing"
-            }
+          "tag": {
+            "Potion": "minecraft:healing"
           }
         }
       },
@@ -150,7 +148,7 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:effect"
       },
       "count": 100

@@ -93,8 +93,6 @@ public final class LuckyBlockNeoForge {
         }
     }
 
-
-
     private static void onServerTick(TickEvent.ServerTickEvent event) {
         LuckyBlockMod.OUTCOME_MANAGER.tickDelays(event.getServer());
     }
