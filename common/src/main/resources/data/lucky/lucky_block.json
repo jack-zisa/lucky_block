@@ -23,5 +23,6 @@
     "minecraft:fermented_spider_eye": -20,
     "minecraft:poisonous_potato": -10,
     "minecraft:pufferfish": -20
-  }
+  },
+  "debug": true
 }

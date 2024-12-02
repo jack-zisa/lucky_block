@@ -44,7 +44,9 @@ public class OutcomeManager extends JsonDataLoader {
             if (container == null)
                 continue;
 
-            LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
+            if (container.isDebug())
+                LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
+
             if (entry.getKey().getPath().startsWith("nonrandom/")) {
                 container.addNonRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
             } else container.addRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());

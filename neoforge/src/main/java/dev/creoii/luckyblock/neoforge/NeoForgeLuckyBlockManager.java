@@ -34,7 +34,9 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
                                     if (element.isJsonObject()) {
                                         DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
                                         dataResult.resultOrPartial(error -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", error)).ifPresent(container -> {
-                                            LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
+                                            if (container.isDebug())
+                                                LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
+
                                             builder.put(container.getId().getNamespace(), container);
                                         });
                                     }
