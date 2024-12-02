@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.fabric;
 
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
+import dev.creoii.luckyblock.block.LuckyBlockItem;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
@@ -44,11 +45,11 @@ public final class LuckyBlockFabric implements ModInitializer {
                 entries.add(item);
 
                 ItemStack positive = item.getDefaultStack();
-                positive.set(LuckyBlockMod.LUCK_COMPONENT, 100);
+                LuckyBlockItem.setLuck(positive, 100);
                 entries.add(positive);
 
                 ItemStack negative = item.getDefaultStack();
-                negative.set(LuckyBlockMod.LUCK_COMPONENT, -100);
+                LuckyBlockItem.setLuck(positive, -100);
                 entries.add(negative);
             }
         });
@@ -72,7 +73,6 @@ public final class LuckyBlockFabric implements ModInitializer {
         VecProviderType.init();
 
         Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
-        Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
         LuckyBlockMod.setLuckyBlockEntity(LUCKY_BLOCK_ENTITY);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), LUCKY_BLOCK_ENTITY);
     }

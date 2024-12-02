@@ -61,7 +61,7 @@ public class SoundOutcome extends Outcome {
                 }
             }
 
-            serverPlayer.playSoundToPlayer(soundEvent, SoundCategory.NEUTRAL, j, pitch);
+            serverPlayer.playSound(soundEvent, SoundCategory.NEUTRAL, j, pitch);
         }
     }
 }

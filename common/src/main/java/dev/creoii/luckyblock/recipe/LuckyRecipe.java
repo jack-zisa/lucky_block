@@ -3,13 +3,14 @@ package dev.creoii.luckyblock.recipe;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.block.LuckyBlock;
+import dev.creoii.luckyblock.block.LuckyBlockItem;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.*;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
 import java.util.Set;
@@ -32,17 +33,17 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory inventory, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
         ItemStack luckyBlock = inventory.getHeldStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet()).iterator().next();
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(Registries.ITEM.getId(luckyBlock.getItem()).getNamespace());
 
         ItemStack result = luckyBlock.copy();
-        Integer luck = luckyBlock.getOrDefault(LuckyBlockMod.LUCK_COMPONENT, 0);
+        int luck = LuckyBlockItem.getLuck(luckyBlock);
         if (container != null) {
             for (ItemStack stack : inventory.getHeldStacks()) {
                 luck = Math.clamp(luck + container.getItemLuckValue(stack.getItem()), -100, 100);
             }
-            result.set(LuckyBlockMod.LUCK_COMPONENT, luck);
+            LuckyBlockItem.setLuck(result, luck);
         }
         return result;
     }

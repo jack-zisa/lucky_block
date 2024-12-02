@@ -10,13 +10,14 @@ import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.block.LuckyBlock;
+import dev.creoii.luckyblock.block.LuckyBlockItem;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Rarity;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,10 +45,10 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                                             LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
 
                                             AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
-                                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
+                                            Item.Settings itemSettings = new Item.Settings().rarity(Rarity.valueOf(container.getSettings().rarity().toUpperCase()));
 
                                             container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
-                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
+                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new LuckyBlockItem(container.getBlock(), itemSettings)));
                                             builder.put(container.getId().getNamespace(), container);
                                         });
                                     }

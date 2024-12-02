@@ -96,12 +96,12 @@ public class LuckyBlockContainer {
         return blockItem;
     }
 
-    public record Settings(float hardness, float resistance, Rarity rarity) {
-        public static final Settings DEFAULT = new Settings(.2f, 20f, Rarity.RARE);
+    public record Settings(float hardness, float resistance, String rarity) {
+        public static final Settings DEFAULT = new Settings(.2f, 20f, Rarity.RARE.name().toLowerCase());
         public static final Codec<Settings> CODEC = RecordCodecBuilder.create(instance -> {
             return instance.group(Codec.FLOAT.fieldOf("hardness").orElse(.1f).forGetter(settings -> settings.hardness),
                     Codec.FLOAT.fieldOf("resistance").orElse(20f).forGetter(settings -> settings.resistance),
-                    Rarity.CODEC.fieldOf("rarity").orElse(Rarity.RARE).forGetter(settings -> settings.rarity)
+                    Codec.STRING.fieldOf("rarity").orElse(Rarity.RARE.name().toLowerCase()).forGetter(settings -> settings.rarity)
             ).apply(instance, Settings::new);
         });
     }

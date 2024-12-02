@@ -28,7 +28,7 @@ public class LuckyBlockCodecs {
     public static final ConstantIntProvider ONE = ConstantIntProvider.create(1);
     public static final ConstantFloatProvider ONE_F = ConstantFloatProvider.create(1f);
 
-    public record Explosion(String explosionBehavior, float power, boolean createFire, String explosionSourceType, String destructionType, ParticleEffect particle, ParticleEffect emitterParticle, RegistryEntry<SoundEvent> soundEvent) {
+    public record Explosion(String explosionBehavior, float power, boolean createFire, String explosionSourceType, String destructionType, ParticleEffect particle, ParticleEffect emitterParticle, SoundEvent soundEvent) {
         public static final MapCodec<Explosion> CODEC = RecordCodecBuilder.mapCodec(instance -> {
             return instance.group(Codec.STRING.fieldOf("behavior").orElse("default").forGetter(explosion -> explosion.explosionBehavior),
                     Codec.FLOAT.fieldOf("power").forGetter(explosion -> explosion.power),
@@ -37,7 +37,7 @@ public class LuckyBlockCodecs {
                     Codec.STRING.fieldOf("destruction_type").orElse("destroy").forGetter(explosion -> explosion.destructionType),
                     ParticleTypes.TYPE_CODEC.fieldOf("particle").orElse(ParticleTypes.EXPLOSION).forGetter(explosion -> explosion.particle),
                     ParticleTypes.TYPE_CODEC.fieldOf("emitter_particle").orElse(ParticleTypes.EXPLOSION_EMITTER).forGetter(explosion -> explosion.emitterParticle),
-                    Registries.SOUND_EVENT.getEntryCodec().fieldOf("sound_event").orElse(SoundEvents.ENTITY_GENERIC_EXPLODE).forGetter(explosion -> explosion.soundEvent)
+                    Registries.SOUND_EVENT.getCodec().fieldOf("sound_event").orElse(SoundEvents.ENTITY_GENERIC_EXPLODE).forGetter(explosion -> explosion.soundEvent)
             ).apply(instance, Explosion::new);
         });
 

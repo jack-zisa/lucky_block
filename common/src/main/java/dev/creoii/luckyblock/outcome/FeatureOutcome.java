@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -45,7 +46,7 @@ public class FeatureOutcome extends Outcome {
             }
             BlockPos place = getPos(context).getPos(context);
             if (!placementModifiers.isEmpty()) {
-                PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).getEntry(featureId).get(), placementModifiers);
+                PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.get(RegistryKeys.CONFIGURED_FEATURE).entryOf(RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, featureId)), placementModifiers);
                 if (!placedFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate feature '{}' at '{}'", featureId, place.toShortString());
                 }

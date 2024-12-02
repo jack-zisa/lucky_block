@@ -10,7 +10,8 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipType;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -21,8 +22,10 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,12 +51,12 @@ public class LuckyBlock extends BlockWithEntity {
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
-    @Nullable
-    protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+    @Override
+    public @Nullable NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         return null;
     }
 
@@ -63,22 +66,12 @@ public class LuckyBlock extends BlockWithEntity {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
-        if (stack.contains(LuckyBlockMod.LUCK_COMPONENT)) {
-            int luck = stack.get(LuckyBlockMod.LUCK_COMPONENT);
-            Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
-            tooltip.add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
-        }
+    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
     }
 
     @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
-        ItemStack stack = ctx.getStack();
-        Integer luck = stack.get(LuckyBlockMod.LUCK_COMPONENT);
-        if (luck != null) {
-            return getDefaultState().with(LUCK, luck + 100);
-        }
-        return super.getPlacementState(ctx);
+        return getDefaultState().with(LUCK, LuckyBlockItem.getLuck(ctx.getStack()) + 100);
     }
 
     private JsonObject getOutcomeFromState(World world, BlockState state, BlockPos pos, @Nullable PlayerEntity player) {
@@ -106,7 +99,7 @@ public class LuckyBlock extends BlockWithEntity {
     }
 
     @Override
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.doesRightClickOpen()) {
             if (!world.isClient) {
@@ -119,11 +112,23 @@ public class LuckyBlock extends BlockWithEntity {
             }
             return ActionResult.success(world.isClient);
         }
-        return super.onUse(state, world, pos, player, hit);
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        if (!world.isClient && world.isReceivingRedstonePower(pos)) {
+            Outcome.Context context = new Outcome.Context(world, pos, state, null);
+            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+            if (outcome != null) {
+                world.breakBlock(pos, false);
+                outcome.runOutcome(context);
+            }
+        }
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (!world.isClient && world.isReceivingRedstonePower(pos)) {
             Outcome.Context context = new Outcome.Context(world, pos, state, null);
             Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);

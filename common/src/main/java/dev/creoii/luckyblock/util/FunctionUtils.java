@@ -19,7 +19,6 @@ public class FunctionUtils {
     public static final Map<String, Function<Outcome.Context, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
             .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().getName())
             .put("playerUUID", context -> context.player() == null ? "" : String.valueOf(context.player().getUuidAsString()))
-            .put("playerDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getFacing().asString()))
             .put("playerHorizontalDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getHorizontalFacing().asString()))
             .put("randomDirection", context -> String.valueOf(Direction.random(context.world().getRandom())))
             .put("randomHorizontalDirection", context -> String.valueOf(Direction.Type.HORIZONTAL.random(context.world().getRandom())))

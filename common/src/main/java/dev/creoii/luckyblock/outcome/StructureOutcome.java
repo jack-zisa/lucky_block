@@ -7,6 +7,7 @@ import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
@@ -51,7 +52,7 @@ public class StructureOutcome extends Outcome {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
             BlockPos pos = getPos(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
-            Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.get(RegistryKeys.TEMPLATE_POOL).getEntry(structureId);
+            Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.get(RegistryKeys.TEMPLATE_POOL).getEntry(RegistryKey.of(RegistryKeys.TEMPLATE_POOL, structureId));
             if (template.isPresent()) {
                 if (!template.get().place(serverWorld, pos, pos, structurePlacementData.create(), StructureBlockBlockEntity.createRandom(serverWorld.getSeed()), 2)) {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
