@@ -7,7 +7,7 @@
       "item": "minecraft:jukebox"
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "outcomes": [
         {
           "type": "lucky:item",
@@ -70,6 +70,7 @@
           "item": "minecraft:music_disc_relic"
         }
       ],
+      "duplicates": true,
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 1,

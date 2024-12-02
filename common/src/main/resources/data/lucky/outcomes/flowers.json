@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "outcomes": [
     {
       "type": "lucky:item",
@@ -46,6 +46,5 @@
       "item": "minecraft:lily_of_the_valley",
       "count": 64
     }
-  ],
-  "count": 1
+  ]
 }

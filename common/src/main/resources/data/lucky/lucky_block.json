@@ -1,5 +1,10 @@
 {
   "id": "lucky:lucky_block",
+  "activations": [
+    "right_click",
+    "break",
+    "power"
+  ],
   "item_luck": {
     "minecraft:diamond": 12,
     "minecraft:diamond_block": 100,
