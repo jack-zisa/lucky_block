@@ -116,7 +116,9 @@ public class LuckyBlockContainer {
         BREAK,
         RIGHT_CLICK,
         POWER;
+
         public static final Codec<Activation> CODEC = StringIdentifiable.createCodec(Activation::values);
+
         @Override
         public String asString() {
             return name().toLowerCase();
