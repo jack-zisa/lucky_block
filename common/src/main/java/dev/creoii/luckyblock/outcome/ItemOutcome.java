@@ -2,7 +2,6 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
@@ -19,7 +18,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class ItemOutcome extends Outcome {
-    public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<ItemOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),

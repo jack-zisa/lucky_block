@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.util.vec;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -13,7 +13,7 @@ public interface VecProviderType<T extends VecProvider> {
     VecProviderType<HeightmapVecProvider> HEIGHTMAP = () -> HeightmapVecProvider.CODEC;
     VecProviderType<RandomVecProvider> RANDOM = () -> RandomVecProvider.CODEC;
 
-    MapCodec<T> codec();
+    Codec<T> codec();
 
     static void init() {
         register(new Identifier(LuckyBlockMod.NAMESPACE, "constant"), CONSTANT);

@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class SoundOutcome extends Outcome {
-    public static final MapCodec<SoundOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<SoundOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
