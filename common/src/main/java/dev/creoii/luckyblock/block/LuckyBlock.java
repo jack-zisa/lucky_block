@@ -22,6 +22,8 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -91,7 +93,12 @@ public class LuckyBlock extends BlockWithEntity {
             }
         }
 
-        return LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player).getRight();
+        Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.isDebug()) {
+            LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getLeft());
+        }
+        return pair.getRight();
     }
 
     @Override
