@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.util.shape;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Line extends Shape {
-    public static final MapCodec<Line> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<Line> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(VecProvider.CONSTANT_POS.fieldOf("size").forGetter(line -> line.size),
                 VecProvider.VALUE_CODEC.fieldOf("from").forGetter(line -> line.from),
                 VecProvider.VALUE_CODEC.fieldOf("to").forGetter(line -> line.to)

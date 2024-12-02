@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.FunctionUtils;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -11,7 +10,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import java.util.Optional;
 
 public class CommandOutcome extends Outcome {
-    public static final MapCodec<CommandOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<CommandOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),

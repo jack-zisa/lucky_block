@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import java.util.Optional;
 
 public class BlockOutcome extends Outcome {
-    public static final MapCodec<BlockOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<BlockOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
@@ -44,7 +44,7 @@ public class BlockOutcome extends Outcome {
                 if (context.world().setBlockState(place.getValue().add(pos), state)) {
                     blockEntity.ifPresent(nbtCompound -> {
                         nbtCompound.setContext(context);
-                        context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound, context.world().getRegistryManager()));
+                        context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound));
                     });
                 }
             });
@@ -53,7 +53,7 @@ public class BlockOutcome extends Outcome {
             if (context.world().setBlockState(place.getValue(), state)) {
                 blockEntity.ifPresent(nbtCompound -> {
                     nbtCompound.setContext(context);
-                    context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue(), state, nbtCompound, context.world().getRegistryManager()));
+                    context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue(), state, nbtCompound));
                 });
             }
         }

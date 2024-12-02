@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.util.shape;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import net.minecraft.entity.Entity;
@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public class Empty extends Shape {
     public static final Shape INSTANCE = new Empty();
-    public static final MapCodec<Shape> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<Shape> CODEC = Codec.unit(INSTANCE);
 
     public Empty() {
         super(ShapeType.EMPTY, ConstantVecProvider.ZERO);

@@ -2,7 +2,6 @@ package dev.creoii.luckyblock.util.vec;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
@@ -18,7 +17,7 @@ public class RandomVecProvider extends VecProvider {
     public static Codec<List<FloatProvider>> BASE_FLOAT_PROVIDER_CODEC = Codec.either(Vec3d.CODEC, FloatProvider.VALUE_CODEC.listOf()).xmap(either -> {
         return either.map(vec3d -> List.of(ConstantFloatProvider.create((float) vec3d.x), ConstantFloatProvider.create((float) vec3d.y), ConstantFloatProvider.create((float) vec3d.z)), Function.identity());
     }, Either::right);
-    public static MapCodec<RandomVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static Codec<RandomVecProvider> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(FloatProvider.VALUE_CODEC.fieldOf("x").forGetter(provider -> provider.x),
                 FloatProvider.VALUE_CODEC.fieldOf("y").forGetter(provider -> provider.y),
                 FloatProvider.VALUE_CODEC.fieldOf("z").forGetter(provider -> provider.z)

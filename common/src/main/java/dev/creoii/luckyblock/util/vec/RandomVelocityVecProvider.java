@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.util.vec;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.MathHelper;
@@ -13,7 +13,7 @@ import net.minecraft.util.math.intprovider.IntProvider;
 import java.util.List;
 
 public class RandomVelocityVecProvider extends VecProvider {
-    public static final MapCodec<RandomVelocityVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<RandomVelocityVecProvider> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(FloatProvider.VALUE_CODEC.fieldOf("power").orElse(ConstantFloatProvider.create(.9f)).forGetter(provider -> provider.power),
                 IntProvider.createValidatingCodec(0, 90).fieldOf("pitch").orElse(ConstantIntProvider.create(15)).forGetter(provider -> provider.pitch)
         ).apply(instance, RandomVelocityVecProvider::new);

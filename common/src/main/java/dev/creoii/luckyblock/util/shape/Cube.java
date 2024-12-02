@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Cube extends Shape {
-    public static final MapCodec<Cube> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<Cube> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalSizeField(Shape::getSize),
                 Codec.BOOL.fieldOf("hollow").orElse(false).forGetter(cube -> cube.hollow)
         ).apply(instance, Cube::new);

@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.util.vec;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RandomInShapeVecProvider extends VecProvider {
-    public static final MapCodec<RandomInShapeVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<RandomInShapeVecProvider> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(VecProvider.VALUE_CODEC.optionalFieldOf("center").forGetter(provider -> provider.center),
                 Shape.CODEC.fieldOf("shape").forGetter(provider -> provider.shape),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(provider -> provider.count)

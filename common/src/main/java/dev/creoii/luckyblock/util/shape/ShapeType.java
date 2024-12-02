@@ -1,11 +1,12 @@
 package dev.creoii.luckyblock.util.shape;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public record ShapeType(MapCodec<? extends Shape> codec) {
+public record ShapeType(Codec<? extends Shape> codec) {
     public static final ShapeType EMPTY = new ShapeType(Empty.CODEC);
     public static final ShapeType CUBE = new ShapeType(Cube.CODEC);
     public static final ShapeType SPHERE = new ShapeType(Sphere.CODEC);

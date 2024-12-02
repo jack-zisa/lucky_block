@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.FunctionUtils;
 import net.minecraft.text.MutableText;
@@ -12,7 +11,7 @@ import net.minecraft.text.TextCodecs;
 import java.util.Optional;
 
 public class MessageOutcome extends Outcome {
-    public static final MapCodec<MessageOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<MessageOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),

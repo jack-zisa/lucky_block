@@ -1,11 +1,11 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public record OutcomeType(MapCodec<? extends Outcome> codec) {
+public record OutcomeType(Codec<? extends Outcome> codec) {
     public static final OutcomeType NONE = new OutcomeType(NoneOutcome.CODEC);
     public static final OutcomeType RANDOM = new OutcomeType(RandomOutcome.CODEC);
     public static final OutcomeType GROUP = new OutcomeType(GroupOutcome.CODEC);

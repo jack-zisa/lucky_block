@@ -1,6 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Optional;
 
 public class ExplosionOutcome extends Outcome {
-    public static final MapCodec<ExplosionOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final Codec<ExplosionOutcome> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalDelayField(Outcome::getDelay),
