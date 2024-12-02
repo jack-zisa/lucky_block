@@ -3,12 +3,14 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -19,18 +21,20 @@ public abstract class Outcome {
     private final OutcomeType type;
     private final int luck;
     private final float chance;
-    private final Optional<Integer> delay;
+    private final IntProvider weightProvider;
+    private final int delay;
     private final Optional<VecProvider> pos;
     private final boolean reinit;
 
     public Outcome(OutcomeType type) {
-        this(type, 0, 1f, Optional.of(0), Optional.empty(), false);
+        this(type, 0, 1f, LuckyBlockCodecs.ONE, 0, Optional.empty(), false);
     }
 
-    public Outcome(OutcomeType type, int luck, float chance, Optional<Integer> delay, Optional<VecProvider> pos, boolean reinit) {
+    public Outcome(OutcomeType type, int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit) {
         this.type = type;
         this.luck = luck;
         this.chance = chance;
+        this.weightProvider = weightProvider;
         this.delay = delay;
         this.pos = pos;
         this.reinit = reinit;
@@ -52,8 +56,12 @@ public abstract class Outcome {
         return reinit;
     }
 
-    public Optional<Integer> getDelay() {
+    public int getDelay() {
         return delay;
+    }
+
+    public IntProvider getWeightProvider() {
+        return weightProvider;
     }
 
     public Optional<VecProvider> getPos() {
@@ -72,8 +80,12 @@ public abstract class Outcome {
         return Codec.FLOAT.fieldOf("chance").orElse(1f).forGetter(getter);
     }
 
-    public static <O> RecordCodecBuilder<O, Optional<Integer>> createGlobalDelayField(Function<O, Optional<Integer>> getter) {
-        return Codec.INT.optionalFieldOf("delay").forGetter(getter);
+    public static <O> RecordCodecBuilder<O, IntProvider> createGlobalWeightField(Function<O, IntProvider> getter) {
+        return IntProvider.POSITIVE_CODEC.fieldOf("weight").orElse(LuckyBlockCodecs.ONE).forGetter(getter);
+    }
+
+    public static <O> RecordCodecBuilder<O, Integer> createGlobalDelayField(Function<O, Integer> getter) {
+        return Codec.INT.fieldOf("delay").orElse(0).forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Optional<VecProvider>> createGlobalPosField(Function<O, Optional<VecProvider>> getter) {
@@ -85,9 +97,9 @@ public abstract class Outcome {
     }
 
     public void runOutcome(Context context) {
-        if (getDelay().orElse(0) == 0) {
+        if (getDelay() == 0) {
             run(context);
-        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay().orElse(0));
+        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay());
     }
 
     public abstract void run(Context context);
