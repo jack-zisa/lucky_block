@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "outcomes": [
     {
       "type": "lucky:item",

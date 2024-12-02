@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "chance": 6,
   "outcomes": [
     {
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 1,
       "outcomes": [
         {
@@ -112,7 +112,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -143,7 +143,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -169,6 +169,5 @@
       ],
       "count": 1
     }
-  ],
-  "count": 1
+  ]
 }

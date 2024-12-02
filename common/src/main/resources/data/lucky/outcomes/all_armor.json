@@ -1,5 +1,5 @@
 {
-  "type": "lucky:group",
+  "type": "lucky:random",
   "chance": 6,
   "outcomes": [
     {
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 1,
       "outcomes": [
         {
@@ -74,7 +74,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 1,
       "outcomes": [
         {
@@ -101,7 +101,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -128,7 +128,7 @@
       }
     },
     {
-      "type": "lucky:group",
+      "type": "lucky:random",
       "luck": 2,
       "outcomes": [
         {
@@ -147,9 +147,7 @@
           "type": "lucky:item",
           "item": "minecraft:netherite_boots"
         }
-      ],
-      "count": 1
+      ]
     }
-  ],
-  "count": 1
+  ]
 }

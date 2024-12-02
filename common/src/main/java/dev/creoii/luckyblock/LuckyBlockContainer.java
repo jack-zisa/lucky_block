@@ -10,20 +10,22 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.StringIdentifiable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LuckyBlockContainer {
+    private static final List<Activation> DEFAULT_ACTIVATIONS = List.of(Activation.BREAK, Activation.POWER);
     public static final Codec<LuckyBlockContainer> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
-                Codec.BOOL.fieldOf("right_click_open").orElse(true).forGetter(container -> container.rightClickOpen),
-                Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
+                Activation.CODEC.listOf().fieldOf("activations").orElse(DEFAULT_ACTIVATIONS).forGetter(container -> container.activations),                Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
                 Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck)
         ).apply(instance, LuckyBlockContainer::new);
     });
     private final Identifier id;
-    private final boolean rightClickOpen;
+    private final List<Activation> activations;
     private final Settings settings;
     private final Map<Item, Integer> itemLuck;
     private final Map<Identifier, JsonObject> randomOutcomes;
@@ -31,21 +33,25 @@ public class LuckyBlockContainer {
     private LuckyBlock block;
     private BlockItem blockItem;
 
-    public LuckyBlockContainer(Identifier id, boolean rightClickOpen, Settings settings, Map<Item, Integer> itemLuck) {
+    public LuckyBlockContainer(Identifier id, List<Activation> activations, Settings settings, Map<Item, Integer> itemLuck) {
         this.id = id;
-        this.rightClickOpen = rightClickOpen;
+        this.activations = activations;
         this.settings = settings;
         this.itemLuck = itemLuck;
         randomOutcomes = new HashMap<>();
         nonrandomOutcomes = new HashMap<>();
+
+        if (activations.isEmpty()) {
+            LuckyBlockMod.LOGGER.info("No activation types found for Lucky Block container: {}. It won't do anything!", id);
+        }
     }
 
     public Identifier getId() {
         return id;
     }
 
-    public boolean doesRightClickOpen() {
-        return rightClickOpen;
+    public boolean hasActivation(Activation activation) {
+        return activations.contains(activation);
     }
 
     public Settings getSettings() {
@@ -104,5 +110,16 @@ public class LuckyBlockContainer {
                     Rarity.CODEC.fieldOf("rarity").orElse(Rarity.RARE).forGetter(settings -> settings.rarity)
             ).apply(instance, Settings::new);
         });
+    }
+
+    public enum Activation implements StringIdentifiable {
+        BREAK,
+        RIGHT_CLICK,
+        POWER;
+        public static final Codec<Activation> CODEC = StringIdentifiable.createCodec(Activation::values);
+        @Override
+        public String asString() {
+            return name().toLowerCase();
+        }
     }
 }

@@ -1,6 +1,0 @@
-{
-  "type": "lucky:entity",
-  "entity_type": "minecraft:creeper",
-  "count": 10,
-  "nbt": "{powered:1,ignited:1,CustomName:'[{\"text\":\"Lucky Creeper\"}]'}"
-}
