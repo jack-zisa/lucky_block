@@ -22,23 +22,26 @@ public class LuckyBlockContainer {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
                 Activation.CODEC.listOf().fieldOf("activations").orElse(DEFAULT_ACTIVATIONS).forGetter(container -> container.activations),
                 Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
-                Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck)
+                Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck),
+                Codec.BOOL.fieldOf("debug").orElse(false).forGetter(container -> container.debug)
         ).apply(instance, LuckyBlockContainer::new);
     });
     private final Identifier id;
     private final List<Activation> activations;
     private final Settings settings;
     private final Map<Item, Integer> itemLuck;
+    private final boolean debug;
     private final Map<Identifier, JsonObject> randomOutcomes;
     private final Map<Identifier, JsonObject> nonrandomOutcomes;
     private LuckyBlock block;
     private BlockItem blockItem;
 
-    public LuckyBlockContainer(Identifier id, List<Activation> activations, Settings settings, Map<Item, Integer> itemLuck) {
+    public LuckyBlockContainer(Identifier id, List<Activation> activations, Settings settings, Map<Item, Integer> itemLuck, boolean debug) {
         this.id = id;
         this.activations = activations;
         this.settings = settings;
         this.itemLuck = itemLuck;
+        this.debug = debug;
         randomOutcomes = new HashMap<>();
         nonrandomOutcomes = new HashMap<>();
 
@@ -61,6 +64,10 @@ public class LuckyBlockContainer {
 
     public Map<Item, Integer> getItemLuck() {
         return itemLuck;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 
     public Map<Identifier, JsonObject> getRandomOutcomes() {

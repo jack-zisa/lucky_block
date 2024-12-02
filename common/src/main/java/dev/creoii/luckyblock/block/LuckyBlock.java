@@ -95,6 +95,10 @@ public class LuckyBlock extends BlockWithEntity {
         }
 
         Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.isDebug()) {
+            LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getLeft());
+        }
         return pair.getRight();
     }
 

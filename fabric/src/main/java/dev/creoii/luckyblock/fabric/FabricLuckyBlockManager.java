@@ -43,7 +43,8 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                                     if (element.isJsonObject()) {
                                         DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
                                         dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", string)).ifPresent(container -> {
-                                            LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
+                                            if (container.isDebug())
+                                                LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
 
                                             AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
                                             Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useBlockPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));

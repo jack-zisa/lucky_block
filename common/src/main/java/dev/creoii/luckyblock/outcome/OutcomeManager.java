@@ -85,7 +85,8 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
             if (container == null)
                 continue;
 
-            LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
+            if (container.isDebug())
+                LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
             /**
              * FOR LATER:
              * - Define a custom prefix in lucky_block.json, which will then be used later for this
