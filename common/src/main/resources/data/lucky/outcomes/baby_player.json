@@ -1,6 +1,5 @@
 {
   "type": "lucky:entity",
-  "chance": 1000,
   "entity_type": "minecraft:armor_stand",
   "nbt": {
     "Small": true,

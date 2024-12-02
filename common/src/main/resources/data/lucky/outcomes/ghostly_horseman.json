@@ -34,7 +34,7 @@
                         "id": "minecraft:bow",
                         "Count": 1,
                         "tag": {
-                          "enchantments": [
+                          "Enchantments": [
                             {
                               "id": "minecraft:sharpness",
                               "lvl": 5
@@ -48,7 +48,7 @@
                         "id": "minecraft:chainmail_boots",
                         "Count": 1,
                         "tag": {
-                          "enchantments": [
+                          "Enchantments": [
                             {
                               "id": "minecraft:protection",
                               "lvl": 4
@@ -60,7 +60,7 @@
                         "id": "minecraft:chainmail_leggings",
                         "Count": 1,
                         "tag": {
-                          "enchantments": [
+                          "Enchantments": [
                             {
                               "id": "minecraft:protection",
                               "lvl": 4
@@ -72,7 +72,7 @@
                         "id": "minecraft:chainmail_chestplate",
                         "Count": 1,
                         "tag": {
-                          "enchantments": [
+                          "Enchantments": [
                             {
                               "id": "minecraft:protection",
                               "lvl": 4
@@ -84,7 +84,7 @@
                         "id": "minecraft:chainmail_helmet",
                         "Count": 1,
                         "tag": {
-                          "enchantments": [
+                          "Enchantments": [
                             {
                               "id": "minecraft:protection",
                               "lvl": 4
