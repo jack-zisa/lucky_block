@@ -13,16 +13,13 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -83,16 +80,24 @@ public class LuckyBlock extends BlockWithEntity {
             }
         }
 
-        return LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player).getRight();
+        Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.isDebug()) {
+            LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getLeft());
+        }
+        return pair.getRight();
     }
 
     @Override
     public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!world.isClient) {
-            Outcome.Context context = new Outcome.Context(world, pos, state, player);
-            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
-            if (outcome != null) {
-                outcome.runOutcome(context);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.hasActivation(LuckyBlockContainer.Activation.BREAK)) {
+            if (!world.isClient) {
+                Outcome.Context context = new Outcome.Context(world, pos, state, player);
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
+                if (outcome != null) {
+                    outcome.runOutcome(context);
+                }
             }
         }
         return super.onBreak(world, pos, state, player);
@@ -101,7 +106,7 @@ public class LuckyBlock extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
-        if (container != null && container.doesRightClickOpen()) {
+        if (container != null && container.hasActivation(LuckyBlockContainer.Activation.RIGHT_CLICK)) {
             if (!world.isClient) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, player);
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
@@ -117,24 +122,30 @@ public class LuckyBlock extends BlockWithEntity {
 
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-            Outcome.Context context = new Outcome.Context(world, pos, state, null);
-            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
-            if (outcome != null) {
-                world.breakBlock(pos, false);
-                outcome.runOutcome(context);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
+            if (!world.isClient && world.isReceivingRedstonePower(pos)) {
+                Outcome.Context context = new Outcome.Context(world, pos, state, null);
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                if (outcome != null) {
+                    world.breakBlock(pos, false);
+                    outcome.runOutcome(context);
+                }
             }
         }
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-            Outcome.Context context = new Outcome.Context(world, pos, state, null);
-            Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
-            if (outcome != null) {
-                world.breakBlock(pos, false);
-                outcome.runOutcome(context);
+        LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
+        if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
+            if (!world.isClient && world.isReceivingRedstonePower(pos)) {
+                Outcome.Context context = new Outcome.Context(world, pos, state, null);
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                if (outcome != null) {
+                    world.breakBlock(pos, false);
+                    outcome.runOutcome(context);
+                }
             }
         }
     }

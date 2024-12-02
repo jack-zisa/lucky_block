@@ -1,5 +1,10 @@
 {
   "id": "lucky:lucky_block",
+  "activations": [
+    "right_click",
+    "break",
+    "power"
+  ],
   "item_luck": {
     "minecraft:diamond": 12,
     "minecraft:diamond_block": 100,
@@ -18,5 +23,6 @@
     "minecraft:fermented_spider_eye": -20,
     "minecraft:poisonous_potato": -10,
     "minecraft:pufferfish": -20
-  }
+  },
+  "debug": true
 }
