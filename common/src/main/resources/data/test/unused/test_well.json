@@ -1,6 +1,0 @@
-{
-  "type": "lucky:structure",
-  "chance": 10,
-  "structure": "lucky:wishing_well",
-  "pos": ["{blockX}", "{blockY} - 2", "{blockZ}"]
-}
