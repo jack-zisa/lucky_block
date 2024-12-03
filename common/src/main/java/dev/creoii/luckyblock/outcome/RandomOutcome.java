@@ -16,7 +16,7 @@ public class RandomOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
-                Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
+                Outcome.BASE_CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 Codec.BOOL.fieldOf("duplicates").orElse(false).forGetter(outcome -> outcome.duplicates)
         ).apply(instance, RandomOutcome::new);

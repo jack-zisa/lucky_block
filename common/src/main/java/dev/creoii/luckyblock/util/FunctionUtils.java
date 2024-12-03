@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.util;
 import com.ezylang.evalex.Expression;
 import com.google.common.collect.ImmutableMap;
 import dev.creoii.luckyblock.outcome.Outcome;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.Direction;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public class FunctionUtils {
             .put("randomWoodType", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
             .put("randomWood", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
             .put("randomAxis", context -> String.valueOf(Direction.Axis.pickRandomAxis(context.world().getRandom())))
+            .put("randomBlock", context -> String.valueOf(Registries.BLOCK.getRandom(context.world().getRandom()).get().getIdAsString()))
+            .put("randomItem", context -> String.valueOf(Registries.ITEM.getRandom(context.world().getRandom()).get().getIdAsString()))
+            .put("randomEntityType", context -> String.valueOf(Registries.ENTITY_TYPE.getRandom(context.world().getRandom()).get().getIdAsString()))
             .build();
     public static final Map<String, Function<Outcome.Context, Integer>> INT_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Integer>>()
             .put("playerPosX", context -> context.player() == null ? context.pos().getX() : context.player().getBlockX())

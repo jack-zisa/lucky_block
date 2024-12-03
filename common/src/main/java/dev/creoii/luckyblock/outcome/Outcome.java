@@ -1,5 +1,7 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
@@ -8,16 +10,21 @@ import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class Outcome {
-    public static final Codec<Outcome> CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
+    public static final Codec<Outcome> BASE_CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
+    public static final Codec<Outcome> EITHER_CODEC = Codec.either(Reference.CODEC, BASE_CODEC).xmap(either -> {
+        return either.map(Reference::getOutcome, Function.identity());
+    }, Either::right);
     private final OutcomeType type;
     private final int luck;
     private final float chance;
@@ -105,4 +112,36 @@ public abstract class Outcome {
     public abstract void run(Context context);
 
     public record Context(World world, BlockPos pos, BlockState state, PlayerEntity player) {}
+
+    public static class Reference extends Outcome {
+        public static final Codec<Reference> CODEC = Identifier.CODEC.xmap(Reference::new, reference -> reference.id);
+        private final Identifier id;
+        private Context context;
+
+        public Reference(Identifier id) {
+            super(OutcomeType.NONE);
+            this.id = id;
+        }
+
+        public Identifier getId() {
+            return id;
+        }
+
+        public void setContext(Context context) {
+            this.context = context;
+        }
+
+        @Nullable
+        public Outcome getOutcome() {
+            if (context == null)
+                return null;
+            JsonObject object = LuckyBlockMod.OUTCOME_MANAGER.getOutcomeById(id);
+            if (object == null)
+                return null;
+            return LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(object, context);
+        }
+
+        @Override
+        public void run(Context context) {}
+    }
 }

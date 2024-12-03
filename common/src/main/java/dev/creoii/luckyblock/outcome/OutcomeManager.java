@@ -232,8 +232,11 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
     @Nullable
     public Outcome parseJsonOutcome(JsonObject object, Outcome.Context context) {
         JsonObject parsedObject = GSON.fromJson(FunctionUtils.parseString(object.toString(), context), JsonObject.class);
-        DataResult<Outcome> dataResult = Outcome.CODEC.parse(JsonOps.INSTANCE, parsedObject);
+        DataResult<Outcome> dataResult = Outcome.EITHER_CODEC.parse(JsonOps.INSTANCE, parsedObject);
         Optional<Outcome> outcome = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing outcome: {}", string));
+        if (outcome.isPresent() && outcome.get() instanceof Outcome.Reference reference) {
+            reference.setContext(context);
+        }
         return outcome.orElse(null);
     }
 }

@@ -14,7 +14,7 @@ public class GroupOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
-                Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes)
+                Outcome.EITHER_CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes)
         ).apply(instance, GroupOutcome::new);
     });
     private final List<Outcome> outcomes;
@@ -30,7 +30,15 @@ public class GroupOutcome extends Outcome {
         // sort by chance
         runOutcomes.sort((o1, o2) -> (int) ((o1.getWeightProvider().get(context.world().getRandom()) - o2.getWeightProvider().get(context.world().getRandom())) * 100f));
         for (Outcome outcome : runOutcomes) {
-            outcome.runOutcome(context);
+            if (outcome instanceof Reference reference) {
+                reference.setContext(context);
+                Outcome ref = reference.getOutcome();
+                System.out.println("found reference: null? " + (ref == null));
+                if (ref != null) {
+                    System.out.println("running reference outcome: " + reference.getId());
+                    ref.runOutcome(context);
+                }
+            } else outcome.runOutcome(context);
         }
     }
 }

@@ -1,0 +1,9 @@
+{
+  "type": "lucky:group",
+  "chance": 1000,
+  "outcomes": [
+    "lucky:buckets",
+    "lucky:bedrock_problem",
+    "lucky:killer_bunny"
+  ]
+}
