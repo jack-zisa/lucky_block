@@ -105,7 +105,7 @@ public class LuckyBlock extends BlockWithEntity {
     @Override
     public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
-        if (container != null && container.hasActivation(LuckyBlockContainer.Activation.BREAK)) {
+        if (container != null && ((container.hasActivation(LuckyBlockContainer.Activation.BREAK_SURVIVAL) && !player.isCreative()) || (container.hasActivation(LuckyBlockContainer.Activation.BREAK_CREATIVE) && player.isCreative()))) {
             if (!world.isClient) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, player);
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
