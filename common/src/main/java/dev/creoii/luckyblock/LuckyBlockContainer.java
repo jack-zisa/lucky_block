@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LuckyBlockContainer {
-    private static final List<Activation> DEFAULT_ACTIVATIONS = List.of(Activation.BREAK, Activation.POWER);
+    private static final List<Activation> DEFAULT_ACTIVATIONS = List.of(Activation.BREAK_SURVIVAL, Activation.POWER);
     public static final Codec<LuckyBlockContainer> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
                 Activation.CODEC.listOf().fieldOf("activations").orElse(DEFAULT_ACTIVATIONS).forGetter(container -> container.activations),
@@ -122,7 +122,8 @@ public class LuckyBlockContainer {
     }
 
     public enum Activation implements StringIdentifiable {
-        BREAK,
+        BREAK_CREATIVE,
+        BREAK_SURVIVAL,
         RIGHT_CLICK,
         POWER;
 
