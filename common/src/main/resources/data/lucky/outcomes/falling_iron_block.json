@@ -13,7 +13,7 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:large_smoke"
       },
       "count": 500,
