@@ -29,7 +29,7 @@
     },
     {
       "type": "lucky:particle",
-      "particle_type": {
+      "particle": {
         "type": "minecraft:heart",
         "count": 20
       },
