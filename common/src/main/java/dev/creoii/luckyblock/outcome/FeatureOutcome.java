@@ -9,6 +9,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
@@ -20,6 +21,7 @@ public class FeatureOutcome extends Outcome {
     public static final MapCodec<FeatureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("feature").forGetter(outcome -> outcome.featureId),
@@ -29,8 +31,8 @@ public class FeatureOutcome extends Outcome {
     private final Identifier featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
-        super(OutcomeType.FEATURE, luck, chance, delay, pos, false);
+    public FeatureOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
+        super(OutcomeType.FEATURE, luck, chance, weightProvider, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;
     }

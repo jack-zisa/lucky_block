@@ -8,6 +8,7 @@ import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -17,6 +18,7 @@ public class BlockOutcome extends Outcome {
     public static final MapCodec<BlockOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
+                createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
@@ -28,8 +30,8 @@ public class BlockOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> blockEntity;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
-        super(OutcomeType.BLOCK, luck, chance, delay, pos, false);
+    public BlockOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
+        super(OutcomeType.BLOCK, luck, chance, weightProvider, delay, pos, false);
         this.stateProvider = stateProvider;
         this.blockEntity = blockEntity;
         this.shape = shape;
