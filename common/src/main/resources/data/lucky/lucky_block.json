@@ -2,7 +2,8 @@
   "id": "lucky:lucky_block",
   "activations": [
     "right_click",
-    "break",
+    "break_creative",
+    "break_survival",
     "power"
   ],
   "item_luck": {
