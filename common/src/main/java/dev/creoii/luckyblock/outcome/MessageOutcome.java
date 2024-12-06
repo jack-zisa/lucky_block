@@ -12,7 +12,7 @@ import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.Optional;
 
-public class MessageOutcome extends Outcome {
+public class MessageOutcome extends Outcome<NoneOutcome.NoneInfo> {
     public static final MapCodec<MessageOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -32,7 +32,7 @@ public class MessageOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<NoneOutcome.NoneInfo> context) {
         context.world().getPlayers().forEach(player -> {
             if (player.getWorld() == context.world()) {
                 if (message.getString() == null)

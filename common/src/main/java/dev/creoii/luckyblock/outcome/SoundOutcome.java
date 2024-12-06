@@ -11,11 +11,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.List;
 import java.util.Optional;
 
-public class SoundOutcome extends Outcome {
+public class SoundOutcome extends Outcome<SoundOutcome.SoundInfo> {
     public static final MapCodec<SoundOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -39,10 +41,12 @@ public class SoundOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<SoundInfo> context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
         float volume = this.volume.get(context.world().getRandom());
         float pitch = this.pitch.get(context.world().getRandom());
+        context.info().volume.setValue(volume);
+        context.info().pitch.setValue(pitch);
 
         double d = MathHelper.square(soundEvent.getDistanceToTravel(volume));
 
@@ -51,6 +55,7 @@ public class SoundOutcome extends Outcome {
         }).toList();
 
         for (ServerPlayerEntity serverPlayer : players) {
+            context.info().players.add(serverPlayer);
             float j;
             while (true) {
                 double e = pos.x - serverPlayer.getX();
@@ -66,4 +71,6 @@ public class SoundOutcome extends Outcome {
             serverPlayer.playSoundToPlayer(soundEvent, SoundCategory.NEUTRAL, j, pitch);
         }
     }
+
+    public record SoundInfo(Mutable<Vec3d> pos, MutableFloat volume, MutableFloat pitch, List<ServerPlayerEntity> players) implements ContextInfo { }
 }

@@ -5,7 +5,7 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public record OutcomeType(MapCodec<? extends Outcome> codec) {
+public record OutcomeType(MapCodec<? extends Outcome<? extends ContextInfo>> codec) {
     public static final OutcomeType NONE = new OutcomeType(NoneOutcome.CODEC);
     public static final OutcomeType RANDOM = new OutcomeType(RandomOutcome.CODEC);
     public static final OutcomeType GROUP = new OutcomeType(GroupOutcome.CODEC);

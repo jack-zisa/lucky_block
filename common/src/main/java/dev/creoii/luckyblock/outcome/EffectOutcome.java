@@ -9,9 +9,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.math.intprovider.IntProvider;
 
+import java.util.List;
 import java.util.Optional;
 
-public class EffectOutcome extends Outcome {
+public class EffectOutcome extends Outcome<EffectOutcome.EffectInfo> {
     public static final MapCodec<EffectOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -35,14 +36,22 @@ public class EffectOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<EffectInfo> context) {
         if (shape.isPresent()) {
             shape.get().getEntitiesWithin(context, getPos(context).getVec(context), entity -> {
                 if (entity instanceof LivingEntity living) {
                     return !excludePlayer || living != context.player();
                 }
                 return false;
-            }).forEach(entity -> ((LivingEntity) entity).addStatusEffect(statusEffectInstance));
-        } else if (!excludePlayer) context.player().addStatusEffect(statusEffectInstance);
+            }).forEach(entity -> {
+                context.info().entities.add((LivingEntity) entity);
+                ((LivingEntity) entity).addStatusEffect(statusEffectInstance);
+            });
+        } else if (!excludePlayer) {
+            context.info().entities.add(context.player());
+            context.player().addStatusEffect(statusEffectInstance);
+        }
     }
+
+    public record EffectInfo(List<LivingEntity> entities) implements ContextInfo {}
 }

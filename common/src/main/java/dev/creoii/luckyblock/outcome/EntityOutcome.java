@@ -14,9 +14,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
-public class EntityOutcome extends Outcome {
+public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> {
     public static final MapCodec<EntityOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -41,19 +42,20 @@ public class EntityOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<EntityInfo> context) {
         Vec3d spawnPos = getPos(context).getVec(context);
+        context.info().spawnPositions.add(spawnPos);
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
             if (shouldReinit()) {
-                spawnPos = getPos(context).getVec(context);
+                context.info().spawnPositions.add(spawnPos = getPos(context).getVec(context));
             }
         }
     }
 
-    private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
+    private Entity spawnEntity(EntityType<?> entityType, Context<EntityInfo> context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
         Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
         if (entity != null) {
             if (nbtCompound != null) {
@@ -85,4 +87,6 @@ public class EntityOutcome extends Outcome {
         }
         return entity;
     }
+
+    public record EntityInfo(List<Entity> entities, List<Vec3d> spawnPositions) implements ContextInfo {}
 }

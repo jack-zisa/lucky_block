@@ -1,13 +1,13 @@
 package dev.creoii.luckyblock.util;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.projectile.WindChargeEntity;
+import net.minecraft.nbt.*;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
@@ -27,6 +27,55 @@ import org.jetbrains.annotations.Nullable;
 public class LuckyBlockCodecs {
     public static final ConstantIntProvider ONE = ConstantIntProvider.create(1);
     public static final ConstantFloatProvider ONE_F = ConstantFloatProvider.create(1f);
+
+    public static final Codec<NbtCompound> NBT_COMPOUND_CODEC = Codec.PASSTHROUGH.comapFlatMap(dynamic -> {
+        NbtElement element = dynamic.convert(NbtOps.INSTANCE).getValue();
+        if (element instanceof NbtCompound nbt) {
+            return DataResult.success(nbt == dynamic.getValue() ? nbt.copy() : nbt);
+        } else return DataResult.error(() -> "Not a compound tag: " + element);
+        }, nbt -> new Dynamic<>(NbtOps.INSTANCE, nbt.copy()));
+
+    public static final Codec<NbtList> NBT_LIST_CODEC = Codec.PASSTHROUGH.comapFlatMap(dynamic -> {
+        NbtElement element = dynamic.convert(NbtOps.INSTANCE).getValue();
+        if (element instanceof NbtList list) {
+            return DataResult.success(list);
+        } else return DataResult.error(() -> "Not a nbt list: " + element);
+        }, nbt -> new Dynamic<>(NbtOps.INSTANCE, nbt));
+
+    public static final Codec<NbtElement> NBT_ELEMENT_CODEC = Codec.PASSTHROUGH.flatXmap(
+            dynamic -> {
+                byte type = dynamic.convert(NbtOps.INSTANCE).getValue().getType();
+                switch (type) {
+                    case NbtElement.INT_TYPE -> Codec.INT.parse(dynamic);
+                    case NbtElement.STRING_TYPE -> Codec.STRING.parse(dynamic);
+                    case NbtElement.DOUBLE_TYPE -> Codec.DOUBLE.parse(dynamic);
+                    case NbtElement.BYTE_TYPE -> Codec.BYTE.parse(dynamic);
+                    case NbtElement.SHORT_TYPE -> Codec.SHORT.parse(dynamic);
+                    case NbtElement.FLOAT_TYPE -> Codec.FLOAT.parse(dynamic);
+                    case NbtElement.LONG_TYPE -> Codec.LONG.parse(dynamic);
+                    case NbtElement.COMPOUND_TYPE -> NBT_COMPOUND_CODEC.parse(dynamic);
+                    case NbtElement.LIST_TYPE -> NBT_LIST_CODEC.parse(dynamic);
+                    default -> throw new IllegalArgumentException("Unsupported NBT type: " + type);
+                }
+                throw new IllegalArgumentException("Error parsing nbt element: " + dynamic);
+            },
+            element -> {
+                byte type = element.getType();
+                switch (type) {
+                    case NbtElement.INT_TYPE -> Codec.INT.encodeStart(NbtOps.INSTANCE, ((NbtInt) element).intValue());
+                    case NbtElement.STRING_TYPE -> Codec.STRING.encodeStart(NbtOps.INSTANCE, element.asString());
+                    case NbtElement.DOUBLE_TYPE -> Codec.DOUBLE.encodeStart(NbtOps.INSTANCE, ((NbtDouble) element).doubleValue());
+                    case NbtElement.BYTE_TYPE -> Codec.BYTE.encodeStart(NbtOps.INSTANCE, ((NbtByte) element).byteValue());
+                    case NbtElement.SHORT_TYPE -> Codec.SHORT.encodeStart(NbtOps.INSTANCE, ((NbtShort) element).shortValue());
+                    case NbtElement.FLOAT_TYPE -> Codec.FLOAT.encodeStart(NbtOps.INSTANCE, ((NbtFloat) element).floatValue());
+                    case NbtElement.LONG_TYPE -> Codec.LONG.encodeStart(NbtOps.INSTANCE, ((NbtLong) element).longValue());
+                    case NbtElement.COMPOUND_TYPE -> NBT_COMPOUND_CODEC.encodeStart(NbtOps.INSTANCE, (NbtCompound) element);
+                    case NbtElement.LIST_TYPE -> NBT_LIST_CODEC.encodeStart(NbtOps.INSTANCE, (NbtList) element);
+                    default -> throw new IllegalArgumentException("Unsupported NBT type: " + type);
+                }
+                throw new IllegalArgumentException("Error parsing nbt element: " + element);
+            }
+    );
 
     public record Explosion(String explosionBehavior, float power, boolean createFire, String explosionSourceType, String destructionType, ParticleEffect particle, ParticleEffect emitterParticle, RegistryEntry<SoundEvent> soundEvent) {
         public static final MapCodec<Explosion> CODEC = RecordCodecBuilder.mapCodec(instance -> {

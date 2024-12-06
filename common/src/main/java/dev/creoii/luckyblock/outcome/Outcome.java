@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 import java.util.Optional;
 import java.util.function.Function;
 
-public abstract class Outcome {
-    public static final Codec<Outcome> CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
+public abstract class Outcome<T extends ContextInfo> {
+    public static final Codec<Outcome<? extends ContextInfo>> CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
     private final OutcomeType type;
     private final int luck;
     private final float chance;
@@ -68,7 +68,7 @@ public abstract class Outcome {
         return pos;
     }
 
-    public VecProvider getPos(Context context) {
+    public VecProvider getPos(Context<T> context) {
         return pos.orElseGet(() -> new ConstantVecProvider(context.pos().toCenterPos()));
     }
 
@@ -96,13 +96,13 @@ public abstract class Outcome {
         return Codec.BOOL.fieldOf("reinit").orElse(false).forGetter(getter);
     }
 
-    public void runOutcome(Context context) {
+    public void runOutcome(Context<T> context) {
         if (getDelay() == 0) {
             run(context);
         } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay());
     }
 
-    public abstract void run(Context context);
+    public abstract void run(Context<T> context);
 
-    public record Context(World world, BlockPos pos, BlockState state, PlayerEntity player) {}
+    public record Context<T extends ContextInfo>(World world, BlockPos pos, BlockState state, PlayerEntity player, T info) { }
 }

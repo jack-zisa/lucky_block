@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util;
 
 import com.ezylang.evalex.Expression;
 import com.google.common.collect.ImmutableMap;
+import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.Direction;
 
@@ -16,7 +17,7 @@ public class FunctionUtils {
     private static final Pattern MATH_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?([*/+-]\\d+(\\.\\d+)?)+");
     private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
     private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
-    public static final Map<String, Function<Outcome.Context, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
+    public static final Map<String, Function<Outcome.Context<? extends ContextInfo>, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context<? extends ContextInfo>, String>>()
             .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().getName())
             .put("playerUUID", context -> context.player() == null ? "" : String.valueOf(context.player().getUuidAsString()))
             .put("playerDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getFacing().asString()))
@@ -29,7 +30,7 @@ public class FunctionUtils {
             .put("randomWood", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
             .put("randomAxis", context -> String.valueOf(Direction.Axis.pickRandomAxis(context.world().getRandom())))
             .build();
-    public static final Map<String, Function<Outcome.Context, Integer>> INT_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Integer>>()
+    public static final Map<String, Function<Outcome.Context<? extends ContextInfo>, Integer>> INT_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context<? extends ContextInfo>, Integer>>()
             .put("playerPosX", context -> context.player() == null ? context.pos().getX() : context.player().getBlockX())
             .put("playerPosY", context -> context.player() == null ? context.pos().getY() : context.player().getBlockY())
             .put("playerPosZ", context -> context.player() == null ? context.pos().getZ() : context.player().getBlockZ())
@@ -38,7 +39,7 @@ public class FunctionUtils {
             .put("blockPosZ", context -> context.pos().getZ())
             .put("randomRGBColor", context -> context.world().getRandom().nextInt(16777215))
             .build();
-    public static final Map<String, Function<Outcome.Context, Double>> DOUBLE_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Double>>()
+    public static final Map<String, Function<Outcome.Context<? extends ContextInfo>, Double>> DOUBLE_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context<? extends ContextInfo>, Double>>()
             .put("playerVecX", context -> context.player() == null ? context.pos().toCenterPos().getX() : context.player().getX())
             .put("playerVecY", context -> context.player() == null ? context.pos().toCenterPos().getY() : context.player().getY())
             .put("playerVecZ", context -> context.player() == null ? context.pos().toCenterPos().getZ() : context.player().getZ())
@@ -62,7 +63,7 @@ public class FunctionUtils {
      * @param string a json object in string format
      * @return the string with all parameters and functions replaced with their values, based on the context
      */
-    public static String parseString(String string, Outcome.Context context) {
+    public static String parseString(String string, Outcome.Context<? extends ContextInfo> context) {
         StringBuilder result = new StringBuilder();
         Matcher matcher = PARAM_PATTERN.matcher(string);
 

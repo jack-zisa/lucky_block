@@ -11,10 +11,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.Optional;
 
-public class ParticleOutcome extends Outcome {
+public class ParticleOutcome extends Outcome<ParticleOutcome.ParticleInfo> {
     public static final MapCodec<ParticleOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -42,14 +44,17 @@ public class ParticleOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<ParticleInfo> context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
         float speed = this.speed.map(floatProvider -> floatProvider.get(context.world().getRandom())).orElse(0f);
+        context.info().pos.setValue(pos);
+        context.info().speed.setValue(speed);
 
         Vec3d velocity = Vec3d.ZERO;
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
         }
+        context.info().velocity.setValue(velocity);
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
@@ -64,4 +69,6 @@ public class ParticleOutcome extends Outcome {
             }
         }
     }
+
+    public record ParticleInfo(Mutable<Vec3d> pos, MutableFloat speed, Mutable<Vec3d> velocity) implements ContextInfo { }
 }

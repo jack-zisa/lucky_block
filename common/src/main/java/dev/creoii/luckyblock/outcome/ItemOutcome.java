@@ -16,11 +16,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.apache.commons.lang3.mutable.Mutable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemOutcome extends Outcome {
+public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
     public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -53,11 +55,13 @@ public class ItemOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<ItemInfo> context) {
         Vec3d spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
+        context.info().spawnPos.setValue(spawnPos);
         Vec3d velocity = null;
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
+            context.info().velocity.setValue(velocity);
         }
         int total = count.get(context.world().getRandom()) * stack.getCount();
 
@@ -81,6 +85,7 @@ public class ItemOutcome extends Outcome {
                         velocity = this.velocity.get().getVec(context);
                     } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
 
+                    context.info().items.add(entity);
                     context.world().spawnEntity(entity);
 
                     spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
@@ -108,6 +113,7 @@ public class ItemOutcome extends Outcome {
                     entity.setVelocity(velocity);
                 } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
 
+                context.info().items.add(entity);
                 context.world().spawnEntity(entity);
             }
         }
@@ -131,8 +137,11 @@ public class ItemOutcome extends Outcome {
                     entity.setVelocity(this.velocity.get().getVec(context));
                 } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
 
+                context.info().items.add(entity);
                 context.world().spawnEntity(entity);
             }
         }
     }
+
+    public record ItemInfo(Mutable<Vec3d> spawnPos, Mutable<Vec3d> velocity, List<ItemEntity> items) implements ContextInfo {}
 }

@@ -20,10 +20,11 @@ import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.structure.Structure;
+import org.apache.commons.lang3.mutable.Mutable;
 
 import java.util.Optional;
 
-public class StructureOutcome extends Outcome {
+public class StructureOutcome extends Outcome<StructureOutcome.StructureInfo> {
     public static final Identifier EMPTY_TARGET = Identifier.of("minecraft", "empty");
     public static final MapCodec<StructureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
@@ -48,16 +49,19 @@ public class StructureOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<StructureInfo> context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
             BlockPos pos = getPos(context).getPos(context);
+            context.info().pos.setValue(pos);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
             Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.getOptional(RegistryKeys.TEMPLATE_POOL).get().getEntry(structureId);
             if (template.isPresent()) {
+                context.info().template.setValue(template.get());
                 if (!template.get().place(serverWorld, pos, pos, structurePlacementData.create(), StructureBlockBlockEntity.createRandom(serverWorld.getSeed()), 2)) {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
                 }
             } else if (pool.isPresent()) {
+                context.info().pool.setValue(pool.get());
                 if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.orElse(LuckyBlockCodecs.ONE).get(context.world().getRandom()), pos, false)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }
@@ -70,8 +74,12 @@ public class StructureOutcome extends Outcome {
                 ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
                 Chunk chunk = serverWorld.getChunk(pos);
                 StructureStart start = structure.createStructureStart(dynamicRegistryManager, chunkGenerator, chunkGenerator.getBiomeSource(), serverWorld.getChunkManager().getNoiseConfig(), serverWorld.getStructureTemplateManager(), serverWorld.getSeed(), chunk.getPos(), 0, serverWorld, biome -> true);
+                context.info().structure.setValue(structure);
+                context.info().start.setValue(start);
                 start.place(serverWorld, serverWorld.getStructureAccessor(), chunkGenerator, serverWorld.getRandom(), start.getBoundingBox(), chunk.getPos());
             }
         }
     }
+
+    public record StructureInfo(Mutable<BlockPos> pos, Mutable<StructureTemplate> template, Mutable<RegistryEntry.Reference<StructurePool>> pool, Mutable<Structure> structure, Mutable<StructureStart> start) implements ContextInfo {}
 }

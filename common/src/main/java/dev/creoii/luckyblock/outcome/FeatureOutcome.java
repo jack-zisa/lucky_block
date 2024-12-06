@@ -13,11 +13,12 @@ import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
+import org.apache.commons.lang3.mutable.Mutable;
 
 import java.util.List;
 import java.util.Optional;
 
-public class FeatureOutcome extends Outcome {
+public class FeatureOutcome extends Outcome<FeatureOutcome.FeatureInfo> {
     public static final MapCodec<FeatureOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -38,16 +39,19 @@ public class FeatureOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<FeatureInfo> context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
             ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().get(featureId);
+            context.info().configuredFeature.setValue(configuredFeature);
             if (configuredFeature == null) {
                 LuckyBlockMod.LOGGER.error("Feature identifier '{}' is invalid", featureId);
                 return;
             }
             BlockPos place = getPos(context).getPos(context);
+            context.info().pos.setValue(place);
             if (!placementModifiers.isEmpty()) {
                 PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().getEntry(featureId).get(), placementModifiers);
+                context.info().placedFeature.setValue(placedFeature);
                 if (!placedFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate feature '{}' at '{}'", featureId, place.toShortString());
                 }
@@ -56,4 +60,6 @@ public class FeatureOutcome extends Outcome {
             }
         }
     }
+
+    public record FeatureInfo(Mutable<ConfiguredFeature<?, ?>> configuredFeature, Mutable<PlacedFeature> placedFeature, Mutable<BlockPos> pos) implements ContextInfo {}
 }

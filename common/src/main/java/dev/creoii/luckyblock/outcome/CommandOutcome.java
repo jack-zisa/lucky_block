@@ -11,7 +11,7 @@ import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.Optional;
 
-public class CommandOutcome extends Outcome {
+public class CommandOutcome extends Outcome<NoneOutcome.NoneInfo> {
     public static final MapCodec<CommandOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -29,7 +29,7 @@ public class CommandOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
+    public void run(Context<NoneOutcome.NoneInfo> context) {
         MinecraftServer server = context.world().getServer();
         if (server != null) {
             ServerCommandSource source = server.getCommandSource();

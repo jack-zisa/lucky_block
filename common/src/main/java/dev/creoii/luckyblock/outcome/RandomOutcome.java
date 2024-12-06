@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RandomOutcome extends Outcome {
+public class RandomOutcome extends Outcome<NoneOutcome.NoneInfo> {
     public static final MapCodec<RandomOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -21,11 +21,11 @@ public class RandomOutcome extends Outcome {
                 Codec.BOOL.fieldOf("duplicates").orElse(false).forGetter(outcome -> outcome.duplicates)
         ).apply(instance, RandomOutcome::new);
     });
-    private final List<Outcome> outcomes;
+    private final List<Outcome<? extends ContextInfo>> outcomes;
     private final IntProvider count;
     private final boolean duplicates;
 
-    public RandomOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
+    public RandomOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome<? extends ContextInfo>> outcomes, IntProvider count, boolean duplicates) {
         super(OutcomeType.RANDOM, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes;
         this.count = count;
@@ -33,8 +33,8 @@ public class RandomOutcome extends Outcome {
     }
 
     @Override
-    public void run(Context context) {
-        List<Outcome> runOutcomes = new ArrayList<>(outcomes);
+    public void run(Context<NoneOutcome.NoneInfo> context) {
+        List<Outcome<? extends ContextInfo>> runOutcomes = new ArrayList<>(outcomes);
         int count = this.count.get(context.world().getRandom());
         if (!duplicates) {
             count = Math.clamp(count, 0, runOutcomes.size());
@@ -45,7 +45,7 @@ public class RandomOutcome extends Outcome {
             List<Double> weights = new ArrayList<>();
             weights.add(0d);
 
-            for (Outcome outcome : runOutcomes) {
+            for (Outcome<? extends ContextInfo> outcome : runOutcomes) {
                 double outcomeWeight;
                 try {
                     outcomeWeight = outcome.getWeightProvider().get(context.world().getRandom());
@@ -68,7 +68,7 @@ public class RandomOutcome extends Outcome {
                 index = weights.size() - 2;
             }
 
-            Outcome selected = runOutcomes.get(index);
+            Outcome<? extends ContextInfo> selected = runOutcomes.get(index);
             selected.runOutcome(context);
 
             if (!duplicates) {
