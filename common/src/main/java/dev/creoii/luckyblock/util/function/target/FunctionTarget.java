@@ -4,10 +4,9 @@ import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -36,7 +35,7 @@ public abstract class FunctionTarget<T extends Target<?>> {
     }
 
     public static List<Target<?>> getItemStackTargets(ContextInfo info) {
-        return info.getTargets().stream().filter(o -> o instanceof ItemStackTarget).map(o -> (ItemStackTarget) o).collect(Collectors.toList());
+        return info.getTargets().stream().filter(o -> o instanceof ItemStackWrapper).map(o -> (ItemStackWrapper) o).collect(Collectors.toList());
     }
 
     public static List<Target<?>> getEntityTargets(ContextInfo info) {
@@ -100,22 +99,6 @@ public abstract class FunctionTarget<T extends Target<?>> {
             if (nbt instanceof NbtCompound nbtCompound)
                 entity.readNbt(nbtCompound);
             return entity;
-        }
-    }
-
-    public record ItemStackTarget(FunctionObjectCodecs.ItemStackWrapper stack) implements ComponentsTarget<FunctionObjectCodecs.ItemStackWrapper> {
-        @Override
-        public Target<FunctionObjectCodecs.ItemStackWrapper> update(Object newObject) {
-            if (newObject instanceof FunctionObjectCodecs.ItemStackWrapper newStack) {
-                return new ItemStackTarget(newStack);
-            }
-            throw new IllegalArgumentException("Attempted updating itemstack target with non-itemstack value.");
-        }
-
-        @Override
-        public FunctionObjectCodecs.ItemStackWrapper setComponents(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ComponentChanges componentChanges) {
-            stack.stack().applyChanges(componentChanges);
-            return new FunctionObjectCodecs.ItemStackWrapper(stack.stack(), List.of());
         }
     }
 }

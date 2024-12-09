@@ -6,7 +6,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
- * TODO: random, all_of, rename to has_*
+ * TODO: random, all_of, rename to has_*, in_tag, by_id, tintable items/blocks/entities, growable blocks/entities, breedable entities, tameable entities
  */
 public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType NONE = new FunctionTargetType(NoneFunctionTarget.CODEC);

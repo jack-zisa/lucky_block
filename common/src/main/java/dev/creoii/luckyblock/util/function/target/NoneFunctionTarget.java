@@ -15,7 +15,7 @@ public class NoneFunctionTarget extends FunctionTarget<FunctionTarget.NoneTarget
     }
 
     @Override
-    public List<NoneTarget> getTargets(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+    public List<FunctionTarget.NoneTarget> getTargets(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         return List.of();
     }
 }
