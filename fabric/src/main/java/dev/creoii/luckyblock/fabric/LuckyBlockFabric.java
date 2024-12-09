@@ -5,6 +5,7 @@ import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.util.function.FunctionType;
+import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.fabricmc.api.ModInitializer;
@@ -82,6 +83,7 @@ public final class LuckyBlockFabric implements ModInitializer {
     public void register() {
         OutcomeType.init();
         FunctionType.init();
+        FunctionTargetType.init();
         ShapeType.init();
         VecProviderType.init();
 

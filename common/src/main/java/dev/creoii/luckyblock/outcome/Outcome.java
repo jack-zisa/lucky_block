@@ -12,6 +12,7 @@ import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,6 +26,7 @@ public abstract class Outcome<T extends ContextInfo> {
     private final int delay;
     private final Optional<VecProvider> pos;
     private final boolean reinit;
+    private Context<T> context;
 
     public Outcome(OutcomeType type) {
         this(type, 0, 1f, LuckyBlockCodecs.ONE, 0, Optional.empty(), false);
@@ -56,10 +58,6 @@ public abstract class Outcome<T extends ContextInfo> {
         return weightProvider;
     }
 
-    public boolean shouldReinit() {
-        return reinit;
-    }
-
     public Integer getDelay() {
         return delay;
     }
@@ -70,6 +68,20 @@ public abstract class Outcome<T extends ContextInfo> {
 
     public VecProvider getPos(Context<T> context) {
         return pos.orElseGet(() -> new ConstantVecProvider(context.pos().toCenterPos()));
+    }
+
+    public boolean shouldReinit() {
+        return reinit;
+    }
+
+    public Context<T> getContext() {
+        return context;
+    }
+
+    public void setContext(Context<T> context, @Nullable T info) {
+        if (info != null) {
+            this.context = context.withInfo(info);
+        } else this.context = context;
     }
 
     public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
@@ -97,12 +109,71 @@ public abstract class Outcome<T extends ContextInfo> {
     }
 
     public void runOutcome(Context<T> context) {
+        this.context = create(context);
         if (getDelay() == 0) {
-            run(context);
-        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay());
+            run(this.context);
+        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, this.context, getDelay());
     }
 
+    /**
+     * Prepare objects used in {@link Outcome#run(Context)}.
+     */
+    public abstract Context<T> create(Context<T> context);
+
+    /**
+     * Execute outcome.
+     */
     public abstract void run(Context<T> context);
 
-    public record Context<T extends ContextInfo>(World world, BlockPos pos, BlockState state, PlayerEntity player, T info) { }
+    @SuppressWarnings("unchecked")
+    public void runOutcomeUnchecked(Context<?> context) {
+        runOutcome((Context<T>) context);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void runUnchecked(Context<?> context) {
+        run((Context<T>) context);
+    }
+
+    public static class Context<T extends ContextInfo> {
+        private final World world;
+        private final BlockPos pos;
+        private final BlockState state;
+        private final PlayerEntity player;
+        @Nullable
+        private T info;
+
+        public Context(World world, BlockPos pos, BlockState state, PlayerEntity player, @Nullable T info) {
+            this.world = world;
+            this.pos = pos;
+            this.state = state;
+            this.player = player;
+            this.info = info;
+        }
+
+        public World world() {
+            return world;
+        }
+
+        public BlockPos pos() {
+            return pos;
+        }
+
+        public BlockState state() {
+            return state;
+        }
+
+        public PlayerEntity player() {
+            return player;
+        }
+
+        public T info() {
+            return info;
+        }
+
+        public Context<T> withInfo(T info) {
+            this.info = info;
+            return this;
+        }
+    }
 }

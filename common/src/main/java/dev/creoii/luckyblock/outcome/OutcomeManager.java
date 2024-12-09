@@ -29,7 +29,7 @@ import java.util.*;
 
 public class OutcomeManager extends JsonDataLoader<JsonElement> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
-    private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
+    private final Map<Pair<Outcome<? extends ContextInfo>, Outcome.Context<? extends ContextInfo>>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
         super(null, "outcomes");
@@ -102,11 +102,11 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
             if (delays.isEmpty())
                 return;
 
-            List<Pair<Outcome, Outcome.Context>> toRemove = new ArrayList<>();
+            List<Pair<Outcome<? extends ContextInfo>, Outcome.Context<? extends ContextInfo>>> toRemove = new ArrayList<>();
 
             delays.forEach((pair, integer) -> {
                 if (integer.decrementAndGet() <= 0) {
-                    pair.getLeft().run(pair.getRight());
+                    pair.getLeft().runUnchecked(pair.getRight());
                     toRemove.add(pair);
                 }
             });
@@ -115,7 +115,7 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
         }
     }
 
-    public void addDelay(Outcome outcome, Outcome.Context context, int delay) {
+    public void addDelay(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, int delay) {
         delays.put(new Pair<>(outcome, context), new MutableInt(delay));
     }
 

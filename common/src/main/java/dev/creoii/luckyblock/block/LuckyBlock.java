@@ -107,10 +107,10 @@ public class LuckyBlock extends BlockWithEntity {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && ((container.hasActivation(LuckyBlockContainer.Activation.BREAK_SURVIVAL) && !player.isCreative()) || (container.hasActivation(LuckyBlockContainer.Activation.BREAK_CREATIVE) && player.isCreative()))) {
             if (!world.isClient) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
+                Outcome.Context<?> context = new Outcome.Context<>(world, pos, state, player, null);
+                Outcome<?> outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
                 if (outcome != null) {
-                    outcome.runOutcome(context);
+                    outcome.runOutcomeUnchecked(context);
                 }
             }
         }
@@ -122,11 +122,11 @@ public class LuckyBlock extends BlockWithEntity {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.RIGHT_CLICK)) {
             if (!world.isClient) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
+                Outcome.Context<?> context = new Outcome.Context<>(world, pos, state, player, null);
+                Outcome<?> outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
-                    outcome.runOutcome(context);
+                    outcome.runOutcomeUnchecked(context);
                 }
                 return ActionResult.SUCCESS_SERVER;
             }
@@ -140,11 +140,11 @@ public class LuckyBlock extends BlockWithEntity {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
             if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, null);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                Outcome.Context<?> context = new Outcome.Context<>(world, pos, state, null, null);
+                Outcome<?> outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
-                    outcome.runOutcome(context);
+                    outcome.runOutcomeUnchecked(context);
                 }
             }
         }
@@ -155,11 +155,11 @@ public class LuckyBlock extends BlockWithEntity {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
             if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, null);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                Outcome.Context<?> context = new Outcome.Context<>(world, pos, state, placer instanceof PlayerEntity player ? player : null, null);
+                Outcome<?> outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, placer instanceof PlayerEntity player ? player : null), context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
-                    outcome.runOutcome(context);
+                    outcome.runOutcomeUnchecked(context);
                 }
             }
         }

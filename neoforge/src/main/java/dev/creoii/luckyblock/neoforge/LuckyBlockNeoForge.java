@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.util.function.FunctionType;
+import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.minecraft.block.AbstractBlock;
@@ -106,6 +107,7 @@ public final class LuckyBlockNeoForge {
     public void register() {
         OutcomeType.init();
         FunctionType.init();
+        FunctionTargetType.init();
         ShapeType.init();
         VecProviderType.init();
     }

@@ -1,5 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
@@ -12,9 +13,11 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> {
@@ -42,51 +45,72 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> {
     }
 
     @Override
-    public void run(Context<EntityInfo> context) {
-        Vec3d spawnPos = getPos(context).getVec(context);
-        context.info().spawnPositions.add(spawnPos);
+    public Context<EntityInfo> create(Context<EntityInfo> context) {
+        Vec3d pos = getPos(context).getVec(context);
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
-        for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
-            spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
-            if (shouldReinit()) {
-                context.info().spawnPositions.add(spawnPos = getPos(context).getVec(context));
+        Map<Vec3d, Entity> entities = Maps.newHashMap();
+        for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
+            Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
+            if (entity != null) {
+                entities.put(pos, entity);
             }
         }
+        return context.withInfo(new EntityInfo(entities));
     }
 
-    private Entity spawnEntity(EntityType<?> entityType, Context<EntityInfo> context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
-        Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
-        if (entity != null) {
-            if (nbtCompound != null) {
-                nbtCompound.setContext(context);
+    @Override
+    public void run(Context<EntityInfo> context) {
+        context.info().entities.forEach((vec3d, entity) -> {
+            spawnEntity(entity, context, vec3d, null);
+        });
+    }
 
-                if (nbtCompound.contains("nbt", 10)) {
-                    ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
-                    entity.readNbt(nbt);
+    private Entity spawnEntity(Entity entity, Context<EntityInfo> context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
+        if (nbtCompound != null) {
+            nbtCompound.setContext(context);
 
-                    if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
-                        ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
-                        EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
-                        if (passenger != null)
-                            passenger.startRiding(entity);
-                    }
-                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
-                    entity.readNbt(nbtCompound);
+            if (nbtCompound.contains("nbt", 10)) {
+                ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
+                entity.readNbt(nbt);
 
-                    ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+                if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
+                    ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                    Entity passenger = spawnEntity(passengerType.create(context.world(), SpawnReason.NATURAL), context, spawnPos, passengerCompound);
                     if (passenger != null)
                         passenger.startRiding(entity);
-                } else entity.readNbt(nbtCompound);
-            }
-            entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
-            context.world().spawnEntity(entity);
+                }
+            } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
+                entity.readNbt(nbtCompound);
+
+                ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
+                EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
+                Entity passenger = spawnEntity(passengerType.create(context.world(), SpawnReason.NATURAL), context, spawnPos, passengerCompound);
+                if (passenger != null)
+                    passenger.startRiding(entity);
+            } else entity.readNbt(nbtCompound);
         }
+        entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
+        context.world().spawnEntity(entity);
         return entity;
     }
 
-    public record EntityInfo(List<Entity> entities, List<Vec3d> spawnPositions) implements ContextInfo {}
+    public static class EntityInfo implements ContextInfo {
+        private final Map<Vec3d, Entity> entities;
+
+        public EntityInfo(Map<Vec3d, Entity> entities) {
+            this.entities = entities;
+        }
+
+        @Override
+        public List<Object> getTargets() {
+            List<Object> targets = Lists.newArrayList();
+            entities.forEach((vec3d, entity) -> {
+                targets.add(vec3d);
+                targets.add(entity);
+            });
+            return targets;
+        }
+    }
 }

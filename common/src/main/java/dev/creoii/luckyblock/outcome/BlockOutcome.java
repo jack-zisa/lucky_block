@@ -1,5 +1,7 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
@@ -11,9 +13,8 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,16 +25,16 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
-                BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
-                ContextualNbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntityNbt),
-                Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape)
+                BlockStateProvider.TYPE_CODEC.fieldOf("state").forGetter(outcome -> outcome.stateProvider),
+                ContextualNbtCompound.CODEC.fieldOf("block_entity").orElse(null).forGetter(outcome -> outcome.blockEntityNbt),
+                Shape.CODEC.fieldOf("shape").orElse(null).forGetter(outcome -> outcome.shape)
         ).apply(instance, BlockOutcome::new);
     });
     private final BlockStateProvider stateProvider;
-    private final Optional<ContextualNbtCompound> blockEntityNbt;
-    private final Optional<Shape> shape;
+    private final ContextualNbtCompound blockEntityNbt;
+    private final Shape shape;
 
-    public BlockOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntityNbt, Optional<Shape> shape) {
+    public BlockOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, ContextualNbtCompound blockEntityNbt, Shape shape) {
         super(OutcomeType.BLOCK, luck, chance, weightProvider, delay, pos, false);
         this.stateProvider = stateProvider;
         this.blockEntityNbt = blockEntityNbt;
@@ -41,34 +42,68 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
     }
 
     @Override
-    public void run(Context<BlockInfo> context) {
-        Mutable<BlockPos> place = new MutableObject<>(getPos(context).getPos(context));
-        context.info().pos.setValue(place.getValue());
-        if (shape.isPresent()) {
-            shape.get().getBlockPositions(context).forEach(pos -> {
-                BlockState state = stateProvider.get(context.world().getRandom(), place.getValue().add(pos));
-                if (context.world().setBlockState(place.getValue().add(pos), state)) {
-                    blockEntityNbt.ifPresent(nbtCompound -> {
-                        nbtCompound.setContext(context);
-                        context.info().pos.setValue(place.getValue().add(pos));
-                        context.world().addBlockEntity(BlockEntity.createFromNbt(place.getValue().add(pos), state, nbtCompound, context.world().getRegistryManager()));
-                    });
+    public Context<BlockInfo> create(Context<BlockInfo> context) {
+        BlockPos pos = getPos(context).getPos(context);
+
+        BlockInfo blockInfo;
+        Map<BlockPos, Pair<BlockState, BlockEntity>> blocks = Maps.newHashMap();
+        if (shape != null) {
+            shape.getBlockPositions(context).forEach(pos1 -> {
+                BlockState state = stateProvider.get(context.world().getRandom(), pos.add(pos1));
+                if (blockEntityNbt != null) {
+                    blockEntityNbt.setContext(context);
+                    BlockEntity blockEntity = BlockEntity.createFromNbt(pos.add(pos1), state, blockEntityNbt, context.world().getRegistryManager());
+                    blocks.put(pos, new Pair<>(state, blockEntity));
+                } else {
+                    blocks.put(pos, new Pair<>(state, null));
                 }
             });
+            blockInfo = new BlockInfo(pos, blocks);
         } else {
-            BlockState state = stateProvider.get(context.world().getRandom(), place.getValue());
-            if (context.world().setBlockState(place.getValue(), state)) {
-                if (blockEntityNbt.isPresent()) {
-                    blockEntityNbt.get().setContext(context);
-                    BlockEntity blockEntity = BlockEntity.createFromNbt(place.getValue(), state, blockEntityNbt.get(), context.world().getRegistryManager());
-                    context.info().blocks.put(place.getValue(), new Pair<>(state, blockEntity));
-                    context.world().addBlockEntity(blockEntity);
-                } else {
-                    context.info().blocks.put(place.getValue(), new Pair<>(state, null));
-                }
+            BlockState state = stateProvider.get(context.world().getRandom(), pos);
+            if (blockEntityNbt != null) {
+                blockEntityNbt.setContext(context);
+                BlockEntity blockEntity = BlockEntity.createFromNbt(pos, state, blockEntityNbt, context.world().getRegistryManager());
+                blocks.put(pos, new Pair<>(state, blockEntity));
+            } else {
+                blocks.put(pos, new Pair<>(state, null));
+            }
+            blockInfo = new BlockInfo(pos, blocks);
+        }
+        return context.withInfo(blockInfo);
+    }
+
+    @Override
+    public void run(Context<BlockInfo> context) {
+        for (Map.Entry<BlockPos, Pair<BlockState, BlockEntity>> blocks : context.info().blocks.entrySet()) {
+            Pair<BlockState, BlockEntity> state = blocks.getValue();
+            if (context.world().setBlockState(blocks.getKey(), state.getLeft()) && state.getRight() != null) {
+                context.world().addBlockEntity(state.getRight());
             }
         }
     }
 
-    public record BlockInfo(Mutable<BlockPos> pos, Map<BlockPos, Pair<BlockState, BlockEntity>> blocks) implements ContextInfo {}
+    public static class BlockInfo implements ContextInfo {
+        private final BlockPos pos;
+        private final Map<BlockPos, Pair<BlockState, BlockEntity>> blocks;
+
+        public BlockInfo(BlockPos pos, Map<BlockPos, Pair<BlockState, BlockEntity>> blocks) {
+            this.pos = pos;
+            this.blocks = blocks;
+        }
+
+        @Override
+        public List<Object> getTargets() {
+            List<Object> targets = Lists.newArrayList(pos);
+            for (Map.Entry<BlockPos, Pair<BlockState, BlockEntity>> entry : blocks.entrySet()) {
+                targets.add(entry.getKey());
+                Pair<BlockState, BlockEntity> pair = entry.getValue();
+                targets.add(pair.getLeft());
+                if (pair.getRight() != null) {
+                    targets.add(pair.getRight());
+                }
+            }
+            return targets;
+        }
+    }
 }

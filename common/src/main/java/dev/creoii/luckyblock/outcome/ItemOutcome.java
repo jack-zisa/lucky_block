@@ -1,10 +1,11 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.util.function.target.FunctionTarget;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.component.ComponentChanges;
@@ -12,15 +13,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
-import org.apache.commons.lang3.mutable.Mutable;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
     public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -30,22 +29,20 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
-                Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
-                    return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
-                }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
+                FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stack),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
-    private final ItemStack stack;
+    private final FunctionObjectCodecs.ItemStackWrapper stack;
     private final IntProvider count;
     private final ComponentChanges components;
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, FunctionObjectCodecs.ItemStackWrapper stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
@@ -54,94 +51,62 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
         this.velocity = velocity;
     }
 
+    public FunctionObjectCodecs.ItemStackWrapper getStack() {
+        return stack;
+    }
+
+    @Override
+    public Context<ItemInfo> create(Context<ItemInfo> context) {
+        Vec3d pos = getPos(context).getVec(context);
+        int count = this.count.get(context.world().getRandom());
+        List<ItemEntity> itemEntities = new ArrayList<>();
+        for (int i = 0; i < count; ++i) {
+            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
+            if (entity != null) {
+                itemEntities.add(entity);
+            }
+        }
+
+        return context.withInfo(new ItemInfo(new FunctionTarget.ItemStackTarget(stack), pos, velocity.map(vecProvider -> vecProvider.getVec(context)).orElse(null), itemEntities));
+    }
+
     @Override
     public void run(Context<ItemInfo> context) {
-        Vec3d spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
-        context.info().spawnPos.setValue(spawnPos);
-        Vec3d velocity = null;
-        if (this.velocity.isPresent()) {
-            velocity = this.velocity.get().getVec(context);
-            context.info().velocity.setValue(velocity);
-        }
-        int total = count.get(context.world().getRandom()) * stack.getCount();
+        ItemStack stack = context.info().stack.stack().toStack(this, context);
+        int count = context.info().items.size();
+        for (int i = 0; i < count; ++i) {
+            ItemEntity itemEntity = context.info().items.get(i);
+            itemEntity.setStack(stack.copy());
 
-        if (shouldReinit()) {
-            for (int i = 0; i < total; ++i) {
-                ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
-                if (entity != null) {
-                    ItemStack newStack = stack.copy();
-                    if (components != ComponentChanges.EMPTY)
-                        newStack.applyChanges(components);
+            itemEntity.refreshPositionAndAngles(context.info().pos, 0f, 0f);
 
-                    entity.setStack(newStack);
-                    nbt.ifPresent(compound -> {
-                        compound.setContext(context);
-                        entity.readNbt(compound);
-                    });
-                    entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
+            if (context.info().velocity != null) {
+                itemEntity.setVelocity(context.info().velocity);
+            } else itemEntity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
 
-                    if (velocity != null) {
-                        entity.setVelocity(velocity);
-                        velocity = this.velocity.get().getVec(context);
-                    } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
-
-                    context.info().items.add(entity);
-                    context.world().spawnEntity(entity);
-
-                    spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
-                }
-            }
-            return;
-        }
-
-        for (int i = 0; i < total / stack.getMaxCount(); ++i) {
-            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
-            if (entity != null) {
-                ItemStack newStack = stack.copy();
-                if (components != ComponentChanges.EMPTY)
-                    newStack.applyChanges(components);
-
-                newStack.setCount(stack.getMaxCount());
-                entity.setStack(newStack);
-                nbt.ifPresent(compound -> {
-                    compound.setContext(context);
-                    entity.readNbt(compound);
-                });
-                entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
-
-                if (velocity != null) {
-                    entity.setVelocity(velocity);
-                } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
-
-                context.info().items.add(entity);
-                context.world().spawnEntity(entity);
-            }
-        }
-
-        if (total % stack.getMaxCount() > 0) {
-            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
-            if (entity != null) {
-                ItemStack remainder = stack.copy();
-                if (components != ComponentChanges.EMPTY)
-                    remainder.applyChanges(components);
-
-                remainder.setCount(total % stack.getMaxCount());
-                entity.setStack(remainder);
-                nbt.ifPresent(compound -> {
-                    compound.setContext(context);
-                    entity.readNbt(compound);
-                });
-                entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
-
-                if (velocity != null) {
-                    entity.setVelocity(this.velocity.get().getVec(context));
-                } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
-
-                context.info().items.add(entity);
-                context.world().spawnEntity(entity);
-            }
+            context.world().spawnEntity(itemEntity);
         }
     }
 
-    public record ItemInfo(Mutable<Vec3d> spawnPos, Mutable<Vec3d> velocity, List<ItemEntity> items) implements ContextInfo {}
+    public static class ItemInfo implements ContextInfo {
+        private final FunctionTarget.ItemStackTarget stack;
+        private final Vec3d pos;
+        @Nullable
+        private final Vec3d velocity;
+        private final List<ItemEntity> items;
+
+        public ItemInfo(FunctionTarget.ItemStackTarget stack, Vec3d pos, @Nullable Vec3d velocity, List<ItemEntity> items) {
+            this.stack = stack;
+            this.pos = pos;
+            this.velocity = velocity;
+            this.items = items;
+        }
+
+        @Override
+        public List<Object> getTargets() {
+            List<Object> targets = Lists.newArrayList(stack, pos, velocity);
+            targets.addAll(items);
+            return targets;
+        }
+    }
 }

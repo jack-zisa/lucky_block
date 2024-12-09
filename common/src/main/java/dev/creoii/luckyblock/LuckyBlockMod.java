@@ -8,6 +8,7 @@ import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionType;
+import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
@@ -38,6 +39,9 @@ public final class LuckyBlockMod {
 
     public static final RegistryKey<Registry<FunctionType>> FUNCTION_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "function_types"));
     public static final Registry<FunctionType> FUNCTION_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", FUNCTION_TYPES_KEY, Lifecycle.stable(), false);
+
+    public static final RegistryKey<Registry<FunctionTargetType>> FUNCTION_TARGET_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "function_target_types"));
+    public static final Registry<FunctionTargetType> FUNCTION_TARGET_TYPES = new SimpleDefaultedRegistry<>("lucky:default", FUNCTION_TARGET_TYPES_KEY, Lifecycle.stable(), false);
 
     public static final RegistryKey<Registry<ShapeType>> SHAPE_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "shape_types"));
     public static final Registry<ShapeType> SHAPE_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", SHAPE_TYPES_KEY, Lifecycle.stable(), false);
