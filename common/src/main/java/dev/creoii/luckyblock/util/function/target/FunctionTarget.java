@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
+import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.wrapper.BlockStateWrapper;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -27,7 +29,7 @@ public abstract class FunctionTarget<T extends Target<?>> {
     }
 
     public static List<Target<?>> getBlockStateTargets(ContextInfo info) {
-        return info.getTargets().stream().filter(o -> o instanceof BlockState).map(o -> new BlockStateTarget((BlockState) o)).collect(Collectors.toList());
+        return info.getTargets().stream().filter(o -> o instanceof BlockStateWrapper).map(o -> (BlockStateWrapper) o).collect(Collectors.toList());
     }
 
     public static List<Target<?>> getBlockEntityTargets(ContextInfo info) {
@@ -55,24 +57,14 @@ public abstract class FunctionTarget<T extends Target<?>> {
 
     public record NoneTarget() implements Target<Void> {
         @Override
-        public Target<Void> update(Object newObject) {
+        public Target<Void> update(Function<Target<?>> function, Object newObject) {
             return new NoneTarget();
-        }
-    }
-
-    public record BlockStateTarget(BlockState blockState) implements Target<BlockState> {
-        @Override
-        public Target<BlockState> update(Object newObject) {
-            if (newObject instanceof BlockState newBlockState) {
-                return new BlockStateTarget(newBlockState);
-            }
-            throw new IllegalArgumentException("Attempted updating blockstate target with non-blockstate value.");
         }
     }
 
     public record BlockEntityTarget(BlockEntity blockEntity) implements NbtTarget<BlockEntity> {
         @Override
-        public Target<BlockEntity> update(Object newObject) {
+        public Target<BlockEntity> update(Function<Target<?>> function, Object newObject) {
             if (newObject instanceof BlockEntity newBlockEntity) {
                 return new BlockEntityTarget(newBlockEntity);
             }
@@ -80,14 +72,14 @@ public abstract class FunctionTarget<T extends Target<?>> {
         }
 
         @Override
-        public BlockEntity setNbt(NbtElement nbt) {
+        public BlockEntity setNbt(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, NbtElement nbt) {
             return blockEntity;
         }
     }
 
     public record EntityTarget(Entity entity) implements NbtTarget<Entity> {
         @Override
-        public Target<Entity> update(Object newObject) {
+        public Target<Entity> update(Function<Target<?>> function, Object newObject) {
             if (newObject instanceof Entity newEntity) {
                 return new EntityTarget(newEntity);
             }
@@ -95,7 +87,7 @@ public abstract class FunctionTarget<T extends Target<?>> {
         }
 
         @Override
-        public Entity setNbt(NbtElement nbt) {
+        public Entity setNbt(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, NbtElement nbt) {
             if (nbt instanceof NbtCompound nbtCompound)
                 entity.readNbt(nbtCompound);
             return entity;

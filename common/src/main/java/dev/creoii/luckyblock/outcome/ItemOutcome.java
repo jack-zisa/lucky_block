@@ -1,10 +1,14 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.types.Func;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.util.function.target.CountTarget;
+import dev.creoii.luckyblock.util.function.target.Target;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -21,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
+public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountTarget<ItemOutcome> {
     public static final MapCodec<ItemOutcome> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
@@ -33,7 +37,8 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
-                VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
+                VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity),
+                Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStackWrapper stack;
@@ -41,14 +46,16 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
     private final ComponentChanges components;
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
+    private final List<Function<?>> functions;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity, List<Function<?>> functions) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
         this.components = components;
         this.nbt = nbt;
         this.velocity = velocity;
+        this.functions = functions;
     }
 
     @Override
@@ -82,6 +89,21 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> {
 
             context.world().spawnEntity(itemEntity);
         }
+    }
+
+    @Override
+    public Target<ItemOutcome> update(Function<Target<?>> function, Object newObject) {
+        if (newObject instanceof ItemOutcome newItemOutcome) {
+            //functions.remove(function);
+            //newItemOutcome.functions.remove(function);
+            return newItemOutcome;
+        }
+        throw new IllegalArgumentException("Attempted updating item outcome target with non-item-outcome value.");
+    }
+
+    @Override
+    public ItemOutcome setCount(Outcome<? extends ContextInfo> outcome, Context<? extends ContextInfo> context, IntProvider count) {
+        return new ItemOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), stack, count, components, nbt, velocity, functions);
     }
 
     public static class ItemInfo implements ContextInfo {

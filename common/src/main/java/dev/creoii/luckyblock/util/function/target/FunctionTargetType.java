@@ -12,11 +12,13 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType NONE = new FunctionTargetType(NoneFunctionTarget.CODEC);
     public static final FunctionTargetType NBT = new FunctionTargetType(NbtFunctionTarget.CODEC);
     public static final FunctionTargetType COMPONENTS = new FunctionTargetType(ComponentsFunctionTarget.CODEC);
+    public static final FunctionTargetType COUNT = new FunctionTargetType(CountFunctionTarget.CODEC);
 
     public static void init() {
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "none"), NONE);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "nbt"), NBT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "components"), COMPONENTS);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "count"), COUNT);
     }
 
     public static void registerFunctionTargetType(Identifier id, FunctionTargetType functionTarget) {

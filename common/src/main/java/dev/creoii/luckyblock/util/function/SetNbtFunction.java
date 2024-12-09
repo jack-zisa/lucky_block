@@ -29,7 +29,7 @@ public class SetNbtFunction extends Function<Target<?>> {
     public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof NbtTarget<?> nbtTarget) {
-                nbtTarget.setNbt(nbt);
+                nbtTarget.update(this, nbtTarget.setNbt(outcome, context, nbt));
             }
         }
     }

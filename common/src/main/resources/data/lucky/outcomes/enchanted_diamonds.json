@@ -5,12 +5,13 @@
     "functions": [
       {
         "type": "lucky:set_components",
-        "target": {
-          "type": "lucky:components"
-        },
         "components": {
           "minecraft:enchantment_glint_override": true
         }
+      },
+      {
+        "type": "lucky:set_count",
+        "count": 8
       }
     ]
   }

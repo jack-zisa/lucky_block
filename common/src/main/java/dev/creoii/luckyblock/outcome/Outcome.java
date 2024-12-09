@@ -26,7 +26,6 @@ public abstract class Outcome<T extends ContextInfo> {
     private final int delay;
     private final Optional<VecProvider> pos;
     private final boolean reinit;
-    private Context<T> context;
 
     public Outcome(OutcomeType type) {
         this(type, 0, 1f, LuckyBlockCodecs.ONE, 0, Optional.empty(), false);
@@ -74,16 +73,6 @@ public abstract class Outcome<T extends ContextInfo> {
         return reinit;
     }
 
-    public Context<T> getContext() {
-        return context;
-    }
-
-    public void setContext(Context<T> context, @Nullable T info) {
-        if (info != null) {
-            this.context = context.withInfo(info);
-        } else this.context = context;
-    }
-
     public static <O> RecordCodecBuilder<O, Integer> createGlobalLuckField(Function<O, Integer> getter) {
         return Codecs.rangedInt(-2, 2).fieldOf("luck").orElse(0).forGetter(getter);
     }
@@ -109,10 +98,10 @@ public abstract class Outcome<T extends ContextInfo> {
     }
 
     public void runOutcome(Context<T> context) {
-        this.context = create(context);
+        Context<T> context1 = create(context);
         if (getDelay() == 0) {
-            run(this.context);
-        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, this.context, getDelay());
+            run(context1);
+        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context1, getDelay());
     }
 
     /**

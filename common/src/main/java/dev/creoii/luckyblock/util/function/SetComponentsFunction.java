@@ -10,7 +10,7 @@ import net.minecraft.component.ComponentChanges;
 public class SetComponentsFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetComponentsFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(NoneFunctionTarget.INSTANCE).forGetter(Function::getTarget),
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(ComponentsFunctionTarget.INSTANCE).forGetter(Function::getTarget),
                 ComponentChanges.CODEC.fieldOf("components").forGetter(function -> function.components)
         ).apply(instance, (functionTarget, nbtElement) -> new SetComponentsFunction((FunctionTarget<Target<?>>) functionTarget, nbtElement));
     });
@@ -26,7 +26,7 @@ public class SetComponentsFunction extends Function<Target<?>> {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof ComponentsTarget<?> componentsTarget) {
                 if (components != ComponentChanges.EMPTY)
-                    target.update(componentsTarget.setComponents(outcome, context, components));
+                    target.update(this, componentsTarget.setComponents(outcome, context, components));
             }
         }
     }

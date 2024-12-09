@@ -92,6 +92,10 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
             this.blocks = blocks;
         }
 
+        public BlockPos getPos() {
+            return pos;
+        }
+
         @Override
         public List<Object> getTargets() {
             List<Object> targets = Lists.newArrayList(pos);
