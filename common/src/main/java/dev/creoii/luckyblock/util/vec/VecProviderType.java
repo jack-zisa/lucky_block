@@ -23,7 +23,7 @@ public interface VecProviderType<T extends VecProvider> {
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
     }
 
-    static void register(Identifier id, VecProviderType<?> type) {
+    private static void register(Identifier id, VecProviderType<?> type) {
         Registry.register(LuckyBlockMod.POS_PROVIDER_TYPES, id, type);
     }
 }

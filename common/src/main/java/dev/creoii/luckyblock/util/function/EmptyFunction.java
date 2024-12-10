@@ -10,7 +10,7 @@ public class EmptyFunction extends Function<FunctionTarget.NoneTarget> {
     public static final MapCodec<EmptyFunction> CODEC = MapCodec.unit(new EmptyFunction());
 
     protected EmptyFunction() {
-        super(FunctionType.EMPTY, NoneFunctionTarget.INSTANCE);
+        super(FunctionType.EMPTY, Phase.PRE, NoneFunctionTarget.INSTANCE);
     }
 
     @Override

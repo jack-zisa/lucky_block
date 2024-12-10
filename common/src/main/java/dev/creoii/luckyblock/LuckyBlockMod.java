@@ -9,6 +9,8 @@ import dev.creoii.luckyblock.recipe.LuckyRecipe;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
+import dev.creoii.luckyblock.util.stackprovider.ItemStackProvider;
+import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
@@ -36,6 +38,9 @@ public final class LuckyBlockMod {
 
     public static final RegistryKey<Registry<OutcomeType>> OUTCOME_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "outcome_types"));
     public static final Registry<OutcomeType> OUTCOME_TYPES = new SimpleDefaultedRegistry<>("lucky:none", OUTCOME_TYPES_KEY, Lifecycle.stable(), false);
+
+    public static final RegistryKey<Registry<ItemStackProviderType<?>>> ITEM_STACK_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "item_stack_provider_type"));
+    public static final Registry<ItemStackProviderType<?>> ITEM_STACK_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_stack_provider", ITEM_STACK_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);
 
     public static final RegistryKey<Registry<FunctionType>> FUNCTION_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "function_types"));
     public static final Registry<FunctionType> FUNCTION_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", FUNCTION_TYPES_KEY, Lifecycle.stable(), false);

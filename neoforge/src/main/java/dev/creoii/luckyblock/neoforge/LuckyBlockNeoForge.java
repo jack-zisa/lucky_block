@@ -8,6 +8,7 @@ import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
+import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
@@ -105,6 +106,7 @@ public final class LuckyBlockNeoForge {
     }
 
     public void register() {
+        ItemStackProviderType.init();
         OutcomeType.init();
         FunctionType.init();
         FunctionTargetType.init();

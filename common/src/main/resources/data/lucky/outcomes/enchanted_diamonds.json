@@ -1,7 +1,7 @@
 {
   "type": "lucky:item",
   "stack": {
-    "stack": "minecraft:diamond",
+    "stack_provider": "minecraft:diamond",
     "functions": [
       {
         "type": "lucky:set_components",
@@ -14,5 +14,11 @@
         "count": 8
       }
     ]
-  }
+  },
+  "functions": [
+    {
+      "type": "lucky:set_count",
+      "count": 8
+    }
+  ]
 }

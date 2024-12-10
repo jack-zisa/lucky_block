@@ -10,14 +10,14 @@ import net.minecraft.component.ComponentChanges;
 public class SetComponentsFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetComponentsFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(ComponentsFunctionTarget.INSTANCE).forGetter(Function::getTarget),
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasComponentsFunctionTarget.INSTANCE).forGetter(Function::getTarget),
                 ComponentChanges.CODEC.fieldOf("components").forGetter(function -> function.components)
         ).apply(instance, (functionTarget, nbtElement) -> new SetComponentsFunction((FunctionTarget<Target<?>>) functionTarget, nbtElement));
     });
     private final ComponentChanges components;
 
     protected SetComponentsFunction(FunctionTarget<Target<?>> target, ComponentChanges components) {
-        super(FunctionType.SET_COMPONENTS, target);
+        super(FunctionType.SET_COMPONENTS, Phase.POST, target);
         this.components = components;
     }
 

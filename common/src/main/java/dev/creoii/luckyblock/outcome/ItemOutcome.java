@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.types.Func;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
@@ -9,17 +8,16 @@ import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
 import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
+import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
-import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.component.ComponentChanges;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,61 +31,57 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
-                FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stack),
+                FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stackProvider),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
-                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
-                VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity),
                 Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
         ).apply(instance, ItemOutcome::new);
     });
-    private final ItemStackWrapper stack;
-    private final IntProvider count;
-    private final ComponentChanges components;
-    private final Optional<ContextualNbtCompound> nbt;
-    private final Optional<VecProvider> velocity;
+    private final ItemStackWrapper stackProvider;
+    private IntProvider count;
     private final List<Function<?>> functions;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity, List<Function<?>> functions) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, IntProvider count, List<Function<?>> functions) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
-        this.stack = stack;
+        this.stackProvider = stackProvider;
         this.count = count;
-        this.components = components;
-        this.nbt = nbt;
-        this.velocity = velocity;
         this.functions = functions;
+    }
+
+    public void setCount(IntProvider count) {
+        this.count = count;
     }
 
     @Override
     public Context<ItemInfo> create(Context<ItemInfo> context) {
+        Function.applyPre(functions, this, context.withInfo(new ItemInfo()));
+
         Vec3d pos = getPos(context).getVec(context);
         int count = this.count.get(context.world().getRandom());
-        List<ItemEntity> itemEntities = new ArrayList<>();
+        System.out.println("count: " + count);
+        List<EntityWrapper> itemEntities = new ArrayList<>();
         for (int i = 0; i < count; ++i) {
-            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
-            if (entity != null) {
-                itemEntities.add(entity);
+            ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
+            if (itemEntity != null) {
+                itemEntities.add(new EntityWrapper(itemEntity, List.of()));
             }
         }
 
-        return context.withInfo(new ItemInfo(stack, pos, velocity.map(vecProvider -> vecProvider.getVec(context)).orElse(null), itemEntities));
+        Function.applyPost(functions, this, context);
+        return context.withInfo(new ItemInfo(stackProvider, pos, itemEntities));
     }
 
     @Override
     public void run(Context<ItemInfo> context) {
-        ItemStack stack = context.info().stack.toStack(this, context);
+        ItemStack stack = context.info().stack.stackProvider().get(context.world().getRandom());
+        context.info().stack.functions().forEach(function -> function.apply(this, context));
         int count = context.info().items.size();
         for (int i = 0; i < count; ++i) {
-            ItemEntity itemEntity = context.info().items.get(i);
-            itemEntity.setStack(stack.copy());
-
-            itemEntity.refreshPositionAndAngles(context.info().pos, 0f, 0f);
-
-            if (context.info().velocity != null) {
-                itemEntity.setVelocity(context.info().velocity);
-            } else itemEntity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
-
-            context.world().spawnEntity(itemEntity);
+            Entity entity = context.info().items.get(i).entity();
+            if (entity instanceof ItemEntity itemEntity) {
+                itemEntity.setStack(stack.copy());
+                itemEntity.refreshPositionAndAngles(context.info().pos, 0f, 0f);
+                context.world().spawnEntity(itemEntity);
+            }
         }
     }
 
@@ -95,7 +89,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
     public Target<ItemOutcome> update(Function<Target<?>> function, Object newObject) {
         if (newObject instanceof ItemOutcome newItemOutcome) {
             //functions.remove(function);
-            //newItemOutcome.functions.remove(function);
+            newItemOutcome.functions.remove(function);
             return newItemOutcome;
         }
         throw new IllegalArgumentException("Attempted updating item outcome target with non-item-outcome value.");
@@ -103,26 +97,28 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
     @Override
     public ItemOutcome setCount(Outcome<? extends ContextInfo> outcome, Context<? extends ContextInfo> context, IntProvider count) {
-        return new ItemOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), stack, count, components, nbt, velocity, functions);
+        setCount(count);
+        return this;
     }
 
     public static class ItemInfo implements ContextInfo {
         private final ItemStackWrapper stack;
         private final Vec3d pos;
-        @Nullable
-        private final Vec3d velocity;
-        private final List<ItemEntity> items;
+        private final List<EntityWrapper> items;
 
-        public ItemInfo(ItemStackWrapper stack, Vec3d pos, @Nullable Vec3d velocity, List<ItemEntity> items) {
+        public ItemInfo(ItemStackWrapper stack, Vec3d pos, List<EntityWrapper> items) {
             this.stack = stack;
             this.pos = pos;
-            this.velocity = velocity;
             this.items = items;
+        }
+
+        public ItemInfo() {
+            this(null, null, List.of());
         }
 
         @Override
         public List<Object> getTargets() {
-            List<Object> targets = Lists.newArrayList(stack, pos, velocity);
+            List<Object> targets = Lists.newArrayList(stack, pos);
             targets.addAll(items);
             return targets;
         }

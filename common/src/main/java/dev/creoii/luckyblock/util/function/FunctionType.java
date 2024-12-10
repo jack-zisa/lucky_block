@@ -13,15 +13,17 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType SET_NBT = new FunctionType(SetNbtFunction.CODEC);
     public static final FunctionType SET_COMPONENTS = new FunctionType(SetComponentsFunction.CODEC);
     public static final FunctionType SET_COUNT = new FunctionType(SetCountFunction.CODEC);
+    public static final FunctionType SET_VELOCITY = new FunctionType(SetVelocityFunction.CODEC);
 
     public static void init() {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_nbt"), SET_NBT);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_components"), SET_COMPONENTS);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_count"), SET_COUNT);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_velocity"), SET_VELOCITY);
     }
 
-    public static void registerFunctionType(Identifier id, FunctionType function) {
+    private static void registerFunctionType(Identifier id, FunctionType function) {
         Registry.register(LuckyBlockMod.FUNCTION_TYPES, id, function);
     }
 }

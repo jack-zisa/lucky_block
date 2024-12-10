@@ -21,7 +21,7 @@ public class SetNbtFunction extends Function<Target<?>> {
     private final NbtElement nbt;
 
     protected SetNbtFunction(FunctionTarget<Target<?>> target, NbtElement nbt) {
-        super(FunctionType.SET_NBT, target);
+        super(FunctionType.SET_NBT, Phase.POST, target);
         this.nbt = nbt;
     }
 

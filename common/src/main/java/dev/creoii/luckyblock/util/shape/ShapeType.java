@@ -20,7 +20,7 @@ public record ShapeType(MapCodec<? extends Shape> codec) {
         registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "triangle"), TRIANGLE);
     }
 
-    public static void registerShapeType(Identifier id, ShapeType shapeType) {
+    private static void registerShapeType(Identifier id, ShapeType shapeType) {
         Registry.register(LuckyBlockMod.SHAPE_TYPES, id, shapeType);
     }
 }

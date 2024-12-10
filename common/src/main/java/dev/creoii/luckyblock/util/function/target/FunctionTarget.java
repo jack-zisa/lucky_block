@@ -6,11 +6,9 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.wrapper.BlockStateWrapper;
+import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public abstract class FunctionTarget<T extends Target<?>> {
     }
 
     public static List<Target<?>> getEntityTargets(ContextInfo info) {
-        return info.getTargets().stream().filter(o -> o instanceof Entity).map(o -> new EntityTarget((Entity) o)).collect(Collectors.toList());
+        return info.getTargets().stream().filter(o -> o instanceof EntityWrapper).map(o -> (EntityWrapper) o).collect(Collectors.toList());
     }
 
     /**
@@ -74,23 +72,6 @@ public abstract class FunctionTarget<T extends Target<?>> {
         @Override
         public BlockEntity setNbt(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, NbtElement nbt) {
             return blockEntity;
-        }
-    }
-
-    public record EntityTarget(Entity entity) implements NbtTarget<Entity> {
-        @Override
-        public Target<Entity> update(Function<Target<?>> function, Object newObject) {
-            if (newObject instanceof Entity newEntity) {
-                return new EntityTarget(newEntity);
-            }
-            throw new IllegalArgumentException("Attempted updating entity target with non-entity value.");
-        }
-
-        @Override
-        public Entity setNbt(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, NbtElement nbt) {
-            if (nbt instanceof NbtCompound nbtCompound)
-                entity.readNbt(nbtCompound);
-            return entity;
         }
     }
 }
