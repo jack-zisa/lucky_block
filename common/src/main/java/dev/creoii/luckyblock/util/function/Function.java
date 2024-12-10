@@ -31,6 +31,10 @@ public abstract class Function<T extends Target<?>> {
 
     public abstract void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context);
 
+    public static void applyAll(List<Function<?>> functions, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        functions.forEach(function -> function.apply(outcome, context));
+    }
+
     public static void applyPre(List<Function<?>> functions, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         functions.stream().filter(function -> function.phase == Phase.PRE).forEach(function -> function.apply(outcome, context));
     }

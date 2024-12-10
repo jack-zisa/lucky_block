@@ -83,7 +83,7 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
         }
     }
 
-    public static class BlockInfo implements ContextInfo {
+    public class BlockInfo implements ContextInfo {
         private final BlockPos pos;
         private final Map<BlockPos, Pair<BlockState, BlockEntity>> blocks;
 
@@ -98,7 +98,7 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
 
         @Override
         public List<Object> getTargets() {
-            List<Object> targets = Lists.newArrayList(pos);
+            List<Object> targets = Lists.newArrayList(BlockOutcome.this, pos);
             for (Map.Entry<BlockPos, Pair<BlockState, BlockEntity>> entry : blocks.entrySet()) {
                 targets.add(entry.getKey());
                 Pair<BlockState, BlockEntity> pair = entry.getValue();

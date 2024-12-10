@@ -32,19 +32,18 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stackProvider),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStackWrapper stackProvider;
-    private IntProvider count;
     private final List<Function<?>> functions;
+    private IntProvider count;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, IntProvider count, List<Function<?>> functions) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, List<Function<?>> functions) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stackProvider = stackProvider;
-        this.count = count;
         this.functions = functions;
+        count = LuckyBlockCodecs.ONE;
     }
 
     public void setCount(IntProvider count) {
@@ -53,11 +52,11 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
     @Override
     public Context<ItemInfo> create(Context<ItemInfo> context) {
-        Function.applyPre(functions, this, context.withInfo(new ItemInfo()));
+        ItemInfo info = new ItemInfo();
+        Function.applyPre(functions, this, context.withInfo(info));
 
         Vec3d pos = getPos(context).getVec(context);
         int count = this.count.get(context.world().getRandom());
-        System.out.println("count: " + count);
         List<EntityWrapper> itemEntities = new ArrayList<>();
         for (int i = 0; i < count; ++i) {
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
@@ -66,14 +65,19 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
             }
         }
 
-        Function.applyPost(functions, this, context);
-        return context.withInfo(new ItemInfo(stackProvider, pos, itemEntities));
+        info.stack = stackProvider;
+        info.pos = pos;
+        info.items = itemEntities;
+
+        Function.applyPost(functions, this, context.withInfo(info));
+        return context.withInfo(info);
     }
 
     @Override
     public void run(Context<ItemInfo> context) {
+        Function.applyAll(context.info().stack.functions(), this, context);
         ItemStack stack = context.info().stack.stackProvider().get(context.world().getRandom());
-        context.info().stack.functions().forEach(function -> function.apply(this, context));
+
         int count = context.info().items.size();
         for (int i = 0; i < count; ++i) {
             Entity entity = context.info().items.get(i).entity();
@@ -89,7 +93,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
     public Target<ItemOutcome> update(Function<Target<?>> function, Object newObject) {
         if (newObject instanceof ItemOutcome newItemOutcome) {
             //functions.remove(function);
-            newItemOutcome.functions.remove(function);
+            //newItemOutcome.functions.remove(function);
             return newItemOutcome;
         }
         throw new IllegalArgumentException("Attempted updating item outcome target with non-item-outcome value.");
@@ -101,10 +105,10 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         return this;
     }
 
-    public static class ItemInfo implements ContextInfo {
-        private final ItemStackWrapper stack;
-        private final Vec3d pos;
-        private final List<EntityWrapper> items;
+    public class ItemInfo implements ContextInfo {
+        private ItemStackWrapper stack;
+        private Vec3d pos;
+        private List<EntityWrapper> items;
 
         public ItemInfo(ItemStackWrapper stack, Vec3d pos, List<EntityWrapper> items) {
             this.stack = stack;
@@ -118,7 +122,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
         @Override
         public List<Object> getTargets() {
-            List<Object> targets = Lists.newArrayList(stack, pos);
+            List<Object> targets = Lists.newArrayList(ItemOutcome.this, stack, pos);
             targets.addAll(items);
             return targets;
         }

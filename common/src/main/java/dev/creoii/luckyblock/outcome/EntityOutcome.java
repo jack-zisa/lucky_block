@@ -61,7 +61,9 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
-                entities.add(new EntityWrapper(entity, List.of()));
+                EntityWrapper wrapper = new EntityWrapper(entity, List.of());
+                Function.applyPre(wrapper.functions(), this, context);
+                entities.add(wrapper);
             }
         }
 
@@ -73,6 +75,7 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
     @Override
     public void run(Context<EntityInfo> context) {
         context.info().entities.forEach(entity -> {
+            Function.applyPost(entity.functions(), this, context);
             spawnEntity(entity.entity(), context, context.info().pos, null);
         });
     }
@@ -131,7 +134,7 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         return this;
     }
 
-    public static class EntityInfo implements ContextInfo {
+    public class EntityInfo implements ContextInfo {
         private final Vec3d pos;
         private final List<EntityWrapper> entities;
 
@@ -142,7 +145,7 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
 
         @Override
         public List<Object> getTargets() {
-            List<Object> targets = Lists.newArrayList(pos);
+            List<Object> targets = Lists.newArrayList(EntityOutcome.this, pos);
             targets.addAll(entities);
             return targets;
         }
