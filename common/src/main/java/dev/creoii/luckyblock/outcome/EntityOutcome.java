@@ -34,31 +34,31 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;
-    private final IntProvider count;
-    private final Optional<ContextualNbtCompound> nbt;
     private final List<Function<?>> functions;
+    private IntProvider count;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, List<Function<?>> functions) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, List<Function<?>> functions) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
-        this.count = count;
-        this.nbt = nbt;
         this.functions = functions;
+        count = LuckyBlockCodecs.ONE;
     }
 
     @Override
     public Context<EntityInfo> create(Context<EntityInfo> context) {
+        EntityInfo info = new EntityInfo();
+        Function.applyPre(functions, this, context.withInfo(info));
+
         Vec3d pos = getPos(context).getVec(context);
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
 
         List<EntityWrapper> entities = Lists.newArrayList();
-        for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
+        int count = this.count.get(context.world().getRandom());
+        for (int i = 0; i < count; ++i) {
             Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
                 EntityWrapper wrapper = new EntityWrapper(entity, List.of());
@@ -67,17 +67,22 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
             }
         }
 
-        Context<EntityInfo> newContext = context.withInfo(new EntityInfo(pos, entities));
-        functions.forEach(function -> function.apply(this, newContext));
-        return newContext;
+        info.pos = pos;
+        info.entities = entities;
+
+        Function.applyPost(functions, this, context.withInfo(info));
+        return context.withInfo(info);
     }
 
     @Override
     public void run(Context<EntityInfo> context) {
-        context.info().entities.forEach(entity -> {
+        int count = context.info().entities.size();
+        for (int i = 0; i < count; ++i) {
+            EntityWrapper entity = context.info().entities.get(i);
+
             Function.applyPost(entity.functions(), this, context);
             spawnEntity(entity.entity(), context, context.info().pos, null);
-        });
+        }
     }
 
     private Entity spawnEntity(Entity entity, Context<EntityInfo> context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
@@ -121,7 +126,8 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
 
     @Override
     public EntityOutcome setCount(Outcome<? extends ContextInfo> outcome, Context<? extends ContextInfo> context, IntProvider count) {
-        return new EntityOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), entityTypeId, count, nbt, functions);
+        this.count = count;
+        return this;
     }
 
     @Override
@@ -129,18 +135,23 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         if (nbt instanceof NbtCompound nbtCompound) {
             ContextualNbtCompound contextualNbtCompound = new ContextualNbtCompound().copyFrom(nbtCompound);
             contextualNbtCompound.setContext(context);
-            return new EntityOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), entityTypeId, count, Optional.of(contextualNbtCompound), functions);
+            // set nbt
+            return new EntityOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), entityTypeId, functions);
         }
         return this;
     }
 
     public class EntityInfo implements ContextInfo {
-        private final Vec3d pos;
-        private final List<EntityWrapper> entities;
+        private Vec3d pos;
+        private List<EntityWrapper> entities;
 
         public EntityInfo(Vec3d pos, List<EntityWrapper> entities) {
             this.pos = pos;
             this.entities = entities;
+        }
+
+        public EntityInfo() {
+            this(null, List.of());
         }
 
         @Override

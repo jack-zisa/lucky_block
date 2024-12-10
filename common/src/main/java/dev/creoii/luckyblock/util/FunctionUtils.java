@@ -13,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FunctionUtils {
+    //                                                   experimenting with new parameter format #param instead of {param}
+    //private static final Pattern PARAM_PATTERN = Pattern.compile("#(\\w+)");
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\{(\\w+)}");
     private static final Pattern MATH_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?([*/+-]\\d+(\\.\\d+)?)+");
     private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");

@@ -46,19 +46,15 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         count = LuckyBlockCodecs.ONE;
     }
 
-    public void setCount(IntProvider count) {
-        this.count = count;
-    }
-
     @Override
     public Context<ItemInfo> create(Context<ItemInfo> context) {
         ItemInfo info = new ItemInfo();
         Function.applyPre(functions, this, context.withInfo(info));
 
         Vec3d pos = getPos(context).getVec(context);
-        int count = this.count.get(context.world().getRandom());
+
         List<EntityWrapper> itemEntities = new ArrayList<>();
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < this.count.get(context.world().getRandom()); ++i) {
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (itemEntity != null) {
                 itemEntities.add(new EntityWrapper(itemEntity, List.of()));
@@ -101,7 +97,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
     @Override
     public ItemOutcome setCount(Outcome<? extends ContextInfo> outcome, Context<? extends ContextInfo> context, IntProvider count) {
-        setCount(count);
+        this.count = count;
         return this;
     }
 
