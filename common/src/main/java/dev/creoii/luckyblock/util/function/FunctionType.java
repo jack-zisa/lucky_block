@@ -6,21 +6,25 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
- * Tint tintables, set blockstate, grow blocks/animals, breed, tame,
+ * Tint tintables, color, passengers, equipment, entity variants, set blockstate/blockentity, grow blocks/animals, breed, tame, direction/facing
  */
 public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType EMPTY = new FunctionType(EmptyFunction.CODEC);
     public static final FunctionType SET_NBT = new FunctionType(SetNbtFunction.CODEC);
     public static final FunctionType SET_COMPONENTS = new FunctionType(SetComponentsFunction.CODEC);
     public static final FunctionType SET_COUNT = new FunctionType(SetCountFunction.CODEC);
+    public static final FunctionType SET_COLOR = new FunctionType(SetColorFunction.CODEC);
     public static final FunctionType SET_VELOCITY = new FunctionType(SetVelocityFunction.CODEC);
+    public static final FunctionType SET_EQUIPMENT = new FunctionType(SetEquipmentFunction.CODEC);
 
     public static void init() {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_nbt"), SET_NBT);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_components"), SET_COMPONENTS);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_count"), SET_COUNT);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_color"), SET_COLOR);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_velocity"), SET_VELOCITY);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_equipment"), SET_EQUIPMENT);
     }
 
     private static void registerFunctionType(Identifier id, FunctionType function) {

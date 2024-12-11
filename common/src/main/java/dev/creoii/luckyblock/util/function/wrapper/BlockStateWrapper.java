@@ -10,7 +10,7 @@ import java.util.List;
 
 public record BlockStateWrapper(BlockStateProvider state, List<Function<?>> functions) implements Wrapper<Block, BlockStateWrapper>, Target<BlockStateWrapper> {
     @Override
-    public Block getObject(Outcome.Context<?> context) {
+    public Block getRegistryObject(Outcome.Context<?> context) {
         return state.get(context.world().getRandom(), context.pos()).getBlock();
     }
 

@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
 import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.NbtTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
@@ -33,17 +34,17 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
-                Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
+                FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("entity").forGetter(outcome -> outcome.entity),
                 Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
         ).apply(instance, EntityOutcome::new);
     });
-    private final Identifier entityTypeId;
+    private final EntityWrapper entity;
     private final List<Function<?>> functions;
     private IntProvider count;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, List<Function<?>> functions) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, EntityWrapper entity, List<Function<?>> functions) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
-        this.entityTypeId = entityTypeId;
+        this.entity = entity;
         this.functions = functions;
         count = LuckyBlockCodecs.ONE;
     }
@@ -54,17 +55,13 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         Function.applyPre(functions, this, context.withInfo(info));
 
         Vec3d pos = getPos(context).getVec(context);
-        EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
 
         List<EntityWrapper> entities = Lists.newArrayList();
         int count = this.count.get(context.world().getRandom());
         for (int i = 0; i < count; ++i) {
-            Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
-            if (entity != null) {
-                EntityWrapper wrapper = new EntityWrapper(entity, List.of());
-                Function.applyPre(wrapper.functions(), this, context);
-                entities.add(wrapper);
-            }
+            EntityWrapper wrapper = entity.init(context);
+            Function.applyPre(wrapper.getFunctions(), this, context);
+            entities.add(wrapper);
         }
 
         info.pos = pos;
@@ -79,9 +76,8 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         int count = context.info().entities.size();
         for (int i = 0; i < count; ++i) {
             EntityWrapper entity = context.info().entities.get(i);
-
-            Function.applyPost(entity.functions(), this, context);
-            spawnEntity(entity.entity(), context, context.info().pos, null);
+            Function.applyPost(entity.getFunctions(), this, context);
+            spawnEntity(entity.getEntity(), context, context.info().pos, null);
         }
     }
 
@@ -136,7 +132,7 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
             ContextualNbtCompound contextualNbtCompound = new ContextualNbtCompound().copyFrom(nbtCompound);
             contextualNbtCompound.setContext(context);
             // set nbt
-            return new EntityOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), entityTypeId, functions);
+            return new EntityOutcome(getLuck(), getChance(), getWeightProvider(), getDelay(), getPos(), shouldReinit(), entity, functions);
         }
         return this;
     }

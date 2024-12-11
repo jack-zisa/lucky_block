@@ -5,6 +5,7 @@ import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
+import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
@@ -107,10 +108,11 @@ public final class LuckyBlockNeoForge {
 
     public void register() {
         ItemStackProviderType.init();
+        VecProviderType.init();
+        ColorProviderType.init();
         OutcomeType.init();
         FunctionType.init();
         FunctionTargetType.init();
         ShapeType.init();
-        VecProviderType.init();
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
+import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
@@ -83,11 +84,12 @@ public final class LuckyBlockFabric implements ModInitializer {
 
     public void register() {
         ItemStackProviderType.init();
+        VecProviderType.init();
+        ColorProviderType.init();
         OutcomeType.init();
         FunctionType.init();
         FunctionTargetType.init();
         ShapeType.init();
-        VecProviderType.init();
 
         Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);

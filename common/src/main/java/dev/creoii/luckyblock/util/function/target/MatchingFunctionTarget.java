@@ -47,7 +47,7 @@ public class MatchingFunctionTarget extends FunctionTarget<Target<?>> {
                     continue;
                 }
 
-                if ((objEntry = registry.getEntry(wrapper.getObject(context))).hasKeyAndValue()) {
+                if ((objEntry = registry.getEntry(wrapper.getRegistryObject(context))).hasKeyAndValue()) {
                     if (objEntry.getKey().isEmpty())
                         continue;
 

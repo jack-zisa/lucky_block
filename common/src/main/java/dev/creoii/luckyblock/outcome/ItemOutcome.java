@@ -76,7 +76,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
         int count = context.info().items.size();
         for (int i = 0; i < count; ++i) {
-            Entity entity = context.info().items.get(i).entity();
+            Entity entity = context.info().items.get(i).getEntity();
             if (entity instanceof ItemEntity itemEntity) {
                 itemEntity.setStack(stack.copy());
                 itemEntity.refreshPositionAndAngles(context.info().pos, 0f, 0f);

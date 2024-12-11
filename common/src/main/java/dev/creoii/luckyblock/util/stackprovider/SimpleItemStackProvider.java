@@ -8,7 +8,7 @@ public class SimpleItemStackProvider extends ItemStackProvider {
     public static final MapCodec<SimpleItemStackProvider> CODEC = ItemStack.CODEC.fieldOf("stack").xmap(SimpleItemStackProvider::new, provider -> provider.stack);
     private final ItemStack stack;
 
-    protected SimpleItemStackProvider(ItemStack stack) {
+    public SimpleItemStackProvider(ItemStack stack) {
         this.stack = stack;
     }
 
