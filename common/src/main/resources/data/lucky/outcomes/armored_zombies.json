@@ -1,27 +1,24 @@
 {
   "type": "lucky:entity",
-  "chance": 1000,
   "entity": {
     "entity_type": "minecraft:zombie",
-    "functions": [
-      {
-        "type": "lucky:set_equipment",
+    "functions": {
+      "lucky:set_equipment": {
         "head_provider": "minecraft:iron_helmet",
         "chest_provider": "minecraft:iron_chestplate",
         "legs_provider": "minecraft:iron_leggings",
         "feet_provider": "minecraft:iron_boots",
         "mainhand_provider": "minecraft:iron_sword"
       }
-    ]
+    }
   },
-  "functions": [
-    {
-      "type": "lucky:set_count",
+  "functions": {
+    "lucky:set_count": {
       "count": {
         "type": "minecraft:uniform",
         "min_inclusive": 4,
         "max_inclusive": 12
       }
     }
-  ]
+  }
 }

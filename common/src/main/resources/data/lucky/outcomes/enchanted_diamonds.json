@@ -2,23 +2,20 @@
   "type": "lucky:item",
   "stack": {
     "stack_provider": "minecraft:diamond",
-    "functions": [
-      {
-        "type": "lucky:set_components",
+    "functions": {
+      "lucky:set_components": {
         "components": {
           "minecraft:enchantment_glint_override": true
         }
       },
-      {
-        "type": "lucky:set_count",
+      "lucky:set_count": {
         "count": 8
       }
-    ]
+    }
   },
-  "functions": [
-    {
-      "type": "lucky:set_count",
+  "functions": {
+    "lucky:set_count": {
       "count": 8
     }
-  ]
+  }
 }

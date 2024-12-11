@@ -8,10 +8,8 @@ import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
 import dev.creoii.luckyblock.util.stackprovider.SimpleItemStackProvider;
 
-import java.util.List;
-
 public class SetEquipmentFunction extends Function<Target<?>> {
-    public static final ItemStackWrapper EMPTY = new ItemStackWrapper(new SimpleItemStackProvider(null), List.of());
+    public static final ItemStackWrapper EMPTY = new ItemStackWrapper(new SimpleItemStackProvider(null), Functions.EMPTY);
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetEquipmentFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasEquipmentFunctionTarget.INSTANCE).forGetter(Function::getTarget),

@@ -6,7 +6,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
- * Tint tintables, color, passengers, equipment, entity variants, set blockstate/blockentity, grow blocks/animals, breed, tame, direction/facing
+ * Tint tintables, passengers, entity variants, set blockstate/blockentity, grow blocks/animals, breed, tame, direction/facing
  */
 public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType EMPTY = new FunctionType(EmptyFunction.CODEC);

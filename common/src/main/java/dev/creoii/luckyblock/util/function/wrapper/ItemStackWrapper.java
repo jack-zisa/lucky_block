@@ -1,9 +1,10 @@
 package dev.creoii.luckyblock.util.function.wrapper;
 
-import com.google.common.collect.Lists;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.FunctionType;
+import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.SetVelocityFunction;
 import dev.creoii.luckyblock.util.function.target.ColorTarget;
 import dev.creoii.luckyblock.util.function.target.ComponentsTarget;
@@ -20,25 +21,17 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.intprovider.IntProvider;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public record ItemStackWrapper(ItemStackProvider stackProvider, List<Function<?>> functions) implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper> {
-    public ItemStackWrapper(ItemStackProvider stackProvider, List<Function<?>> functions) {
+public record ItemStackWrapper(ItemStackProvider stackProvider, Functions functions) implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper> {
+    public ItemStackWrapper(ItemStackProvider stackProvider, Functions functions) {
         this.stackProvider = stackProvider;
 
-        if (functions.stream().noneMatch(function -> function instanceof SetVelocityFunction)) {
-            List<Function<?>> newFunctions = new ArrayList<>(functions);
-            newFunctions.add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY);
-            this.functions = Collections.unmodifiableList(newFunctions);
-        } else {
-            this.functions = functions;
-        }
+        if (!functions.has(FunctionType.SET_VELOCITY)) {
+            this.functions = new Functions.Builder().addAll(functions).add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();
+        } else this.functions = functions;
     }
 
     public static ItemStackWrapper fromStack(ItemStack stack) {
-        return new ItemStackWrapper(SimpleItemStackProvider.of(stack), Lists.newArrayList(SetVelocityFunction.DEFAULT_ITEM_VELOCITY));
+        return new ItemStackWrapper(SimpleItemStackProvider.of(stack), new Functions.Builder().add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build());
     }
 
     @Override

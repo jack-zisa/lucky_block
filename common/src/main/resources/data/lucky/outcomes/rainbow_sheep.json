@@ -2,19 +2,17 @@
   "type": "lucky:entity",
   "entity": {
     "entity_type": "minecraft:sheep",
-    "functions": [
-      {
-        "type": "lucky:set_color",
+    "functions": {
+      "lucky:set_color": {
         "color": {
           "type": "lucky:random_color_provider"
         }
       }
-    ]
+    }
   },
-  "functions": [
-    {
-      "type": "lucky:set_count",
+  "functions": {
+    "lucky:set_count": {
       "count": 8
     }
-  ]
+  }
 }

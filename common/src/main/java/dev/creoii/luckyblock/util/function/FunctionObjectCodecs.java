@@ -21,7 +21,7 @@ public class FunctionObjectCodecs {
 
     public static final Codec<ItemStackWrapper> INLINE_ITEM_STACK = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             ITEM_STACK.fieldOf("stack_provider").forGetter(ItemStackWrapper::stackProvider),
-            Function.CODEC.listOf().fieldOf("functions").forGetter(ItemStackWrapper::functions)
+            Functions.CODEC.fieldOf("functions").forGetter(ItemStackWrapper::functions)
     ).apply(instance, ItemStackWrapper::new)));
 
     public static final Codec<ItemStackWrapper> ITEM_STACK_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ITEM_STACK).xmap(either -> {
@@ -30,7 +30,7 @@ public class FunctionObjectCodecs {
 
     public static final Codec<EntityWrapper> INLINE_ENTITY = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("entity_type").forGetter(wrapper -> Registries.ENTITY_TYPE.getId(wrapper.getEntityType())),
-            Function.CODEC.listOf().fieldOf("functions").forGetter(EntityWrapper::getFunctions)
+            Functions.CODEC.fieldOf("functions").forGetter(EntityWrapper::getFunctions)
     ).apply(instance, (identifier, functions) -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), functions))));
 
     public static final Codec<EntityWrapper> ENTITY_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ENTITY).xmap(either -> {

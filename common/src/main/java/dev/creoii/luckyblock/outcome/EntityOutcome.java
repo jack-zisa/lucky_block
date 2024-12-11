@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.NbtTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
@@ -35,14 +36,14 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("entity").forGetter(outcome -> outcome.entity),
-                Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
+                Functions.CODEC.fieldOf("functions").orElse(Functions.EMPTY).forGetter(outcome -> outcome.functions)
         ).apply(instance, EntityOutcome::new);
     });
     private final EntityWrapper entity;
-    private final List<Function<?>> functions;
+    private final Functions functions;
     private IntProvider count;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, EntityWrapper entity, List<Function<?>> functions) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, EntityWrapper entity, Functions functions) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entity = entity;
         this.functions = functions;

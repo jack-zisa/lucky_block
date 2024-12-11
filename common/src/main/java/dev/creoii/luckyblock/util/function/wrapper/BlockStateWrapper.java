@@ -2,13 +2,12 @@ package dev.creoii.luckyblock.util.function.wrapper;
 
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.Target;
 import net.minecraft.block.Block;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
-import java.util.List;
-
-public record BlockStateWrapper(BlockStateProvider state, List<Function<?>> functions) implements Wrapper<Block, BlockStateWrapper>, Target<BlockStateWrapper> {
+public record BlockStateWrapper(BlockStateProvider state, Functions functions) implements Wrapper<Block, BlockStateWrapper>, Target<BlockStateWrapper> {
     @Override
     public Block getRegistryObject(Outcome.Context<?> context) {
         return state.get(context.world().getRandom(), context.pos()).getBlock();

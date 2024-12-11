@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
 import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
@@ -32,14 +33,14 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stackProvider),
-                Function.CODEC.listOf().fieldOf("functions").orElse(List.of()).forGetter(outcome -> outcome.functions)
+                Functions.CODEC.fieldOf("functions").orElse(Functions.EMPTY).forGetter(outcome -> outcome.functions)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStackWrapper stackProvider;
-    private final List<Function<?>> functions;
+    private final Functions functions;
     private IntProvider count;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, List<Function<?>> functions) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, Functions functions) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stackProvider = stackProvider;
         this.functions = functions;
@@ -57,7 +58,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         for (int i = 0; i < this.count.get(context.world().getRandom()); ++i) {
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (itemEntity != null) {
-                itemEntities.add(new EntityWrapper(itemEntity, List.of()));
+                itemEntities.add(new EntityWrapper(itemEntity, Functions.EMPTY));
             }
         }
 

@@ -1,9 +1,9 @@
 package dev.creoii.luckyblock.util.function.wrapper;
 
-import com.google.common.collect.Lists;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.*;
@@ -14,41 +14,40 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.DyeColor;
 
-import java.util.List;
 import java.util.Optional;
 
 public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, VariantTarget<EntityWrapper, Object> {
-    private final List<Function<?>> functions;
+    private final Functions functions;
     private final EntityType<?> entityType;
     private final Entity entity;
 
-    public EntityWrapper(EntityType<?> entityType, List<Function<?>> functions, Outcome.Context<? extends ContextInfo> context) {
+    public EntityWrapper(EntityType<?> entityType, Functions functions, Outcome.Context<? extends ContextInfo> context) {
         this.functions = functions;
         this.entityType = entityType;
         this.entity = entityType.create(context.world(), SpawnReason.NATURAL);
     }
 
-    public EntityWrapper(EntityType<?> entityType, List<Function<?>> functions) {
+    public EntityWrapper(EntityType<?> entityType, Functions functions) {
         this.functions = functions;
         this.entityType = entityType;
         this.entity = null;
     }
 
-    public EntityWrapper(Entity entity, List<Function<?>> functions) {
+    public EntityWrapper(Entity entity, Functions functions) {
         this.functions = functions;
         this.entityType = entity.getType();
         this.entity = entity;
     }
 
     public static EntityWrapper fromEntityType(EntityType<?> entityType) {
-        return new EntityWrapper(entityType, Lists.newArrayList());
+        return new EntityWrapper(entityType, Functions.EMPTY);
     }
 
     public EntityWrapper init(Outcome.Context<? extends ContextInfo> context) {
         return new EntityWrapper(entityType, functions, context);
     }
 
-    public List<Function<?>> getFunctions() {
+    public Functions getFunctions() {
         return functions;
     }
 
