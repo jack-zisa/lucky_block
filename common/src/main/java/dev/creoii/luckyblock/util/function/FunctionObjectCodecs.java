@@ -29,7 +29,7 @@ public class FunctionObjectCodecs {
     }, Either::right);
 
     public static final Codec<EntityWrapper> INLINE_ENTITY = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-            Identifier.CODEC.fieldOf("entity_type").forGetter(wrapper -> Registries.ENTITY_TYPE.getId(wrapper.getEntityType())),
+            Identifier.CODEC.fieldOf("type").forGetter(wrapper -> Registries.ENTITY_TYPE.getId(wrapper.getEntityType())),
             Functions.CODEC.fieldOf("functions").forGetter(EntityWrapper::getFunctions)
     ).apply(instance, (identifier, functions) -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), functions))));
 

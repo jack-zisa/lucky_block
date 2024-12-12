@@ -1,7 +1,7 @@
 {
   "type": "lucky:entity",
   "entity": {
-    "entity_type": "minecraft:zombie",
+    "type": "minecraft:zombie",
     "functions": {
       "lucky:set_equipment": {
         "head_provider": "minecraft:iron_helmet"
