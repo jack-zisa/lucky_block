@@ -15,9 +15,9 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType HAS_COUNT = new FunctionTargetType(HasCountFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_COLOR = new FunctionTargetType(HasColorFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_EQUIPMENT = new FunctionTargetType(HasEquipmentFunctionTarget.CODEC);
-    public static final FunctionTargetType HAS_VARIANTS = new FunctionTargetType(HasVariantsFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_VELOCITY = new FunctionTargetType(HasVelocityFunctionTarget.CODEC);
     public static final FunctionTargetType MATCHING = new FunctionTargetType(MatchingFunctionTarget.CODEC);
+    public static final FunctionTargetType RANDOM_COUNT = new FunctionTargetType(RandomCountFunctionTarget.CODEC);
 
     public static void init() {
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "none"), NONE);
@@ -25,9 +25,10 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_components"), HAS_COMPONENTS);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_count"), HAS_COUNT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_color"), HAS_COLOR);
-        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_variants"), HAS_VARIANTS);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_equipment"), HAS_EQUIPMENT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_velocity"), HAS_VELOCITY);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "matching"), MATCHING);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "random_count"), RANDOM_COUNT);
     }
 
     private static void registerFunctionTargetType(Identifier id, FunctionTargetType functionTarget) {

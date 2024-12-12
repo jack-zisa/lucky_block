@@ -4,11 +4,7 @@
     "entity_type": "minecraft:zombie",
     "functions": {
       "lucky:set_equipment": {
-        "head_provider": "minecraft:iron_helmet",
-        "chest_provider": "minecraft:iron_chestplate",
-        "legs_provider": "minecraft:iron_leggings",
-        "feet_provider": "minecraft:iron_boots",
-        "mainhand_provider": "minecraft:iron_sword"
+        "head_provider": "minecraft:iron_helmet"
       }
     }
   },
@@ -19,6 +15,23 @@
         "min_inclusive": 4,
         "max_inclusive": 12
       }
+    },
+    "lucky:set_equipment": {
+      "target": {
+        "type": "lucky:random_count",
+        "target": {
+          "type": "lucky:has_equipment"
+        },
+        "count": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 0,
+          "max_inclusive": 12
+        }
+      },
+      "chest_provider": "minecraft:iron_chestplate",
+      "legs_provider": "minecraft:iron_leggings",
+      "feet_provider": "minecraft:iron_boots",
+      "mainhand_provider": "minecraft:iron_sword"
     }
   }
 }

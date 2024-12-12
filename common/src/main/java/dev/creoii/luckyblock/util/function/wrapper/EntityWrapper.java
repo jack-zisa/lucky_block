@@ -16,7 +16,7 @@ import net.minecraft.util.DyeColor;
 
 import java.util.Optional;
 
-public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, VariantTarget<EntityWrapper, Object> {
+public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper> {
     private final Functions functions;
     private final EntityType<?> entityType;
     private final Entity entity;
@@ -37,10 +37,6 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         this.functions = functions;
         this.entityType = entity.getType();
         this.entity = entity;
-    }
-
-    public static EntityWrapper fromEntityType(EntityType<?> entityType) {
-        return new EntityWrapper(entityType, Functions.EMPTY);
     }
 
     public EntityWrapper init(Outcome.Context<? extends ContextInfo> context) {
@@ -164,15 +160,6 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
     public EntityWrapper setBody(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack body) {
         if (entity instanceof LivingEntity living) {
             living.equipStack(EquipmentSlot.BODY, body);
-        }
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public EntityWrapper setVariant(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, Object variant) {
-        if (entity instanceof VariantHolder variantHolder) {
-            variantHolder.setVariant(variant);
         }
         return this;
     }

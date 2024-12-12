@@ -34,6 +34,6 @@ public class FunctionObjectCodecs {
     ).apply(instance, (identifier, functions) -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), functions))));
 
     public static final Codec<EntityWrapper> ENTITY_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ENTITY).xmap(either -> {
-        return either.map(identifier -> EntityWrapper.fromEntityType(Registries.ENTITY_TYPE.get(identifier)), java.util.function.Function.identity());
+        return either.map(identifier -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), Functions.EMPTY), java.util.function.Function.identity());
     }, Either::right);
 }
