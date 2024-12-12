@@ -29,16 +29,16 @@ public abstract class Function<T extends Target<?>> {
 
     public abstract void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context);
 
-    public static void applyAll(Functions functions, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        functions.forEach(function -> function.apply(outcome, context));
+    public static void applyAll(FunctionContainer functionContainer, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        functionContainer.forEach(function -> function.apply(outcome, context));
     }
 
-    public static void applyPre(Functions functions, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        functions.forEach(function -> function.apply(outcome, context), function -> function.phase == Phase.PRE);
+    public static void applyPre(FunctionContainer functionContainer, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        functionContainer.forEach(function -> function.apply(outcome, context), function -> function.phase == Phase.PRE);
     }
 
-    public static void applyPost(Functions functions, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        functions.forEach(function -> function.apply(outcome, context), function -> function.phase == Phase.POST);
+    public static void applyPost(FunctionContainer functionContainer, Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        functionContainer.forEach(function -> function.apply(outcome, context), function -> function.phase == Phase.POST);
     }
 
     public enum Phase {

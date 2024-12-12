@@ -4,7 +4,7 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionType;
-import dev.creoii.luckyblock.util.function.Functions;
+import dev.creoii.luckyblock.util.function.FunctionContainer;
 import dev.creoii.luckyblock.util.function.SetVelocityFunction;
 import dev.creoii.luckyblock.util.function.target.ColorTarget;
 import dev.creoii.luckyblock.util.function.target.ComponentsTarget;
@@ -21,17 +21,17 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.intprovider.IntProvider;
 
-public record ItemStackWrapper(ItemStackProvider stackProvider, Functions functions) implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper> {
-    public ItemStackWrapper(ItemStackProvider stackProvider, Functions functions) {
+public record ItemStackWrapper(ItemStackProvider stackProvider, FunctionContainer functionContainer) implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper> {
+    public ItemStackWrapper(ItemStackProvider stackProvider, FunctionContainer functionContainer) {
         this.stackProvider = stackProvider;
 
-        if (!functions.has(FunctionType.SET_VELOCITY)) {
-            this.functions = new Functions.Builder().addAll(functions).add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();
-        } else this.functions = functions;
+        if (!functionContainer.has(FunctionType.SET_VELOCITY)) {
+            this.functionContainer = new FunctionContainer.Builder().addAll(functionContainer).add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();
+        } else this.functionContainer = functionContainer;
     }
 
     public static ItemStackWrapper fromStack(ItemStack stack) {
-        return new ItemStackWrapper(SimpleItemStackProvider.of(stack), new Functions.Builder().add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build());
+        return new ItemStackWrapper(SimpleItemStackProvider.of(stack), new FunctionContainer.Builder().add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build());
     }
 
     @Override
@@ -52,13 +52,13 @@ public record ItemStackWrapper(ItemStackProvider stackProvider, Functions functi
     @Override
     public ItemStackWrapper setComponents(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ComponentChanges componentChanges) {
         stackProvider.get(context.world().getRandom()).applyChanges(componentChanges);
-        return new ItemStackWrapper(stackProvider, functions);
+        return new ItemStackWrapper(stackProvider, functionContainer);
     }
 
     @Override
     public ItemStackWrapper setCount(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, IntProvider count) {
         stackProvider.get(context.world().getRandom()).setCount(count.get(context.world().getRandom()));
-        return new ItemStackWrapper(stackProvider, functions);
+        return new ItemStackWrapper(stackProvider, functionContainer);
     }
 
     @Override

@@ -6,7 +6,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 /**
- * TODO: random, all_of, tintable items/blocks/entities, growable blocks/entities, breedable entities, tameable entities
+ * TODO: all_of, tintable items/blocks/entities, growable blocks/entities, breedable entities, tameable entities
  */
 public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType NONE = new FunctionTargetType(NoneFunctionTarget.CODEC);
@@ -16,6 +16,8 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType HAS_COLOR = new FunctionTargetType(HasColorFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_EQUIPMENT = new FunctionTargetType(HasEquipmentFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_VELOCITY = new FunctionTargetType(HasVelocityFunctionTarget.CODEC);
+    public static final FunctionTargetType HAS_DIRECTION = new FunctionTargetType(HasDirectionFunctionTarget.CODEC);
+    public static final FunctionTargetType HAS_ROTATION = new FunctionTargetType(HasRotationFunctionTarget.CODEC);
     public static final FunctionTargetType MATCHING = new FunctionTargetType(MatchingFunctionTarget.CODEC);
     public static final FunctionTargetType RANDOM_COUNT = new FunctionTargetType(RandomCountFunctionTarget.CODEC);
 
@@ -27,6 +29,8 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_color"), HAS_COLOR);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_equipment"), HAS_EQUIPMENT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_velocity"), HAS_VELOCITY);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_direction"), HAS_DIRECTION);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_rotation"), HAS_ROTATION);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "matching"), MATCHING);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "random_count"), RANDOM_COUNT);
     }

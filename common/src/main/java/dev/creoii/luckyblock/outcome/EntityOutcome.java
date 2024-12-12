@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.FunctionContainer;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
-import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
@@ -25,36 +25,36 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("entity").forGetter(outcome -> outcome.entity),
-                Functions.CODEC.fieldOf("functions").orElse(Functions.EMPTY).forGetter(outcome -> outcome.functions)
+                FunctionContainer.CODEC.fieldOf("functions").orElse(FunctionContainer.EMPTY).forGetter(outcome -> outcome.functionContainer)
         ).apply(instance, EntityOutcome::new);
     });
     private final EntityWrapper entity;
-    private final Functions functions;
+    private final FunctionContainer functionContainer;
     private IntProvider count;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, EntityWrapper entity, Functions functions) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, EntityWrapper entity, FunctionContainer functionContainer) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entity = entity;
-        this.functions = functions;
+        this.functionContainer = functionContainer;
         count = LuckyBlockCodecs.ONE;
     }
 
     @Override
     public Context<EntityInfo> create(Context<EntityInfo> context) {
         Vec3d vec3d = getPos(context).getVec(context);
-        Function.applyPre(functions, this, context.withInfo(new EntityInfo(vec3d, List.of())));
+        Function.applyPre(functionContainer, this, context.withInfo(new EntityInfo(vec3d, List.of())));
 
         List<EntityWrapper> entities = Lists.newArrayList();
         int count = this.count.get(context.world().getRandom());
         for (int i = 0; i < count; ++i) {
-            EntityWrapper entity = this.entity.init(context);
+            EntityWrapper entity = this.entity.init(this, context);
             Function.applyPre(entity.getFunctions(), this, context);
             entities.add(entity);
         }
 
         context.info().entities = entities;
 
-        Function.applyPost(functions, this, context);
+        Function.applyPost(functionContainer, this, context);
         return context;
     }
 

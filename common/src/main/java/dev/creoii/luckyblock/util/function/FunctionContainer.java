@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Functions {
-    public static final Functions EMPTY = new Functions(Reference2ObjectMaps.emptyMap());
-    public static final Codec<Functions> CODEC = Codec.dispatchedMap(Type.CODEC, Type::getValueCodec).xmap(map -> {
+public class FunctionContainer {
+    public static final FunctionContainer EMPTY = new FunctionContainer(Reference2ObjectMaps.emptyMap());
+    public static final Codec<FunctionContainer> CODEC = Codec.dispatchedMap(Type.CODEC, Type::getValueCodec).xmap(map -> {
         if (map.isEmpty()) {
             return EMPTY;
         } else {
@@ -23,7 +23,7 @@ public class Functions {
             for (Map.Entry<Type, Function<?>> entry : map.entrySet()) {
                 functions.put(entry.getKey().type(), Optional.of(entry.getValue()));
             }
-            return new Functions(functions);
+            return new FunctionContainer(functions);
         }
     }, functions -> {
         Reference2ObjectMap<Type, Function<?>> map = new Reference2ObjectArrayMap<>(functions.functions.size());
@@ -32,18 +32,14 @@ public class Functions {
         }
         return map;
     });
-    private Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions;
+    private final Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions;
 
-    public Functions(Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions) {
+    public FunctionContainer(Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions) {
         this.functions = functions;
     }
 
     public boolean has(FunctionType type) {
         return functions.containsKey(type);
-    }
-
-    public void add(Function<?> function) {
-        //functions.put(function.getType(), Optional.of(function));
     }
 
     public void forEach(Consumer<Function<?>> action) {
@@ -64,8 +60,8 @@ public class Functions {
     public static class Builder {
         private final Reference2ObjectMap<FunctionType, Optional<Function<?>>> changes = new Reference2ObjectArrayMap<>();
 
-        public Builder addAll(Functions functions) {
-            functions.forEach(this::add);
+        public Builder addAll(FunctionContainer functionContainer) {
+            functionContainer.forEach(this::add);
             return this;
         }
 
@@ -78,8 +74,8 @@ public class Functions {
             return this.add(component.getType(), component);
         }
 
-        public Functions build() {
-            return this.changes.isEmpty() ? Functions.EMPTY : new Functions(this.changes);
+        public FunctionContainer build() {
+            return this.changes.isEmpty() ? FunctionContainer.EMPTY : new FunctionContainer(this.changes);
         }
     }
 

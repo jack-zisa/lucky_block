@@ -16,6 +16,8 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType SET_COLOR = new FunctionType(SetColorFunction.CODEC);
     public static final FunctionType SET_VELOCITY = new FunctionType(SetVelocityFunction.CODEC);
     public static final FunctionType SET_EQUIPMENT = new FunctionType(SetEquipmentFunction.CODEC);
+    public static final FunctionType SET_DIRECTION = new FunctionType(SetDirectionFunction.CODEC);
+    public static final FunctionType SET_ROTATION = new FunctionType(SetRotationFunction.CODEC);
 
     public static void init() {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
@@ -25,6 +27,8 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_color"), SET_COLOR);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_velocity"), SET_VELOCITY);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_equipment"), SET_EQUIPMENT);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_direction"), SET_DIRECTION);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_rotation"), SET_ROTATION);
     }
 
     private static void registerFunctionType(Identifier id, FunctionType function) {

@@ -7,9 +7,10 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
 import dev.creoii.luckyblock.util.stackprovider.SimpleItemStackProvider;
+import net.minecraft.entity.EquipmentSlot;
 
 public class SetEquipmentFunction extends Function<Target<?>> {
-    public static final ItemStackWrapper EMPTY = new ItemStackWrapper(new SimpleItemStackProvider(null), Functions.EMPTY);
+    public static final ItemStackWrapper EMPTY = new ItemStackWrapper(new SimpleItemStackProvider(null), FunctionContainer.EMPTY);
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetEquipmentFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasEquipmentFunctionTarget.INSTANCE).forGetter(Function::getTarget),
@@ -46,19 +47,19 @@ public class SetEquipmentFunction extends Function<Target<?>> {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof EquipmentTarget<?> equipmentTarget) {
                 if (headProvider != EMPTY)
-                    target.update(this, equipmentTarget.setHead(outcome, context, headProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.HEAD, headProvider.stackProvider().get(context.world().getRandom())));
                 if (chestProvider != EMPTY)
-                    target.update(this, equipmentTarget.setChest(outcome, context, chestProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.CHEST, chestProvider.stackProvider().get(context.world().getRandom())));
                 if (legsProvider != EMPTY)
-                    target.update(this, equipmentTarget.setLegs(outcome, context, legsProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.LEGS, legsProvider.stackProvider().get(context.world().getRandom())));
                 if (feetProvider != EMPTY)
-                    target.update(this, equipmentTarget.setFeet(outcome, context, feetProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.FEET, feetProvider.stackProvider().get(context.world().getRandom())));
                 if (mainhandProvider != EMPTY)
-                    target.update(this, equipmentTarget.setMainhand(outcome, context, mainhandProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.MAINHAND, mainhandProvider.stackProvider().get(context.world().getRandom())));
                 if (offhandProvider != EMPTY)
-                    target.update(this, equipmentTarget.setOffhand(outcome, context, offhandProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.OFFHAND, offhandProvider.stackProvider().get(context.world().getRandom())));
                 if (bodyProvider != EMPTY)
-                    target.update(this, equipmentTarget.setBody(outcome, context, bodyProvider.stackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.BODY, bodyProvider.stackProvider().get(context.world().getRandom())));
             }
         }
     }

@@ -3,7 +3,7 @@ package dev.creoii.luckyblock.util.function.wrapper;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
-import dev.creoii.luckyblock.util.function.Functions;
+import dev.creoii.luckyblock.util.function.FunctionContainer;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
@@ -13,38 +13,39 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.floatprovider.FloatProvider;
 
 import java.util.Optional;
 
-public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper> {
-    private final Functions functions;
-    private final EntityType<?> entityType;
+public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper> {
+    private final FunctionContainer functionContainer;
+    private final EntityType<?> entityType; // need this field because entity may be null
     private final Entity entity;
 
-    public EntityWrapper(EntityType<?> entityType, Functions functions, Outcome.Context<? extends ContextInfo> context) {
-        this.functions = functions;
+    public EntityWrapper(EntityType<?> entityType, FunctionContainer functionContainer, Outcome.Context<? extends ContextInfo> context) {
+        this.functionContainer = functionContainer;
         this.entityType = entityType;
         this.entity = entityType.create(context.world(), SpawnReason.NATURAL);
     }
 
-    public EntityWrapper(EntityType<?> entityType, Functions functions) {
-        this.functions = functions;
+    public EntityWrapper(EntityType<?> entityType, FunctionContainer functionContainer) {
+        this.functionContainer = functionContainer;
         this.entityType = entityType;
         this.entity = null;
     }
 
-    public EntityWrapper(Entity entity, Functions functions) {
-        this.functions = functions;
+    public EntityWrapper(Entity entity, FunctionContainer functionContainer) {
+        this.functionContainer = functionContainer;
         this.entityType = entity.getType();
         this.entity = entity;
     }
 
-    public EntityWrapper init(Outcome.Context<? extends ContextInfo> context) {
-        return new EntityWrapper(entityType, functions, context);
+    public EntityWrapper init(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        return new EntityWrapper(entityType, functionContainer, context);
     }
 
-    public Functions getFunctions() {
-        return functions;
+    public FunctionContainer getFunctions() {
+        return functionContainer;
     }
 
     public Entity getEntity() {
@@ -105,62 +106,20 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         } else if (entity instanceof CatEntity catEntity) {
             catEntity.setCollarColor(dyeColor);
         }
-        return new EntityWrapper(entity, functions);
+        return new EntityWrapper(entity, functionContainer);
     }
 
     @Override
-    public EntityWrapper setHead(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack head) {
+    public EntityWrapper setStack(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, EquipmentSlot slot, ItemStack stack) {
         if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.HEAD, head);
+            living.equipStack(slot, stack);
         }
         return this;
     }
 
     @Override
-    public EntityWrapper setChest(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack chest) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.CHEST, chest);
-        }
-        return this;
-    }
-
-    @Override
-    public EntityWrapper setLegs(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack legs) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.LEGS, legs);
-        }
-        return this;
-    }
-
-    @Override
-    public EntityWrapper setFeet(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack boots) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.FEET, boots);
-        }
-        return this;
-    }
-
-    @Override
-    public EntityWrapper setMainhand(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack mainhand) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.MAINHAND, mainhand);
-        }
-        return this;
-    }
-
-    @Override
-    public EntityWrapper setOffhand(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack offhand) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.OFFHAND, offhand);
-        }
-        return this;
-    }
-
-    @Override
-    public EntityWrapper setBody(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, ItemStack body) {
-        if (entity instanceof LivingEntity living) {
-            living.equipStack(EquipmentSlot.BODY, body);
-        }
+    public EntityWrapper setRotation(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, FloatProvider pitch, FloatProvider yaw) {
+        entity.refreshPositionAndAngles(entity.getPos(), yaw.get(context.world().getRandom()), pitch.get(context.world().getRandom()));
         return this;
     }
 }

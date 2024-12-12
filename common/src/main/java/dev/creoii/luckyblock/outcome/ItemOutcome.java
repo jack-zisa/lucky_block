@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.Function;
+import dev.creoii.luckyblock.util.function.FunctionContainer;
 import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
-import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
 import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
@@ -33,24 +33,24 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 FunctionObjectCodecs.ITEM_STACK_WRAPPER.fieldOf("stack").forGetter(outcome -> outcome.stackProvider),
-                Functions.CODEC.fieldOf("functions").orElse(Functions.EMPTY).forGetter(outcome -> outcome.functions)
+                FunctionContainer.CODEC.fieldOf("functions").orElse(FunctionContainer.EMPTY).forGetter(outcome -> outcome.functionContainer)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStackWrapper stackProvider;
-    private final Functions functions;
+    private final FunctionContainer functionContainer;
     private IntProvider count;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, Functions functions) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStackWrapper stackProvider, FunctionContainer functionContainer) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stackProvider = stackProvider;
-        this.functions = functions;
+        this.functionContainer = functionContainer;
         count = LuckyBlockCodecs.ONE;
     }
 
     @Override
     public Context<ItemInfo> create(Context<ItemInfo> context) {
         ItemInfo info = new ItemInfo();
-        Function.applyPre(functions, this, context.withInfo(info));
+        Function.applyPre(functionContainer, this, context.withInfo(info));
 
         Vec3d pos = getPos(context).getVec(context);
 
@@ -58,7 +58,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         for (int i = 0; i < this.count.get(context.world().getRandom()); ++i) {
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (itemEntity != null) {
-                itemEntities.add(new EntityWrapper(itemEntity, Functions.EMPTY));
+                itemEntities.add(new EntityWrapper(itemEntity, FunctionContainer.EMPTY));
             }
         }
 
@@ -66,13 +66,13 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         info.pos = pos;
         info.items = itemEntities;
 
-        Function.applyPost(functions, this, context.withInfo(info));
+        Function.applyPost(functionContainer, this, context.withInfo(info));
         return context.withInfo(info);
     }
 
     @Override
     public void run(Context<ItemInfo> context) {
-        Function.applyAll(context.info().stack.functions(), this, context);
+        Function.applyAll(context.info().stack.functionContainer(), this, context);
         ItemStack stack = context.info().stack.stackProvider().get(context.world().getRandom());
 
         int count = context.info().items.size();
