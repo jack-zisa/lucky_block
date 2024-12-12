@@ -7,13 +7,11 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.target.FunctionTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
 
-import java.util.List;
-
 public abstract class Function<T extends Target<?>> {
     public static final Codec<Function<?>> CODEC = LuckyBlockMod.FUNCTION_TYPES.getCodec().dispatch(Function::getType, FunctionType::codec);
     private final FunctionType type;
     private final Phase phase;
-    protected final FunctionTarget<T> target;
+    protected FunctionTarget<T> target;
 
     protected Function(FunctionType type, Phase phase, FunctionTarget<T> target) {
         this.type = type;

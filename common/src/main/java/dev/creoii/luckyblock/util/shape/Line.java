@@ -2,8 +2,9 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -29,7 +30,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome.Context context) {
+    public List<BlockPos> getBlockPositions(Outcome.Context<? extends ContextInfo> context) {
         List<BlockPos> positions = new ArrayList<>();
 
         Vec3d direction = to.getVec(context).subtract(from.getVec(context)).normalize();
@@ -41,12 +42,12 @@ public class Line extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome.Context context) {
+    public List<Vec3d> getVecPositions(Outcome.Context<? extends ContextInfo> context) {
         return List.of();
     }
 
     @Override
-    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+    public List<Entity> getEntitiesWithin(Outcome.Context<? extends ContextInfo> context, Vec3d center, Predicate<Entity> filter) {
         return List.of();
     }
 }

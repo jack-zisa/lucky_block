@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.vec;
+package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -23,19 +23,19 @@ public abstract class VecProvider {
             default -> new RandomVecProvider(list.getFirst(), list.get(1), list.get(2));
         }, provider -> provider);
     }, Either::right);
-    public static Codec<VecProvider> CONSTANT_POS = Codec.either(Codec.DOUBLE, VecProvider.VALUE_CODEC).xmap(either -> {
+    public static Codec<VecProvider> CONSTANT_POS = Codec.either(Codec.DOUBLE, VALUE_CODEC).xmap(either -> {
         return either.map(aDouble -> new ConstantVecProvider(new Vec3d(aDouble, aDouble, aDouble)), Function.identity());
     }, Either::right);
 
-    public abstract Vec3d getVec(Outcome.Context context);
+    public abstract Vec3d getVec(Outcome.Context<?> context);
 
-    public BlockPos getPos(Outcome.Context context) {
+    public BlockPos getPos(Outcome.Context<?> context) {
         return fromVec(getVec(context));
     }
 
-    public abstract List<Vec3d> getVecs(Outcome.Context context);
+    public abstract List<Vec3d> getVecs(Outcome.Context<?> context);
 
-    public List<BlockPos> getPositions(Outcome.Context context) {
+    public List<BlockPos> getPositions(Outcome.Context<?> context) {
         return getVecs(context).stream().map(VecProvider::fromVec).toList();
     }
 

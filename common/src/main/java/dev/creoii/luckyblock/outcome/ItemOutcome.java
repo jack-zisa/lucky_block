@@ -11,7 +11,7 @@ import dev.creoii.luckyblock.util.function.target.CountTarget;
 import dev.creoii.luckyblock.util.function.target.Target;
 import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
 import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -80,7 +80,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
             Entity entity = context.info().items.get(i).getEntity();
             if (entity instanceof ItemEntity itemEntity) {
                 itemEntity.setStack(stack.copy());
-                itemEntity.refreshPositionAndAngles(context.info().pos, 0f, 0f);
+                itemEntity.refreshPositionAndAngles(context.info().pos, context.world().getRandom().nextFloat() * 255f, context.world().getRandom().nextFloat() * 255f);
                 context.world().spawnEntity(itemEntity);
             }
         }

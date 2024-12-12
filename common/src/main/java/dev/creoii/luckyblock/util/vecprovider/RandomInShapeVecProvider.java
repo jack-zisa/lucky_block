@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.vec;
+package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -16,60 +16,60 @@ import java.util.Optional;
 
 public class RandomInShapeVecProvider extends VecProvider {
     public static final MapCodec<RandomInShapeVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(VecProvider.VALUE_CODEC.optionalFieldOf("center").forGetter(provider -> provider.center),
+        return instance.group(VecProvider.VALUE_CODEC.optionalFieldOf("pos").forGetter(provider -> provider.pos),
                 Shape.CODEC.fieldOf("shape").forGetter(provider -> provider.shape),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(provider -> provider.count)
         ).apply(instance, RandomInShapeVecProvider::new);
     });
-    private final Optional<VecProvider> center;
+    private final Optional<VecProvider> pos;
     private final Shape shape;
     private final IntProvider count;
 
-    private RandomInShapeVecProvider(Optional<VecProvider> center, Shape shape, IntProvider count) {
-        this.center = center;
+    private RandomInShapeVecProvider(Optional<VecProvider> pos, Shape shape, IntProvider count) {
+        this.pos = pos;
         this.shape = shape;
         this.count = count;
     }
 
     @Override
-    public Vec3d getVec(Outcome.Context context) {
+    public Vec3d getVec(Outcome.Context<?> context) {
         return getPos(context).toCenterPos();
     }
 
     @Override
-    public BlockPos getPos(Outcome.Context context) {
+    public BlockPos getPos(Outcome.Context<?> context) {
         List<BlockPos> positions = shape.getBlockPositions(context);
         if (positions.isEmpty()) {
             return ConstantVecProvider.ZERO.getPos(context);
         }
-        BlockPos center = this.center.isPresent() ? this.center.get().getPos(context) : context.pos();
+        BlockPos center = this.pos.isPresent() ? this.pos.get().getPos(context) : context.pos();
         return positions.get(context.world().getRandom().nextInt(positions.size())).add(center);
     }
 
     @Override
-    public List<Vec3d> getVecs(Outcome.Context context) {
+    public List<Vec3d> getVecs(Outcome.Context<?> context) {
         return getPositions(context).stream().map(BlockPos::toCenterPos).toList();
     }
 
     @Override
-    public List<BlockPos> getPositions(Outcome.Context context) {
+    public List<BlockPos> getPositions(Outcome.Context<?> context) {
         List<BlockPos> positions = shape.getBlockPositions(context);
         if (positions.isEmpty()) {
             return List.of(ConstantVecProvider.ZERO.getPos(context));
         }
-        BlockPos center = this.center.isPresent() ? this.center.get().getPos(context) : context.pos();
+        BlockPos pos = this.pos.isPresent() ? this.pos.get().getPos(context) : context.pos();
 
         int count = this.count.get(context.world().getRandom());
         if (count > 1) {
             List<BlockPos> result = new ArrayList<>();
             Collections.shuffle(positions);
             for (int i = 0; i < count; ++i) {
-                result.add(positions.get(i));
+                result.add(positions.get(i).add(pos));
             }
             return result;
         }
 
-        return List.of(positions.get(context.world().getRandom().nextInt(positions.size())).add(center));
+        return List.of(positions.get(context.world().getRandom().nextInt(positions.size())).add(pos));
     }
 
     @Override

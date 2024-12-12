@@ -1,8 +1,9 @@
 package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
+import dev.creoii.luckyblock.util.vecprovider.ConstantVecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -19,17 +20,17 @@ public class Empty extends Shape {
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome.Context context) {
+    public List<BlockPos> getBlockPositions(Outcome.Context<? extends ContextInfo> context) {
         return List.of();
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome.Context context) {
+    public List<Vec3d> getVecPositions(Outcome.Context<? extends ContextInfo> context) {
         return List.of();
     }
 
     @Override
-    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+    public List<Entity> getEntitiesWithin(Outcome.Context<? extends ContextInfo> context, Vec3d center, Predicate<Entity> filter) {
         return List.of();
     }
 }

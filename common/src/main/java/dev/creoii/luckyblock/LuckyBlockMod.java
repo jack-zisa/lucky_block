@@ -10,7 +10,7 @@ import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
-import dev.creoii.luckyblock.util.vec.VecProviderType;
+import dev.creoii.luckyblock.util.vecprovider.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.ComponentType;

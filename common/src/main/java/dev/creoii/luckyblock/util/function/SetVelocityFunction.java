@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.target.*;
-import dev.creoii.luckyblock.util.vec.RandomVecProvider;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.RandomVecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 
 public class SetVelocityFunction extends Function<Target<?>> {
     public static final SetVelocityFunction DEFAULT_ITEM_VELOCITY = new SetVelocityFunction(HasVelocityFunctionTarget.INSTANCE, RandomVecProvider.DEFAULT_ITEM_VELOCITY);

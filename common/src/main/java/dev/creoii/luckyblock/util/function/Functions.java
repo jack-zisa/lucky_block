@@ -32,7 +32,7 @@ public class Functions {
         }
         return map;
     });
-    private final Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions;
+    private Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions;
 
     public Functions(Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions) {
         this.functions = functions;

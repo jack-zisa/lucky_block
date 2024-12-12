@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.vec;
+package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.outcome.Outcome;
@@ -20,12 +20,12 @@ public class ConstantVecProvider extends VecProvider {
     }
 
     @Override
-    public Vec3d getVec(Outcome.Context context) {
+    public Vec3d getVec(Outcome.Context<?> context) {
         return value;
     }
 
     @Override
-    public List<Vec3d> getVecs(Outcome.Context context) {
+    public List<Vec3d> getVecs(Outcome.Context<?> context) {
         return List.of(getVec(context));
     }
 

@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.vec;
+package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +27,7 @@ public class RandomVelocityVecProvider extends VecProvider {
     }
 
     @Override
-    public Vec3d getVec(Outcome.Context context) {
+    public Vec3d getVec(Outcome.Context<?> context) {
         float power = this.power.get(context.world().getRandom());
         int pitch = this.pitch.get(context.world().getRandom());
 
@@ -37,7 +37,7 @@ public class RandomVelocityVecProvider extends VecProvider {
     }
 
     @Override
-    public List<Vec3d> getVecs(Outcome.Context context) {
+    public List<Vec3d> getVecs(Outcome.Context<?> context) {
         return List.of(getVec(context));
     }
 

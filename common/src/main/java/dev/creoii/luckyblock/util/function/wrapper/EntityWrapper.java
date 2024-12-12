@@ -5,7 +5,7 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.Functions;
 import dev.creoii.luckyblock.util.function.target.*;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.passive.*;

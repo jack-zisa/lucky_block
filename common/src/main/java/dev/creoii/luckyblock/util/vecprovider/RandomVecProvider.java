@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.vec;
+package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -37,12 +37,12 @@ public class RandomVecProvider extends VecProvider {
     }
 
     @Override
-    public Vec3d getVec(Outcome.Context context) {
+    public Vec3d getVec(Outcome.Context<?> context) {
         return new Vec3d(x.get(context.world().getRandom()), y.get(context.world().getRandom()), z.get(context.world().getRandom()));
     }
 
     @Override
-    public List<Vec3d> getVecs(Outcome.Context context) {
+    public List<Vec3d> getVecs(Outcome.Context<?> context) {
         return List.of(getVec(context));
     }
 

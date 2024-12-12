@@ -3,9 +3,10 @@ package dev.creoii.luckyblock.util.shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.ConstantVecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,9 +37,9 @@ public abstract class Shape {
         return size;
     }
 
-    public abstract List<BlockPos> getBlockPositions(Outcome.Context context);
+    public abstract List<BlockPos> getBlockPositions(Outcome.Context<? extends ContextInfo> context);
 
-    public abstract List<Vec3d> getVecPositions(Outcome.Context context);
+    public abstract List<Vec3d> getVecPositions(Outcome.Context<? extends ContextInfo> context);
 
-    public abstract List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter);
+    public abstract List<Entity> getEntitiesWithin(Outcome.Context<? extends ContextInfo> context, Vec3d center, Predicate<Entity> filter);
 }

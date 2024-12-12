@@ -3,8 +3,9 @@ package dev.creoii.luckyblock.util.shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.vec.VecProvider;
+import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +31,7 @@ public class Cube extends Shape {
     }
 
     @Override
-    public List<BlockPos> getBlockPositions(Outcome.Context context) {
+    public List<BlockPos> getBlockPositions(Outcome.Context<? extends ContextInfo> context) {
         List<BlockPos> positions = new ArrayList<>();
         Vec3d size = this.size.getVec(context);
         BlockPos to = new BlockPos(Math.max(MathHelper.floor(size.x) - 1, 0), Math.max(MathHelper.floor(size.y) - 1, 0), Math.max(MathHelper.floor(size.z) - 1, 0));
@@ -51,12 +52,12 @@ public class Cube extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome.Context context) {
+    public List<Vec3d> getVecPositions(Outcome.Context<? extends ContextInfo> context) {
         return List.of();
     }
 
     @Override
-    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+    public List<Entity> getEntitiesWithin(Outcome.Context<? extends ContextInfo> context, Vec3d center, Predicate<Entity> filter) {
         List<Entity> entities = new ArrayList<>();
         Vec3d size = this.size.getVec(context);
         BlockPos from = VecProvider.fromVec(center.subtract(size.x / 2d, size.y / 2d, size.z / 2d));
