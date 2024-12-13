@@ -75,7 +75,7 @@ public class LuckyBlockContainer {
     }
 
     public void addRandomOutcome(Identifier id, JsonObject outcome) {
-        randomOutcomes.put(id, outcome);
+        randomOutcomes.putIfAbsent(id, outcome);
     }
 
     public Map<Identifier, JsonObject> getNonrandomOutcomes() {
@@ -83,7 +83,7 @@ public class LuckyBlockContainer {
     }
 
     public void addNonRandomOutcome(Identifier id, JsonObject outcome) {
-        nonrandomOutcomes.put(id, outcome);
+        nonrandomOutcomes.putIfAbsent(id, outcome);
     }
 
     public void addItemLuckValue(Item item, int luck) {
