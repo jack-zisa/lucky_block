@@ -52,7 +52,6 @@ public class MatchingFunctionTarget extends FunctionTarget<Target<?>> {
                         continue;
 
                     if (id.isPresent() && objEntry.getKey().get().getValue().equals(id.get())) {
-                        System.out.println("match targeting " + id.get());
                         targets.add(wrapper);
                     } else if (tag.isPresent() && objEntry.isIn(TagKey.of(registryKey, tag.get()))) {
                         targets.add(wrapper);

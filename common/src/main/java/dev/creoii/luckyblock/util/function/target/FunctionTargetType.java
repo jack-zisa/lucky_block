@@ -12,6 +12,8 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
     public static final FunctionTargetType NONE = new FunctionTargetType(NoneFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_NBT = new FunctionTargetType(HasNbtFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_COMPONENTS = new FunctionTargetType(HasComponentsFunctionTarget.CODEC);
+    public static final FunctionTargetType HAS_PASSENGERS = new FunctionTargetType(HasPassengersFunctionTarget.CODEC);
+    public static final FunctionTargetType HAS_STATUS_EFFECTS = new FunctionTargetType(HasStatusEffectsFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_COUNT = new FunctionTargetType(HasCountFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_COLOR = new FunctionTargetType(HasColorFunctionTarget.CODEC);
     public static final FunctionTargetType HAS_EQUIPMENT = new FunctionTargetType(HasEquipmentFunctionTarget.CODEC);
@@ -25,6 +27,8 @@ public record FunctionTargetType(MapCodec<? extends FunctionTarget<?>> codec) {
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "none"), NONE);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_nbt"), HAS_NBT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_components"), HAS_COMPONENTS);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_passengers"), HAS_PASSENGERS);
+        registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_status_effects"), HAS_STATUS_EFFECTS);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_count"), HAS_COUNT);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_color"), HAS_COLOR);
         registerFunctionTargetType(Identifier.of(LuckyBlockMod.NAMESPACE, "has_equipment"), HAS_EQUIPMENT);

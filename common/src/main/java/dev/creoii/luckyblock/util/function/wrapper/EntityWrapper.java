@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.util.function.*;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,7 @@ import net.minecraft.util.math.floatprovider.FloatProvider;
 
 import java.util.Optional;
 
-public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper> {
+public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, PassengersTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper> {
     private final FunctionContainer functionContainer;
     private final EntityType<?> entityType; // need this field because entity may be null
     private final Entity entity;
@@ -113,9 +114,32 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
 
     @Override
     public EntityWrapper setRotation(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, FloatProvider pitch, FloatProvider yaw) {
-        System.out.println("pitch pre: " + entity.getPitch() + " | yaw pre: " + entity.getYaw());
         entity.setAngles(yaw.get(context.world().getRandom()) % 360f, pitch.get(context.world().getRandom()) % 360f);
-        System.out.println("pitch post: " + entity.getPitch() + " | yaw post: " + entity.getYaw());
+        return this;
+    }
+
+    @Override
+    public EntityWrapper addPassenger(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, EntityWrapper entity) {
+        if (entity.entity == null) {
+            entity = entity.init(context);
+        }
+
+        Function.applyAll(entity.getFunctions(), outcome, context);
+        entity.entity.refreshPositionAndAngles(context.pos(), entity.entity.getYaw(), entity.entity.getPitch());
+
+        if (this.entity.hasPassengers()) {
+            entity.entity.startRiding(this.entity.getPassengerList().getLast(), true);
+        } else entity.entity.startRiding(this.entity, true);
+
+        context.world().spawnEntity(entity.entity);
+        return this;
+    }
+
+    @Override
+    public EntityWrapper addStatusEffect(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, StatusEffectInstance statusEffectInstance) {
+        if (entity instanceof LivingEntity living) {
+            living.addStatusEffect(statusEffectInstance);
+        }
         return this;
     }
 }

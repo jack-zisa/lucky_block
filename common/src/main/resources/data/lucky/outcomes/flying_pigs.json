@@ -1,0 +1,60 @@
+{
+  "type": "lucky:entity",
+  "entity": {
+    "type": "minecraft:bat",
+    "functions": {
+      "lucky:add_passenger": {
+        "passenger": {
+          "type": "minecraft:pig",
+          "functions": {
+            "lucky:add_passenger": {
+              "passenger": {
+                "type": "minecraft:pig",
+                "functions": {
+                  "lucky:add_passenger": {
+                    "passenger": {
+                      "type": "minecraft:pig",
+                      "functions": {
+                        "lucky:add_passenger": {
+                          "passenger": {
+                            "type": "minecraft:pig",
+                            "functions": {
+                              "lucky:add_passenger": {
+                                "passenger": {
+                                  "type": "minecraft:pig"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "lucky:add_status_effects": {
+        "target": {
+          "type": "lucky:matching",
+          "registry": "minecraft:entity_type",
+          "id": "minecraft:bat"
+        },
+        "status_effects": [
+          {
+            "id": "minecraft:invisibility",
+            "duration": -1,
+            "show_particles": false
+          },
+          {
+            "id": "minecraft:levitation",
+            "duration": 100,
+            "show_particles": false
+          }
+        ]
+      }
+    }
+  }
+}
