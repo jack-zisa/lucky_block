@@ -38,23 +38,24 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
         }
 
         try {
-            Files.walk(ADDONS_PATH).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
+            Files.walk(ADDONS_PATH, 4).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         FabricLoader.getInstance().getAllMods().forEach(modContainer -> {
-            if (!getIgnoredMods().contains(modContainer.getMetadata().getId())) {
+            if (!getIgnoredMods().contains(modContainer.getMetadata().getId()) && !modContainer.getMetadata().getId().startsWith("fabric-")) {
                 Path root = modContainer.findPath("data").orElse(null);
                 if (root != null) {
                     try {
-                        Files.walk(root).forEach(path -> tryLoadAddon(path, builder, false));
+                        Files.walk(root, 4).forEach(path -> tryLoadAddon(path, builder, false));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
             }
         });
+
         return builder.build();
     }
 
@@ -67,13 +68,13 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                 if (element.isJsonObject()) {
                     DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
                     dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", string)).ifPresent(container -> {
-                        AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
-                        Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
-
-                        container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
-                        container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
-
                         if (!builder.build().containsKey(container.getId().getNamespace())) {
+                            AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW);
+                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity());
+
+                            container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
+                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
+
                             builder.put(container.getId().getNamespace(), container);
                             if (container.isDebug())
                                 LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
@@ -91,7 +92,7 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
     @Override
     public List<String> getIgnoredMods() {
         return new ImmutableList.Builder<String>()
-                .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabric-api").add("fabricloader")
+                .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabricloader")
                 .build();
     }
 }
