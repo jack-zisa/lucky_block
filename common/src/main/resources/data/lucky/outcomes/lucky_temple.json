@@ -1,6 +1,0 @@
-{
-  "type": "lucky:structure",
-  "luck": 2,
-  "structure": "lucky:lucky_temple",
-  "pos": ["{playerPosX}-3", "{playerPosY}-1", "{playerPosZ}-3"]
-}

@@ -30,49 +30,71 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
     @Override
     public Map<String, LuckyBlockContainer> init() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
+
+        if (Files.notExists(ADDONS_PATH)) {
+            try {
+                Files.createDirectory(ADDONS_PATH);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            Files.walk(ADDONS_PATH, 4).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         FabricLoader.getInstance().getAllMods().forEach(modContainer -> {
-            if (!getIgnoredMods().contains(modContainer.getMetadata().getId())) {
+            if (!getIgnoredMods().contains(modContainer.getMetadata().getId()) && !modContainer.getMetadata().getId().startsWith("fabric-")) {
                 Path root = modContainer.findPath("data").orElse(null);
                 if (root != null) {
                     try {
-                        Files.walk(root).forEach(path -> {
-                            if (PATH_PATTERN.matcher(path.toString()).matches()) {
-                                try {
-                                    String file = Files.readString(path);
-                                    JsonElement element = JsonParser.parseString(file);
-                                    if (element.isJsonObject()) {
-                                        DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
-                                        dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", string)).ifPresent(container -> {
-                                            if (container.isDebug())
-                                                LuckyBlockMod.LOGGER.info("Loading lucky block container '{}'", container.getId().getNamespace());
-
-                                            AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
-                                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useBlockPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
-
-                                            container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
-                                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
-
-                                            builder.put(container.getId().getNamespace(), container);
-                                        });
-                                    }
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
+                        Files.walk(root, 4).forEach(path -> tryLoadAddon(path, builder, false));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
             }
         });
+
         return builder.build();
+    }
+
+    @Override
+    public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
+        if (fromAddon ? ADDON_PATH_PATTERN.matcher(path.toString()).matches() : PATH_PATTERN.matcher(path.toString()).matches()) {
+            try {
+                String file = Files.readString(fromAddon ? ADDONS_PATH.resolve(path) : path);
+                JsonElement element = JsonParser.parseString(file);
+                if (element.isJsonObject()) {
+                    DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
+                    dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", string)).ifPresent(container -> {
+                        if (!builder.build().containsKey(container.getId().getNamespace())) {
+                            AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
+                            Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useBlockPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
+
+                            container.setBlock(Registry.register(Registries.BLOCK, container.getId(), new LuckyBlock(container.getId().getNamespace(), blockSettings)));
+                            container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0))));
+
+                            builder.put(container.getId().getNamespace(), container);
+                            if (container.isDebug())
+                                LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
+                        } else {
+                            LuckyBlockMod.LOGGER.error("Attempted loading two lucky block containers with the same id: {}", container.getId().getNamespace());
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public List<String> getIgnoredMods() {
         return new ImmutableList.Builder<String>()
-                .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabric-api").add("fabricloader")
+                .add("java").add("minecraft").add("c").add("architectury").add("mixinextras").add("fabricloader")
                 .build();
     }
 }
