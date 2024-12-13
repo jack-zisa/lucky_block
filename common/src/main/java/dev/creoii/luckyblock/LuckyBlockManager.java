@@ -62,9 +62,9 @@ public abstract class LuckyBlockManager {
                                                                 LuckyBlockMod.LOGGER.info("Loading outcome '{}'", outcome);
 
                                                             if (outcome.startsWith("nonrandom/")) {
-                                                                container.addNonRandomOutcome(Identifier.of(namespace, outcome), (JsonObject) element);
+                                                                container.addNonRandomOutcome(Identifier.of(namespace, outcome), element.getAsJsonObject());
                                                             } else
-                                                                container.addRandomOutcome(Identifier.of(namespace, outcome), (JsonObject) element);
+                                                                container.addRandomOutcome(Identifier.of(namespace, outcome), element.getAsJsonObject());
                                                         }
                                                     }
                                                 } catch (IOException e) {
