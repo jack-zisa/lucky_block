@@ -1,6 +1,5 @@
 {
   "type": "lucky:item",
-  "chance": 1000,
   "stack": {
     "stack_provider": "minecraft:diamond",
     "functions": {

@@ -71,7 +71,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
             if (itemEntity != null) {
                 Function.applyPost(stackWrapper.getFunctionContainer(), this, context);
                 itemEntity.setStack(stackWrapper.getStack());
-                itemEntity.refreshPositionAndAngles(context.info().pos, context.world().getRandom().nextFloat() * 255f, context.world().getRandom().nextFloat() * 255f);
+                itemEntity.refreshPositionAndAngles(context.info().pos, itemEntity.getYaw(), itemEntity.getPitch());
                 context.world().spawnEntity(itemEntity);
             }
         }

@@ -6,15 +6,16 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.function.target.*;
+import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 
 public class SetRotationFunction extends Function<Target<?>> {
-    public static final SetRotationFunction DEFAULT_ROTATION = new SetRotationFunction(HasVelocityFunctionTarget.INSTANCE, LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F);
+    public static final SetRotationFunction DEFAULT_ENTITY_ROTATION = new SetRotationFunction(HasRotationFunctionTarget.INSTANCE, ConstantFloatProvider.ZERO, ConstantFloatProvider.ZERO);
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetRotationFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasVelocityFunctionTarget.INSTANCE).forGetter(Function::getTarget),
-                FloatProvider.VALUE_CODEC.fieldOf("pitch").orElse(LuckyBlockCodecs.ONE_F).forGetter(function -> function.pitch),
-                FloatProvider.VALUE_CODEC.fieldOf("yaw").orElse(LuckyBlockCodecs.ONE_F).forGetter(function -> function.yaw)
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasRotationFunctionTarget.INSTANCE).forGetter(Function::getTarget),
+                FloatProvider.VALUE_CODEC.fieldOf("pitch").orElse(ConstantFloatProvider.ZERO).forGetter(function -> function.pitch),
+                FloatProvider.VALUE_CODEC.fieldOf("yaw").orElse(ConstantFloatProvider.ZERO).forGetter(function -> function.yaw)
         ).apply(instance, (functionTarget, pitch, yaw) -> new SetRotationFunction((FunctionTarget<Target<?>>) functionTarget, pitch, yaw));
     });
     private final FloatProvider pitch;

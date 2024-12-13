@@ -31,9 +31,9 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
         this.stackProvider = stackProvider;
         this.stack = stackProvider.get(context.world().getRandom());
 
-        if (!functionContainer.has(FunctionType.SET_VELOCITY)) {
-            this.functionContainer = new FunctionContainer.Builder().addAll(functionContainer).add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();
-        } else this.functionContainer = functionContainer;
+        if (functionContainer.has(FunctionType.SET_VELOCITY)) {
+            this.functionContainer = functionContainer;
+        } else this.functionContainer = new FunctionContainer.Builder().addAll(functionContainer).add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();;
     }
 
     public ItemStackWrapper(ItemStackProvider stackProvider, FunctionContainer functionContainer) {

@@ -2,8 +2,7 @@ package dev.creoii.luckyblock.util.function.wrapper;
 
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
-import dev.creoii.luckyblock.util.function.Function;
-import dev.creoii.luckyblock.util.function.FunctionContainer;
+import dev.creoii.luckyblock.util.function.*;
 import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
@@ -47,7 +46,7 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
     }
 
     @Override
-    public EntityWrapper init(Outcome.Context<? extends ContextInfo> context) {
+    public EntityWrapper init(Outcome.Context<?> context) {
         return new EntityWrapper(entityType, functionContainer, context);
     }
 
@@ -114,7 +113,9 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
 
     @Override
     public EntityWrapper setRotation(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, FloatProvider pitch, FloatProvider yaw) {
-        entity.refreshPositionAndAngles(entity.getPos(), yaw.get(context.world().getRandom()), pitch.get(context.world().getRandom()));
+        System.out.println("pitch pre: " + entity.getPitch() + " | yaw pre: " + entity.getYaw());
+        entity.setAngles(yaw.get(context.world().getRandom()) % 360f, pitch.get(context.world().getRandom()) % 360f);
+        System.out.println("pitch post: " + entity.getPitch() + " | yaw post: " + entity.getYaw());
         return this;
     }
 }

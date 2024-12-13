@@ -59,7 +59,8 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
     public void run(Context<EntityInfo> context) {
         for (EntityWrapper entityWrapper : context.info().entities) {
             Function.applyPost(entityWrapper.getFunctions(), this, context);
-            entityWrapper.getEntity().refreshPositionAndAngles(context.pos(), context.world().getRandom().nextFloat() * 255f, context.world().getRandom().nextFloat() * 255f);
+
+            entityWrapper.getEntity().refreshPositionAndAngles(context.pos(), entityWrapper.getEntity().getYaw(), entityWrapper.getEntity().getPitch());
             context.world().spawnEntity(entityWrapper.getEntity());
         }
     }
