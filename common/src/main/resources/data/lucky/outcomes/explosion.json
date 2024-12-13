@@ -1,7 +1,0 @@
-{
-  "type": "lucky:explosion",
-  "luck": -2,
-  "explosion": {
-    "power": 6
-  }
-}
