@@ -9,6 +9,8 @@ import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 import net.neoforged.fml.ModList;
 
 import java.io.IOException;
@@ -21,30 +23,27 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
     @Override
     public Map<String, LuckyBlockContainer> init() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
+
+        if (Files.notExists(ADDONS_PATH)) {
+            try {
+                Files.createDirectory(ADDONS_PATH);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            Files.walk(ADDONS_PATH).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         ModList.get().getModFiles().forEach(modFileInfo -> {
             if (!getIgnoredMods().contains(modFileInfo.moduleName())) {
                 try {
                     Path root = modFileInfo.getFile().getSecureJar().getPath("data");
                     if (Files.exists(root)) {
-                        Files.walk(root).forEach(path -> {
-                            if (PATH_PATTERN.matcher(path.toString()).matches()) {
-                                try {
-                                    String fileContent = Files.readString(path);
-                                    JsonElement element = JsonParser.parseString(fileContent);
-                                    if (element.isJsonObject()) {
-                                        DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
-                                        dataResult.resultOrPartial(error -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", error)).ifPresent(container -> {
-                                            if (container.isDebug())
-                                                LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
-
-                                            builder.put(container.getId().getNamespace(), container);
-                                        });
-                                    }
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
+                        Files.walk(root).forEach(path -> tryLoadAddon(path, builder, false));
                     }
                 } catch (IOException e) {
                     throw new RuntimeException("Failed to load resources from JAR: " + modFileInfo.getFile().getFilePath(), e);
@@ -52,6 +51,30 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
             }
         });
         return builder.build();
+    }
+
+    @Override
+    public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
+        if (PATH_PATTERN.matcher(path.toString()).matches()) {
+            try {
+                String fileContent = Files.readString(path);
+                JsonElement element = JsonParser.parseString(fileContent);
+                if (element.isJsonObject()) {
+                    DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
+                    dataResult.resultOrPartial(error -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", error)).ifPresent(container -> {
+                        if (!builder.build().containsKey(container.getId().getNamespace())) {
+                            builder.put(container.getId().getNamespace(), container);
+                            if (container.isDebug())
+                                LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
+                        } else {
+                            LuckyBlockMod.LOGGER.error("Attempted loading two lucky block containers with the same id: {}", container.getId().getNamespace());
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override

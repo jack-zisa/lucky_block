@@ -37,6 +37,12 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     @Override
+    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
+        Map<Identifier, JsonElement> prepared = super.prepare(resourceManager, profiler);
+        return LuckyBlockMod.luckyBlockManager.loadOutcomes(prepared, resourceManager);
+    }
+
+    @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             if (!entry.getValue().isJsonObject())
@@ -85,7 +91,7 @@ public class OutcomeManager extends JsonDataLoader {
         }
         Map<Identifier, JsonObject> nonrandomOutcomes = container.getNonrandomOutcomes();
         if (nonrandomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No nonrandom outcomes found");
+            throw new IllegalArgumentException("No nonrandom outcomes found in Lucky Block container: " + container.getId().getNamespace());
         }
 
         for (Map.Entry<Identifier, JsonObject> outcome : nonrandomOutcomes.entrySet()) {
@@ -96,7 +102,7 @@ public class OutcomeManager extends JsonDataLoader {
 
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No random outcomes found");
+            throw new IllegalArgumentException("No random outcomes found in Lucky Block container: " + container.getId().getNamespace());
         }
 
         for (Map.Entry<Identifier, JsonObject> outcome : randomOutcomes.entrySet()) {
@@ -105,7 +111,7 @@ public class OutcomeManager extends JsonDataLoader {
             }
         }
 
-        throw new IllegalArgumentException("Outcome '" + id + "' does not exist");
+        throw new IllegalArgumentException("Outcome '" + id + "' does not exist in Lucky Block container " + container.getId().getNamespace());
     }
 
     public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable PlayerEntity player) {
@@ -115,7 +121,7 @@ public class OutcomeManager extends JsonDataLoader {
         }
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found");
+            throw new IllegalArgumentException("No outcomes found in Lucky Block container: " + namespace);
         }
 
         if (player != null) {
