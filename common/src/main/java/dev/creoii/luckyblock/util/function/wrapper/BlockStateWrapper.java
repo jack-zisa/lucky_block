@@ -12,6 +12,11 @@ import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
 public record BlockStateWrapper(BlockStateProvider state, FunctionContainer functionContainer) implements Wrapper<Block, BlockStateWrapper>, DirectionTarget<BlockStateWrapper> {
     @Override
+    public BlockStateWrapper init(Outcome.Context<?> context) {
+        return this;
+    }
+
+    @Override
     public Block getRegistryObject(Outcome.Context<?> context) {
         return state.get(context.world().getRandom(), context.pos()).getBlock();
     }

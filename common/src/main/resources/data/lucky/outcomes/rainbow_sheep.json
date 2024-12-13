@@ -1,7 +1,7 @@
 {
   "type": "lucky:entity",
   "entity": {
-    "entity_type": "minecraft:sheep",
+    "type": "minecraft:sheep",
     "functions": {
       "lucky:set_color": {
         "color": {

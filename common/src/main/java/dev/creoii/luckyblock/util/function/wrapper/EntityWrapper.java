@@ -34,16 +34,6 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         this.entity = null;
     }
 
-    public EntityWrapper(Entity entity, FunctionContainer functionContainer) {
-        this.functionContainer = functionContainer;
-        this.entityType = entity.getType();
-        this.entity = entity;
-    }
-
-    public EntityWrapper init(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        return new EntityWrapper(entityType, functionContainer, context);
-    }
-
     public FunctionContainer getFunctions() {
         return functionContainer;
     }
@@ -54,6 +44,11 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
 
     public EntityType<?> getEntityType() {
         return entityType;
+    }
+
+    @Override
+    public EntityWrapper init(Outcome.Context<? extends ContextInfo> context) {
+        return new EntityWrapper(entityType, functionContainer, context);
     }
 
     @Override
@@ -106,7 +101,7 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         } else if (entity instanceof CatEntity catEntity) {
             catEntity.setCollarColor(dyeColor);
         }
-        return new EntityWrapper(entity, functionContainer);
+        return this;
     }
 
     @Override

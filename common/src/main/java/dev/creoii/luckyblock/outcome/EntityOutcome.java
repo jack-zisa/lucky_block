@@ -41,18 +41,15 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
 
     @Override
     public Context<EntityInfo> create(Context<EntityInfo> context) {
-        Vec3d vec3d = getPos(context).getVec(context);
-        Function.applyPre(functionContainer, this, context.withInfo(new EntityInfo(vec3d, List.of())));
+        EntityInfo info = new EntityInfo(getPos(context).getVec(context));
+        Function.applyPre(functionContainer, this, context.withInfo(info));
 
-        List<EntityWrapper> entities = Lists.newArrayList();
         int count = this.count.get(context.world().getRandom());
         for (int i = 0; i < count; ++i) {
-            EntityWrapper entity = this.entity.init(this, context);
+            EntityWrapper entity = this.entity.init(context);
+            info.entities.add(entity);
             Function.applyPre(entity.getFunctions(), this, context);
-            entities.add(entity);
         }
-
-        context.info().entities = entities;
 
         Function.applyPost(functionContainer, this, context);
         return context;
@@ -84,16 +81,16 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
     }
 
     public class EntityInfo implements ContextInfo {
-        private Vec3d pos;
-        private List<EntityWrapper> entities;
+        private final Vec3d pos;
+        private final List<EntityWrapper> entities;
 
         public EntityInfo(Vec3d pos, List<EntityWrapper> entities) {
             this.pos = pos;
             this.entities = entities;
         }
 
-        public EntityInfo() {
-            this(null, List.of());
+        public EntityInfo(Vec3d pos) {
+            this(pos, Lists.newArrayList());
         }
 
         @Override

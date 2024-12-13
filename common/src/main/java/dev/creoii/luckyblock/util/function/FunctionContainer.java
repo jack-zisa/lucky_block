@@ -94,7 +94,7 @@ public class FunctionContainer {
             FunctionType functionType = type.type();
             Identifier identifier = LuckyBlockMod.FUNCTION_TYPES.getId(functionType);
             return identifier == null ? DataResult.error(() -> {
-                return "Unregistered component: " + functionType;
+                return "Unregistered function type: " + functionType;
             }) : DataResult.success(identifier.toString());
         });
 

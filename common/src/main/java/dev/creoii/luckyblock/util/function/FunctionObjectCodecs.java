@@ -20,12 +20,12 @@ public class FunctionObjectCodecs {
     }, Either::right);
 
     public static final Codec<ItemStackWrapper> INLINE_ITEM_STACK = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-            ITEM_STACK.fieldOf("stack_provider").forGetter(ItemStackWrapper::stackProvider),
-            FunctionContainer.CODEC.fieldOf("functions").forGetter(ItemStackWrapper::functionContainer)
+            ITEM_STACK.fieldOf("stack_provider").forGetter(ItemStackWrapper::getStackProvider),
+            FunctionContainer.CODEC.fieldOf("functions").forGetter(ItemStackWrapper::getFunctionContainer)
     ).apply(instance, ItemStackWrapper::new)));
 
     public static final Codec<ItemStackWrapper> ITEM_STACK_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ITEM_STACK).xmap(either -> {
-        return either.map(identifier -> ItemStackWrapper.fromStack(Registries.ITEM.get(identifier).getDefaultStack()), java.util.function.Function.identity());
+        return either.map(identifier -> new ItemStackWrapper(Registries.ITEM.get(identifier).getDefaultStack()), java.util.function.Function.identity());
     }, Either::right);
 
     public static final Codec<EntityWrapper> INLINE_ENTITY = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
