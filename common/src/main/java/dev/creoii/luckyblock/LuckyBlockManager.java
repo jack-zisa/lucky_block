@@ -2,7 +2,6 @@ package dev.creoii.luckyblock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
@@ -59,9 +58,9 @@ public abstract class LuckyBlockManager {
                                                                 LuckyBlockMod.LOGGER.info("Loading outcome '{}'", outcome);
 
                                                             if (outcome.startsWith("nonrandom/")) {
-                                                                container.addNonRandomOutcome(Identifier.of(namespace, outcome), (JsonObject) element);
+                                                                container.addNonRandomOutcome(Identifier.of(namespace, outcome), element.getAsJsonObject());
                                                             } else
-                                                                container.addRandomOutcome(Identifier.of(namespace, outcome), (JsonObject) element);
+                                                                container.addRandomOutcome(Identifier.of(namespace, outcome), element.getAsJsonObject());
                                                         }
                                                     }
                                                 } catch (IOException e) {
