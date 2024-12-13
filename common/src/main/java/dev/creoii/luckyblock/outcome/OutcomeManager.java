@@ -165,11 +165,11 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
             StatusEffectInstance badLuckEffect = player.getStatusEffect(StatusEffects.UNLUCK);
 
             if (goodLuckEffect != null) {
-                luck += goodLuckEffect.getAmplifier() + 1;
+                luck = Math.min(100, luck + ((goodLuckEffect.getAmplifier() + 1) * 5));
             }
 
             if (badLuckEffect != null) {
-                luck -= badLuckEffect.getAmplifier() + 1;
+                luck = Math.max(-100, luck - ((badLuckEffect.getAmplifier() + 1) * 5));
             }
         }
 
