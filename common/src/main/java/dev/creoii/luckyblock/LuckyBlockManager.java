@@ -1,15 +1,23 @@
 package dev.creoii.luckyblock;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public abstract class LuckyBlockManager {
+    /**
+     * This won't work on servers!
+     */
+    public static final Path ADDONS_PATH = MinecraftClient.getInstance().runDirectory.toPath().resolve("addons");
     public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
+    public static final Pattern ADDON_PATH_PATTERN = Pattern.compile("^[^/]+\\\\data\\\\[^\\\\]+\\\\lucky_block\\.json$");
     private final Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
@@ -17,6 +25,8 @@ public abstract class LuckyBlockManager {
     }
 
     public abstract Map<String, LuckyBlockContainer> init();
+
+    public abstract void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon);
 
     public abstract List<String> getIgnoredMods();
 
