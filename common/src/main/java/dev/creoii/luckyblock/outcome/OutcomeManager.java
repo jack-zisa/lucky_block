@@ -119,7 +119,7 @@ public class OutcomeManager extends JsonDataLoader {
         }
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found");
+            throw new IllegalArgumentException("No outcomes found in Lucky Block container: " + namespace);
         }
 
         if (player != null) {
@@ -127,11 +127,11 @@ public class OutcomeManager extends JsonDataLoader {
             StatusEffectInstance badLuckEffect = player.getStatusEffect(StatusEffects.UNLUCK);
 
             if (goodLuckEffect != null) {
-                luck += goodLuckEffect.getAmplifier() + 1;
+                luck = Math.min(100, luck + ((goodLuckEffect.getAmplifier() + 1) * 5));
             }
 
             if (badLuckEffect != null) {
-                luck -= badLuckEffect.getAmplifier() + 1;
+                luck = Math.max(-100, luck - ((badLuckEffect.getAmplifier() + 1) * 5));
             }
         }
 
