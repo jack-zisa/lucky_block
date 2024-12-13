@@ -2,7 +2,6 @@ package dev.creoii.luckyblock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
