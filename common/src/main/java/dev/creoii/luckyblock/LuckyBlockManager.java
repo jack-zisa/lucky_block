@@ -54,7 +54,7 @@ public abstract class LuckyBlockManager {
                                                     String file = Files.readString(outcomePath);
                                                     JsonElement element = JsonParser.parseString(file);
                                                     if (element.isJsonObject()) {
-                                                        String outcome = outcomesPath.relativize(outcomePath).toString().replace(".json", "");
+                                                        String outcome = outcomesPath.relativize(outcomePath).toString().replace(".json", "").replace("\\", "/");
                                                         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
                                                         if (container != null) {
                                                             if (container.isDebug())
