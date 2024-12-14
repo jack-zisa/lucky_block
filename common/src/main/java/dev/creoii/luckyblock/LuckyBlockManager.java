@@ -3,14 +3,16 @@ package dev.creoii.luckyblock;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.*;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,9 +23,20 @@ public abstract class LuckyBlockManager {
     /**
      * This won't work on servers!
      */
-    public static final Path ADDONS_PATH = MinecraftClient.getInstance().runDirectory.toPath().resolve("addons");
+    public static final Path ADDONS_PATH = FabricLoader.getInstance().getGameDir().resolve("addons");
     public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
     public static final Pattern ADDON_PATH_PATTERN = Pattern.compile("^[^/]+\\\\data\\\\[^\\\\]+\\\\lucky_block\\.json$");
+    public static final ResourcePackSource RESOURCE_PACK_SOURCE = new ResourcePackSource() {
+        @Override
+        public Text decorate(Text packName) {
+            return Text.translatable("pack.nameAndSource", packName, Text.translatable("pack.source.luckyBlockAddon"));
+        }
+
+        @Override
+        public boolean canBeEnabledLater() {
+            return true;
+        }
+    };
     private final Map<String, LuckyBlockContainer> luckyBlocks;
 
     public LuckyBlockManager() {
@@ -33,6 +46,10 @@ public abstract class LuckyBlockManager {
     public abstract Map<String, LuckyBlockContainer> init();
 
     public abstract void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon);
+
+    public abstract ResourcePackProfile createResourcePack();
+
+    public abstract InputStream getIcon();
 
     public abstract List<String> getIgnoredMods();
 
@@ -46,6 +63,7 @@ public abstract class LuckyBlockManager {
                             if (!dataPath.equals(datapackPath)) {
                                 String namespace = datapackPath.relativize(dataPath).toString();
                                 Path outcomesPath = dataPath.resolve("outcomes");
+                                String separator = ADDONS_PATH.getFileSystem().getSeparator();
                                 try {
                                     Files.walk(outcomesPath).forEach(outcomePath -> {
                                         if (!outcomePath.equals(outcomesPath)) {
@@ -54,7 +72,7 @@ public abstract class LuckyBlockManager {
                                                     String file = Files.readString(outcomePath);
                                                     JsonElement element = JsonParser.parseString(file);
                                                     if (element.isJsonObject()) {
-                                                        String outcome = outcomesPath.relativize(outcomePath).toString().replace(".json", "").replace("\\", "/");
+                                                        String outcome = outcomesPath.relativize(outcomePath).toString().replace(".json", "").replace(separator, "/");
                                                         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
                                                         if (container != null) {
                                                             if (container.isDebug())

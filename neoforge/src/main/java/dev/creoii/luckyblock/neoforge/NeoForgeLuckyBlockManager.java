@@ -10,6 +10,9 @@ import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.neoforged.fml.ModList;
 
@@ -75,6 +78,19 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public ResourcePackProfile createResourcePack() {
+        return ResourcePackProfile.create(
+                "lucky_block",
+                Text.translatable("pack.name.luckyBlockAddons"),
+                true,
+                new PlaceholderResourcePack.Factory(ResourceType.CLIENT_RESOURCES),
+                ResourceType.CLIENT_RESOURCES,
+                ResourcePackProfile.InsertionPosition.TOP,
+                RESOURCE_PACK_SOURCE
+        );
     }
 
     @Override

@@ -3,7 +3,6 @@ package dev.creoii.luckyblock.fabric;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -12,21 +11,25 @@ import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockItem;
+import dev.creoii.luckyblock.util.resource.LuckyBlockAddonsResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class FabricLuckyBlockManager extends LuckyBlockManager {
     @Override
@@ -80,6 +83,7 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                             container.setBlockItem(Registry.register(Registries.ITEM, container.getId(), new LuckyBlockItem(container.getBlock(), itemSettings)));
 
                             builder.put(container.getId().getNamespace(), container);
+
                             if (container.isDebug())
                                 LuckyBlockMod.LOGGER.info("Loaded lucky block container '{}'", container.getId().getNamespace());
                         } else {
@@ -91,6 +95,32 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public InputStream getIcon() {
+        Optional<Path> path = FabricLoader.getInstance().getModContainer(LuckyBlockMod.NAMESPACE).flatMap(container -> container.getMetadata().getIconPath(512).flatMap(container::findPath));
+        if (path.isPresent()) {
+            try {
+                return Files.newInputStream(path.get());
+            } catch (IOException e) {
+                LuckyBlockMod.LOGGER.error("Error loading built-in resource pack icon.");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ResourcePackProfile createResourcePack() {
+        return ResourcePackProfile.create(
+                LuckyBlockMod.NAMESPACE,
+                Text.translatable("pack.name.luckyBlockAddons"),
+                true,
+                new LuckyBlockAddonsResourcePack.Factory(),
+                ResourceType.CLIENT_RESOURCES,
+                ResourcePackProfile.InsertionPosition.TOP,
+                RESOURCE_PACK_SOURCE
+        );
     }
 
     @Override
