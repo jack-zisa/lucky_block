@@ -7,6 +7,8 @@ import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
@@ -60,7 +62,7 @@ public class EntityOutcome extends Outcome {
 
                 if (nbtCompound.contains("nbt", 10)) {
                     ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
-                    entity.readNbt(nbt);
+                    readNbt(entity, nbt);
 
                     if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
                         ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
@@ -70,18 +72,31 @@ public class EntityOutcome extends Outcome {
                             passenger.startRiding(entity);
                     }
                 } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
-                    entity.readNbt(nbtCompound);
+                    readNbt(entity, nbtCompound);
 
                     ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
                     Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
                     if (passenger != null)
                         passenger.startRiding(entity);
-                } else entity.readNbt(nbtCompound);
+                } else readNbt(entity, nbtCompound);
             }
             entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
             context.world().spawnEntity(entity);
         }
         return entity;
+    }
+
+    private void readNbt(Entity entity, ContextualNbtCompound nbtCompound) {
+        entity.readNbt(nbtCompound);
+
+        if (entity instanceof TameableEntity tameable) {
+            boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting");
+            tameable.setSitting(sitting);
+            tameable.setInSittingPose(sitting);
+            tameable.setJumping(false);
+            tameable.getNavigation().stop();
+            tameable.setTarget(null);
+        }
     }
 }
