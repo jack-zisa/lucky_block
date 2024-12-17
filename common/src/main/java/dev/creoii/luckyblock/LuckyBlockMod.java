@@ -6,9 +6,12 @@ import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
+import dev.creoii.luckyblock.util.resource.AddonAtlasSource;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.texture.atlas.AtlasSourceManager;
+import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registry;
@@ -42,10 +45,13 @@ public final class LuckyBlockMod {
     public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "pos_provider_types"));
     public static final Registry<VecProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
+    public static final AtlasSourceType ADDON_ATLAS_SOURCE = new AtlasSourceType(AddonAtlasSource.CODEC);
+
     public static BlockEntityType<LuckyBlockEntity> LUCKY_BLOCK_ENTITY;
 
     public static void init(LuckyBlockManager luckyBlockManager) {
         LuckyBlockMod.luckyBlockManager = luckyBlockManager;
+        AtlasSourceManager.SOURCE_TYPE_BY_ID.put(Identifier.of(NAMESPACE, "addon"), ADDON_ATLAS_SOURCE);
     }
 
     public static void setLuckyBlockEntity(BlockEntityType<LuckyBlockEntity> luckyBlockEntity) {

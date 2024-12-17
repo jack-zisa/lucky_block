@@ -55,6 +55,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     @Nullable
     @Override
     public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+        System.out.println("open " + id + ": " + type);
         Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
@@ -74,6 +75,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
 
     @Override
     public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
+        System.out.println("find " + namespace + ": " + prefix + ": " + type);
         Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
@@ -86,8 +88,8 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                             Files.walk(prefixPath).forEach(assetPath -> {
                                 if (!assetPath.equals(prefixPath) && assetPath.toString().endsWith(".json")) {
                                     String asset = prefixPath.relativize(assetPath).toString().replace(separator, "/");
-                                    System.out.println(namespace + " " + prefix + " asset: " + asset.substring(0, asset.indexOf('.')));
-                                    consumer.accept(Identifier.of(namespace, asset.substring(0, asset.indexOf('.'))), InputSupplier.create(assetPath));
+                                    System.out.println(namespace + " " + prefix + ": " + Identifier.of(namespace, prefix + "/" + asset));
+                                    consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(assetPath));
                                 }
                             });
                         } catch (IOException e) {
