@@ -86,7 +86,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                     if (Files.isDirectory(prefixPath)) {
                         try {
                             Files.walk(prefixPath).forEach(assetPath -> {
-                                if (!assetPath.equals(prefixPath) && assetPath.toString().endsWith(".json")) {
+                                if (!assetPath.equals(prefixPath) && (assetPath.toString().endsWith(".json") || assetPath.toString().endsWith(".png"))) {
                                     String asset = prefixPath.relativize(assetPath).toString().replace(separator, "/");
                                     System.out.println(namespace + " " + prefix + ": " + Identifier.of(namespace, prefix + "/" + asset));
                                     consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(assetPath));

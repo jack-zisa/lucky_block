@@ -2,7 +2,6 @@ package dev.creoii.luckyblock.util.resource;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.texture.atlas.AtlasSource;
@@ -32,24 +31,27 @@ public class AddonAtlasSource implements AtlasSource {
 
     @Override
     public void load(ResourceManager resourceManager, SpriteRegions regions) {
-        for (LuckyBlockContainer container : LuckyBlockMod.luckyBlockManager.getAllContainers()) {
+        for (String namespace : resourceManager.getAllNamespaces()) {
             Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
             try {
                 Files.walk(addonsPath, 1).forEach(addonPath -> {
                     if (!addonPath.equals(addonsPath)) {
-                        Path namespacePath = addonPath.resolve("assets").resolve(container.getId().getNamespace());
+                        Path namespacePath = addonPath.resolve("assets").resolve(namespace);
                         Path resourcesPath = namespacePath.resolve("textures\\" + source);
                         if (Files.exists(resourcesPath)) {
                             try {
                                 Files.walk(resourcesPath).forEach(resourcePath -> {
                                     if (!resourcePath.equals(resourcesPath) && resourcePath.toString().endsWith(".png")) {
-                                        Identifier id = Identifier.of(container.getId().getNamespace(), "textures/" + source + "/" + resourcesPath.relativize(resourcePath).toString().replace(".png", ""));
+                                        Identifier id = Identifier.of(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
                                         System.out.println("relative id: " + id.toString());
                                         Optional<ResourcePack> optionalResourcePack = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getName().equals(LuckyBlockMod.NAMESPACE)).findFirst();
                                         System.out.println("pack present? " + optionalResourcePack.isPresent());
+
                                         optionalResourcePack.ifPresent(resourcePack -> {
                                             System.out.println("found pack " + LuckyBlockMod.NAMESPACE);
-                                            regions.add(id, new Resource(resourcePack, InputSupplier.create(resourcePath)));
+                                            Resource texture = new Resource(resourcePack, InputSupplier.create(resourcePath));
+                                            regions.add(id, texture);
+                                            //MinecraftClient.getInstance().getTextureManager().registerTexture(id, new ResourceTexture(id));
                                         });
                                     }
                                 });
