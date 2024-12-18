@@ -3,7 +3,6 @@ package dev.creoii.luckyblock;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.resource.*;
@@ -23,7 +22,6 @@ public abstract class LuckyBlockManager {
     /**
      * This won't work on servers!
      */
-    public static final Path ADDONS_PATH = FabricLoader.getInstance().getGameDir().resolve("addons");
     public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
     public static final Pattern ADDON_PATH_PATTERN = Pattern.compile("^[^/]+\\\\data\\\\[^\\\\]+\\\\lucky_block\\.json$");
     public static final ResourcePackSource RESOURCE_PACK_SOURCE = new ResourcePackSource() {
@@ -43,6 +41,8 @@ public abstract class LuckyBlockManager {
         luckyBlocks = init();
     }
 
+    public abstract Path getGameDirectory();
+
     public abstract Map<String, LuckyBlockContainer> init();
 
     public abstract void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon);
@@ -53,17 +53,21 @@ public abstract class LuckyBlockManager {
 
     public abstract List<String> getIgnoredMods();
 
+    public Path getAddonsPath() {
+        return getGameDirectory().resolve("addons");
+    }
+
     public Map<Identifier, JsonElement> loadOutcomes(Map<Identifier, JsonElement> prepared, ResourceManager resourceManager) {
         try {
-            Files.walk(ADDONS_PATH, 1).forEach(path -> {
-                if (!path.equals(ADDONS_PATH)) {
+            Files.walk(getAddonsPath(), 1).forEach(path -> {
+                if (!path.equals(getAddonsPath())) {
                     Path datapackPath = path.resolve("data");
                     try {
                         Files.walk(datapackPath, 1).forEach(dataPath -> {
                             if (!dataPath.equals(datapackPath)) {
                                 String namespace = datapackPath.relativize(dataPath).toString();
                                 Path outcomesPath = dataPath.resolve("outcomes");
-                                String separator = ADDONS_PATH.getFileSystem().getSeparator();
+                                String separator = getAddonsPath().getFileSystem().getSeparator();
                                 try {
                                     Files.walk(outcomesPath).forEach(outcomePath -> {
                                         if (!outcomePath.equals(outcomesPath)) {
