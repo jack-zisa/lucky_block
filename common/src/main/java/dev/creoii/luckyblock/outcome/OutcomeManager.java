@@ -1,10 +1,7 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
@@ -34,12 +31,6 @@ public class OutcomeManager extends JsonDataLoader {
 
     public OutcomeManager() {
         super(GSON, "outcomes");
-    }
-
-    @Override
-    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
-        Map<Identifier, JsonElement> prepared = super.prepare(resourceManager, profiler);
-        return LuckyBlockMod.luckyBlockManager.loadOutcomes(prepared, resourceManager);
     }
 
     @Override
