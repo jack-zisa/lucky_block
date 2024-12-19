@@ -15,21 +15,14 @@ import java.util.Set;
 
 @Mixin(ResourcePackManager.class)
 public class ResourcePackManagerMixin {
-    @Mutable @Shadow @Final private Set<ResourcePackProvider> providers;
+    @Mutable @Shadow @Final
+    public Set<ResourcePackProvider> providers;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void lucky$addBuiltInDataPacks(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
         providers = new LinkedHashSet<>(providers);
-        boolean shouldAddServerProvider = false;
 
-        for (ResourcePackProvider provider : providers) {
-            if (provider instanceof FileResourcePackProvider fileResourcePackProvider && (fileResourcePackProvider.source == ResourcePackSource.WORLD || fileResourcePackProvider.source == ResourcePackSource.SERVER)) {
-                shouldAddServerProvider = true;
-                break;
-            }
-        }
-
-        if (shouldAddServerProvider) {
+        if (providers.stream().anyMatch(resourcePackProvider -> resourcePackProvider instanceof FileResourcePackProvider fileResourcePackProvider && (fileResourcePackProvider.source == ResourcePackSource.WORLD || fileResourcePackProvider.source == ResourcePackSource.SERVER))) {
             providers.add(new LuckyBlockAddonsResourcePackCreator(ResourceType.SERVER_DATA));
         }
     }
