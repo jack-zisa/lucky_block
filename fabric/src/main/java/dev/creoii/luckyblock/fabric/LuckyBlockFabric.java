@@ -39,7 +39,7 @@ public final class LuckyBlockFabric implements ModInitializer {
 
         ServerTickEvents.END_SERVER_TICK.register(LuckyBlockMod.OUTCOME_MANAGER::tickDelays);
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 entries.add(item);
 
