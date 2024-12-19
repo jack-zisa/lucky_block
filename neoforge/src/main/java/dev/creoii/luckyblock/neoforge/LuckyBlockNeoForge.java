@@ -78,7 +78,8 @@ public final class LuckyBlockNeoForge {
 
         event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry -> {
             registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
-        });    }
+        });
+    }
 
     private static void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(LuckyBlockMod.OUTCOME_MANAGER);
