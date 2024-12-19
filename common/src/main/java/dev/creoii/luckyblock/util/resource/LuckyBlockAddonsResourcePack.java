@@ -64,7 +64,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
                 if (!addonPath.equals(addonsPath)) {
-                    Path assetPath = addonPath.resolve(type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
+                    Path assetPath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                     if (Files.exists(assetPath)) {
                         return InputSupplier.create(assetPath);
                     }
@@ -82,7 +82,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
                 if (!addonPath.equals(addonsPath)) {
-                    Path namespacePath = addonPath.resolve(type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
+                    Path namespacePath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
                     Path prefixPath = namespacePath.resolve(prefix);
                     String separator = addonsPath.getFileSystem().getSeparator();
                     if (Files.isDirectory(prefixPath)) {
