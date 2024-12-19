@@ -85,7 +85,7 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == ItemGroups.BUILDING_BLOCKS) {
+        if (event.getTabKey() == ItemGroups.FUNCTIONAL) {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 event.add(item);
 
