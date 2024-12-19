@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.creoii.luckyblock.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "VanillaResourcePackProviderMixin"
+  ],
+  "client": [
+    "GameOptionsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
