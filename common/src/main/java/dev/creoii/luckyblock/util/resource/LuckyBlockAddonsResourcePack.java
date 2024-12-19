@@ -25,6 +25,15 @@ import java.util.stream.Collectors;
 public class LuckyBlockAddonsResourcePack implements ResourcePack {
     public static final Gson GSON = new Gson();
     protected static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
+    private final ResourceType type;
+
+    public LuckyBlockAddonsResourcePack(ResourceType type) {
+        this.type = type;
+    }
+
+    public static boolean hasAcceptableFileExtension(String s) {
+        return s.endsWith(".json") || s.endsWith(".png") || s.endsWith(".nbt") || s.endsWith(".png.mcmeta");
+    }
 
     public PackResourceMetadata getMetadata() {
         return new PackResourceMetadata(DESCRIPTION_TEXT, SharedConstants.getGameVersion().getResourceVersion(ResourceType.CLIENT_RESOURCES), Optional.empty());
@@ -55,7 +64,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
                 if (!addonPath.equals(addonsPath)) {
-                    Path assetPath = addonPath.resolve("assets").resolve(id.getNamespace()).resolve(id.getPath());
+                    Path assetPath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                     if (Files.exists(assetPath)) {
                         return InputSupplier.create(assetPath);
                     }
@@ -73,13 +82,13 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
                 if (!addonPath.equals(addonsPath)) {
-                    Path namespacePath = addonPath.resolve("assets").resolve(namespace);
+                    Path namespacePath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
                     Path prefixPath = namespacePath.resolve(prefix);
                     String separator = addonsPath.getFileSystem().getSeparator();
                     if (Files.isDirectory(prefixPath)) {
                         try {
                             Files.walk(prefixPath).forEach(assetPath -> {
-                                if (!assetPath.equals(prefixPath) && (assetPath.toString().endsWith(".json") || assetPath.toString().endsWith(".png"))) {
+                                if (!assetPath.equals(prefixPath) && hasAcceptableFileExtension(assetPath.toString())) {
                                     String asset = prefixPath.relativize(assetPath).toString().replace(separator, "/");
                                     consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(assetPath));                                }
                             });
@@ -118,10 +127,10 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     @Override
     public void close() {}
 
-    public record Factory() implements ResourcePackProfile.PackFactory {
+    public record Factory(ResourceType type) implements ResourcePackProfile.PackFactory {
         @Override
         public ResourcePack open(ResourcePackInfo info) {
-            return new LuckyBlockAddonsResourcePack();
+            return new LuckyBlockAddonsResourcePack(type);
         }
 
         @Override

@@ -7,3 +7,5 @@ accessible field net/minecraft/nbt/NbtList type B
 accessible field net/minecraft/entity/projectile/WindChargeEntity EXPLOSION_BEHAVIOR Lnet/minecraft/world/explosion/ExplosionBehavior;
 accessible field net/minecraft/resource/JsonDataLoader dataType Ljava/lang/String;
 accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TYPE_BY_ID Lcom/google/common/collect/BiMap;
+accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
+accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;

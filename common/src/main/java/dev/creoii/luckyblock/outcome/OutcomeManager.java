@@ -39,7 +39,7 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
     protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
         Map<Identifier, JsonElement> prepared = new HashMap<>();
         load(resourceManager, dataType, GSON, prepared);
-        return LuckyBlockMod.luckyBlockManager.loadOutcomes(prepared, resourceManager);
+        return prepared;
     }
 
     public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {
