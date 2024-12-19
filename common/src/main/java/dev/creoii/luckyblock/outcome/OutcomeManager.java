@@ -37,12 +37,6 @@ public class OutcomeManager extends JsonDataLoader {
     }
 
     @Override
-    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
-        Map<Identifier, JsonElement> prepared = super.prepare(resourceManager, profiler);
-        return LuckyBlockMod.luckyBlockManager.loadOutcomes(prepared, resourceManager);
-    }
-
-    @Override
     protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
         for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
             if (!entry.getValue().isJsonObject())

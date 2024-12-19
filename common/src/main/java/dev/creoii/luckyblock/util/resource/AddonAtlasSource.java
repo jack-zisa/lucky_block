@@ -41,7 +41,7 @@ public class AddonAtlasSource implements AtlasSource {
                         if (Files.exists(resourcesPath)) {
                             try {
                                 Files.walk(resourcesPath).forEach(resourcePath -> {
-                                    if (!resourcePath.equals(resourcesPath) && (resourcePath.toString().endsWith(".json") || resourcePath.toString().endsWith(".png"))) {
+                                    if (!resourcePath.equals(resourcesPath) && LuckyBlockAddonsResourcePack.hasAcceptableFileExtension(resourcePath.toString())) {
                                         Identifier id = Identifier.of(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
                                         Optional<ResourcePack> optionalResourcePack = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getId().equals(LuckyBlockMod.NAMESPACE)).findFirst();
                                         optionalResourcePack.ifPresent(resourcePack -> {
