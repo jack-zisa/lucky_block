@@ -5,3 +5,4 @@ accessible method net/minecraft/nbt/NbtList <init> (Ljava/util/List;B)V
 accessible field net/minecraft/nbt/NbtList value Ljava/util/List;
 accessible field net/minecraft/nbt/NbtList type B
 accessible field net/minecraft/entity/projectile/WindChargeEntity EXPLOSION_BEHAVIOR Lnet/minecraft/world/explosion/ExplosionBehavior;
+accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TYPE_BY_ID Lcom/google/common/collect/BiMap;

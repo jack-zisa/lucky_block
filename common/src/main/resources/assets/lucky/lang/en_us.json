@@ -1,3 +1,7 @@
 {
-  "lucky.item.luck": "Luck: %s"
+  "lucky.item.luck": "Luck: %s",
+
+  "pack.name.luckyBlockAddons": "Lucky Block Addons",
+  "pack.source.luckyBlockAddon": "Lucky block addon",
+  "pack.description.luckyBlockAddonResources": "Lucky block addon resources"
 }

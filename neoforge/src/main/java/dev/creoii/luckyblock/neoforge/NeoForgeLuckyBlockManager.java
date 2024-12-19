@@ -10,6 +10,7 @@ import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,19 +20,24 @@ import java.util.Map;
 
 public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
     @Override
+    public Path getGameDirectory() {
+        return FMLLoader.getGamePath();
+    }
+
+    @Override
     public Map<String, LuckyBlockContainer> init() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
 
-        if (Files.notExists(ADDONS_PATH)) {
+        if (Files.notExists(getAddonsPath())) {
             try {
-                Files.createDirectory(ADDONS_PATH);
+                Files.createDirectory(getAddonsPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
         try {
-            Files.walk(ADDONS_PATH).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
+            Files.walk(getAddonsPath()).forEach(path -> tryLoadAddon(getAddonsPath().relativize(path), builder, true));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -55,7 +61,7 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
     public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
         if (fromAddon ? ADDON_PATH_PATTERN.matcher(path.toString()).matches() : PATH_PATTERN.matcher(path.toString()).matches()) {
             try {
-                String file = Files.readString(fromAddon ? ADDONS_PATH.resolve(path) : path);
+                String file = Files.readString(fromAddon ? getAddonsPath().resolve(path) : path);
                 JsonElement element = JsonParser.parseString(file);
                 if (element.isJsonObject()) {
                     DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);

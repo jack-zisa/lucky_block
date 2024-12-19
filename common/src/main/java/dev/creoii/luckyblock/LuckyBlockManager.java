@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -18,10 +17,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public abstract class LuckyBlockManager {
-    /**
-     * This won't work on servers!
-     */
-    public static final Path ADDONS_PATH = MinecraftClient.getInstance().runDirectory.toPath().resolve("addons");
     public static final Pattern PATH_PATTERN = Pattern.compile("^/?data/[^/]+/lucky_block\\.json$");
     public static final Pattern ADDON_PATH_PATTERN = Pattern.compile("^[^/]+\\\\data\\\\[^\\\\]+\\\\lucky_block\\.json$");
     private final Map<String, LuckyBlockContainer> luckyBlocks;
@@ -30,16 +25,22 @@ public abstract class LuckyBlockManager {
         luckyBlocks = init();
     }
 
+    public abstract Path getGameDirectory();
+
     public abstract Map<String, LuckyBlockContainer> init();
 
     public abstract void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon);
 
     public abstract List<String> getIgnoredMods();
 
+    public Path getAddonsPath() {
+        return getGameDirectory().resolve("addons");
+    }
+
     public Map<Identifier, JsonElement> loadOutcomes(Map<Identifier, JsonElement> prepared, ResourceManager resourceManager) {
         try {
-            Files.walk(ADDONS_PATH, 1).forEach(path -> {
-                if (!path.equals(ADDONS_PATH)) {
+            Files.walk(getAddonsPath(), 1).forEach(path -> {
+                if (!path.equals(getAddonsPath())) {
                     Path datapackPath = path.resolve("data");
                     try {
                         Files.walk(datapackPath, 1).forEach(dataPath -> {
