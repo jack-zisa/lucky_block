@@ -16,7 +16,7 @@ public class VanillaResourcePackProviderMixin {
     @Inject(method = "register", at = @At("RETURN"))
     private void lucky$addBuiltinResourcePacks(Consumer<ResourcePackProfile> consumer, CallbackInfo ci) {
         if ((Object) this instanceof DefaultClientResourcePackProvider) {
-            LuckyBlockAddonsResourcePackCreator.INSTANCE.register(consumer);
+            LuckyBlockAddonsResourcePackCreator.CLIENT_INSTANCE.register(consumer);
         }
     }
 }
