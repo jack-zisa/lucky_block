@@ -3,9 +3,11 @@
   "package": "dev.creoii.luckyblock.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ResourcePackManagerMixin",
     "VanillaResourcePackProviderMixin"
   ],
   "client": [
+    "CreateWorldScreenMixin",
     "GameOptionsMixin"
   ],
   "injectors": {
