@@ -23,11 +23,6 @@ public class LuckyBlockAddonsResourcePackCreator implements ResourcePackProvider
 
     @Override
     public void register(Consumer<ResourcePackProfile> profileAdder) {
-        profileAdder.accept(ResourcePackProfile.create(
-                RESOURCE_PACK_INFO,
-                new LuckyBlockAddonsResourcePack.Factory(type),
-                type,
-                new ResourcePackPosition(true, ResourcePackProfile.InsertionPosition.TOP, true)
-        ));
+        profileAdder.accept(ResourcePackProfile.create(RESOURCE_PACK_INFO, new LuckyBlockAddonsResourcePack.Factory(type), type, new ResourcePackPosition(true, ResourcePackProfile.InsertionPosition.TOP, true)));
     }
 }
