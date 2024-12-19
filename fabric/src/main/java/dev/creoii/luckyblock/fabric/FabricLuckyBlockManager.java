@@ -28,19 +28,24 @@ import java.util.Map;
 
 public class FabricLuckyBlockManager extends LuckyBlockManager {
     @Override
+    public Path getGameDirectory() {
+        return FabricLoader.getInstance().getGameDir();
+    }
+
+    @Override
     public Map<String, LuckyBlockContainer> init() {
         ImmutableMap.Builder<String, LuckyBlockContainer> builder = ImmutableMap.builder();
 
-        if (Files.notExists(ADDONS_PATH)) {
+        if (Files.notExists(getAddonsPath())) {
             try {
-                Files.createDirectory(ADDONS_PATH);
+                Files.createDirectory(getAddonsPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
         try {
-            Files.walk(ADDONS_PATH, 4).forEach(path -> tryLoadAddon(ADDONS_PATH.relativize(path), builder, true));
+            Files.walk(getAddonsPath(), 4).forEach(path -> tryLoadAddon(getAddonsPath().relativize(path), builder, true));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -65,7 +70,7 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
     public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
         if (fromAddon ? ADDON_PATH_PATTERN.matcher(path.toString()).matches() : PATH_PATTERN.matcher(path.toString()).matches()) {
             try {
-                String file = Files.readString(fromAddon ? ADDONS_PATH.resolve(path) : path);
+                String file = Files.readString(fromAddon ? getAddonsPath().resolve(path) : path);
                 JsonElement element = JsonParser.parseString(file);
                 if (element.isJsonObject()) {
                     DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
