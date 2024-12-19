@@ -1,10 +1,11 @@
 package dev.creoii.luckyblock.fabric.client;
 
+import dev.creoii.luckyblock.client.LuckyBlockClient;
 import net.fabricmc.api.ClientModInitializer;
 
 public final class LuckyBlockFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        // This entrypoint is suitable for setting up client-specific logic, such as rendering.
+        LuckyBlockClient.initClient();
     }
 }
