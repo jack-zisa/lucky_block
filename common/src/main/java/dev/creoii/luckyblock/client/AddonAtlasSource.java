@@ -1,10 +1,10 @@
-package dev.creoii.luckyblock.util.resource;
+package dev.creoii.luckyblock.client;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.client.LuckyBlockClient;
+import dev.creoii.luckyblock.util.resource.LuckyBlockAddonsResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.texture.atlas.AtlasSource;
