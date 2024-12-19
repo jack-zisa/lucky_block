@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class LuckyBlockAddonsResourcePack implements ResourcePack {
     public static final Gson GSON = new Gson();
-    protected static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
+    public static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
     private final ResourceType type;
 
     public LuckyBlockAddonsResourcePack(ResourceType type) {
