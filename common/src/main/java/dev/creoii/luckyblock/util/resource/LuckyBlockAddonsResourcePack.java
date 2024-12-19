@@ -2,7 +2,6 @@ package dev.creoii.luckyblock.util.resource;
 
 import com.google.gson.Gson;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.*;
 import net.minecraft.resource.metadata.PackResourceMetadata;
@@ -52,7 +51,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     @Nullable
     @Override
     public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
-        Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
+        Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
                 if (!addonPath.equals(addonsPath)) {
@@ -70,7 +69,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
 
     @Override
     public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
-        Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
+        Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
                 if (!addonPath.equals(addonsPath)) {

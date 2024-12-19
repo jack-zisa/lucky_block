@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.texture.atlas.AtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.resource.InputSupplier;
@@ -33,7 +32,7 @@ public class AddonAtlasSource implements AtlasSource {
     @Override
     public void load(ResourceManager resourceManager, SpriteRegions regions) {
         for (String namespace : resourceManager.getAllNamespaces()) {
-            Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
+            Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
             try {
                 Files.walk(addonsPath, 1).forEach(addonPath -> {
                     if (!addonPath.equals(addonsPath)) {
@@ -44,12 +43,8 @@ public class AddonAtlasSource implements AtlasSource {
                                 Files.walk(resourcesPath).forEach(resourcePath -> {
                                     if (!resourcePath.equals(resourcesPath) && (resourcePath.toString().endsWith(".json") || resourcePath.toString().endsWith(".png"))) {
                                         Identifier id = Identifier.of(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
-                                        System.out.println("relative id: " + id.toString());
                                         Optional<ResourcePack> optionalResourcePack = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getId().equals(LuckyBlockMod.NAMESPACE)).findFirst();
-                                        System.out.println("pack present? " + optionalResourcePack.isPresent());
-
                                         optionalResourcePack.ifPresent(resourcePack -> {
-                                            System.out.println("found pack " + LuckyBlockMod.NAMESPACE);
                                             Resource texture = new Resource(resourcePack, InputSupplier.create(resourcePath));
                                             regions.add(id, texture);
                                         });
