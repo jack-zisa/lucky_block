@@ -59,10 +59,10 @@ public class NeoForgeLuckyBlockManager extends LuckyBlockManager {
 
     @Override
     public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
-        if (PATH_PATTERN.matcher(path.toString()).matches()) {
+        if (fromAddon ? ADDON_PATH_PATTERN.matcher(path.toString()).matches() : PATH_PATTERN.matcher(path.toString()).matches()) {
             try {
-                String fileContent = Files.readString(path);
-                JsonElement element = JsonParser.parseString(fileContent);
+                String file = Files.readString(fromAddon ? getAddonsPath().resolve(path) : path);
+                JsonElement element = JsonParser.parseString(file);
                 if (element.isJsonObject()) {
                     DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
                     dataResult.resultOrPartial(error -> LuckyBlockMod.LOGGER.error("Error parsing lucky block container: {}", error)).ifPresent(container -> {
