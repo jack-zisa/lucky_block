@@ -1,9 +1,12 @@
-package dev.creoii.luckyblock.util.resource;
+package dev.creoii.luckyblock.client;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.util.resource.LuckyBlockAddonsResourcePack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.texture.atlas.AtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.resource.InputSupplier;
@@ -17,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+@Environment(EnvType.CLIENT)
 public class AddonAtlasSource implements AtlasSource {
     public static final MapCodec<AddonAtlasSource> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(Codec.STRING.fieldOf("source").forGetter(source -> source.source), Codec.STRING.fieldOf("prefix").forGetter(source -> source.prefix)).apply(instance, AddonAtlasSource::new);
@@ -64,6 +68,6 @@ public class AddonAtlasSource implements AtlasSource {
 
     @Override
     public AtlasSourceType getType() {
-        return LuckyBlockMod.ADDON_ATLAS_SOURCE;
+        return LuckyBlockClient.ADDON_ATLAS_SOURCE;
     }
 }

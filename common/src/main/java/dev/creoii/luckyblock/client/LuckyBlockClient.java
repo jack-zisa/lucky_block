@@ -1,7 +1,6 @@
 package dev.creoii.luckyblock.client;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.resource.AddonAtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSourceManager;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.util.Identifier;
