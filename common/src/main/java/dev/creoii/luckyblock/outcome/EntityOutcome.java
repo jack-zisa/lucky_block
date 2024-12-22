@@ -1,5 +1,6 @@
 package dev.creoii.luckyblock.outcome;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
@@ -7,8 +8,12 @@ import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
@@ -25,18 +30,21 @@ public class EntityOutcome extends Outcome {
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt)
+                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
+                Codec.BOOL.fieldOf("initialize_mobs").orElse(false).forGetter(outcome -> outcome.initializeMobs)
         ).apply(instance, EntityOutcome::new);
     });
     private final Identifier entityTypeId;
     private final IntProvider count;
     private final Optional<ContextualNbtCompound> nbt;
+    private final boolean initializeMobs;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, boolean initializeMobs) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
         this.nbt = nbt;
+        this.initializeMobs = initializeMobs;
     }
 
     @Override
@@ -78,6 +86,9 @@ public class EntityOutcome extends Outcome {
                     if (passenger != null)
                         passenger.startRiding(entity);
                 } else entity.readNbt(nbtCompound);
+            }
+            if (entity instanceof MobEntity mob && context.world() instanceof ServerWorld serverWorld && initializeMobs) {
+                mob.initialize(serverWorld, context.world().getLocalDifficulty(BlockPos.ofFloored(spawnPos.x, spawnPos.y, spawnPos.z)), SpawnReason.NATURAL, null);
             }
             entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
             context.world().spawnEntity(entity);

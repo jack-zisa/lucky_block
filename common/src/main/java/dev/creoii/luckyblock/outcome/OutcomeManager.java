@@ -33,11 +33,11 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
     @Override
     protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
         Map<Identifier, JsonElement> map = new HashMap<>();
-        load(resourceManager, "outcome", GSON, map);
+        load(resourceManager, GSON, map);
         return map;
     }
 
-    public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {
+    public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {
         Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
@@ -49,7 +49,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
             throw new RuntimeException(e);
         }
 
-        ResourceFinder resourceFinder = ResourceFinder.json(dataType);
+        ResourceFinder resourceFinder = ResourceFinder.json("outcome");
         for (Map.Entry<Identifier, Resource> entry : resourceFinder.findResources(manager).entrySet()) {
             Identifier identifier = entry.getKey();
             Identifier identifier2 = resourceFinder.toResourceId(identifier);
@@ -160,7 +160,8 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
         }
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found in Lucky Block container: " + namespace);
+            LuckyBlockMod.LOGGER.warn("No outcomes found in Lucky Block container: {}", namespace);
+            return null;
         }
 
         if (player != null) {

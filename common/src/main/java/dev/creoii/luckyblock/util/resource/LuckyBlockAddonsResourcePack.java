@@ -15,10 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +25,7 @@ import java.util.zip.ZipFile;
 public class LuckyBlockAddonsResourcePack implements ResourcePack {
     public static final Gson GSON = new Gson();
     public static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
+    private static final long MAX_IN_MEMORY_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
     private final ResourceType type;
 
     public LuckyBlockAddonsResourcePack(ResourceType type) {
@@ -75,14 +73,29 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                         return InputSupplier.create(assetPath);
                     }
                 } else if (addonPath.toString().endsWith(".zip")) {
-                    /*try (FileSystem fileSystem = FileSystems.newFileSystem(addonPath, (ClassLoader) null)) {
+                    try (FileSystem fileSystem = FileSystems.newFileSystem(addonPath, (ClassLoader) null)) {
                         Path assetPath = fileSystem.getPath(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                         if (Files.exists(assetPath)) {
-                            return InputSupplier.create(assetPath);
+                            long fileSize = Files.size(assetPath);
+                            Path tempFile;
+
+                            if (fileSize <= MAX_IN_MEMORY_FILE_SIZE) {
+                                tempFile = Files.createTempFile("resource_", "_" + id.getPath().replace("/", "_"));
+                                tempFile.toFile().deleteOnExit();
+                                Files.write(tempFile, Files.readAllBytes(assetPath));
+                            } else {
+                                tempFile = Files.createTempFile("resource_", "_" + id.getPath().replace("/", "_"));
+                                tempFile.toFile().deleteOnExit();
+                                try (InputStream inputStream = Files.newInputStream(assetPath)) {
+                                    Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                                }
+                            }
+
+                            return InputSupplier.create(tempFile);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }*/
+                        throw new RuntimeException("Error processing ZIP file at " + addonPath, e);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -117,14 +130,27 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                         try (ZipFile zipFile = new ZipFile(addonPath.toFile())) {
                             String prefixDir = (type == ResourceType.SERVER_DATA ? "data/" : "assets/") + namespace + "/" + prefix + "/";
 
-                            zipFile.stream().filter(entry -> !entry.isDirectory() && entry.getName().startsWith(prefixDir))
-                                    .forEach(zipEntry -> {
+                            zipFile.stream().filter(entry -> !entry.isDirectory() && entry.getName().startsWith(prefixDir)).forEach(zipEntry -> {
                                         String asset = zipEntry.getName().substring(prefixDir.length());
                                         if (hasAcceptableFileExtension(asset)) {
-                                            consumer.accept(
-                                                    Identifier.of(namespace, prefix + "/" + asset),
-                                                    InputSupplier.create(zipFile, zipEntry)
-                                            );
+                                            try (InputStream inputStream = zipFile.getInputStream(zipEntry)) {
+                                                long fileSize = zipEntry.getSize();
+
+                                                Path tempFile;
+                                                if (fileSize <= MAX_IN_MEMORY_FILE_SIZE && fileSize > 0) {
+                                                    tempFile = Files.createTempFile("resource_", "_" + asset.replace("/", "_"));
+                                                    tempFile.toFile().deleteOnExit();
+                                                    Files.write(tempFile, inputStream.readAllBytes());
+                                                } else {
+                                                    tempFile = Files.createTempFile("resource_", "_" + asset.replace("/", "_"));
+                                                    tempFile.toFile().deleteOnExit();
+                                                    Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                                                }
+
+                                                consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(tempFile));
+                                            } catch (IOException e) {
+                                                throw new RuntimeException("Error processing ZIP entry: " + zipEntry.getName(), e);
+                                            }
                                         }
                                     });
                         } catch (IOException e) {
