@@ -16,7 +16,7 @@ import java.util.Set;
 @Mixin(ResourcePackManager.class)
 public class ResourcePackManagerMixin {
     @Mutable @Shadow @Final
-    private Set<ResourcePackProvider> providers;
+    public Set<ResourcePackProvider> providers;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void lucky$addBuiltInDataPacks(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {

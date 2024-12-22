@@ -15,12 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.ZipFile;
 
 public class LuckyBlockAddonsResourcePack implements ResourcePack {
     public static final Gson GSON = new Gson();
@@ -63,11 +66,23 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
-                if (!addonPath.equals(addonsPath)) {
+                if (addonPath.equals(addonsPath))
+                    continue;
+
+                if (Files.isDirectory(addonPath)) {
                     Path assetPath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                     if (Files.exists(assetPath)) {
                         return InputSupplier.create(assetPath);
                     }
+                } else if (addonPath.toString().endsWith(".zip")) {
+                    /*try (FileSystem fileSystem = FileSystems.newFileSystem(addonPath, (ClassLoader) null)) {
+                        Path assetPath = fileSystem.getPath(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
+                        if (Files.exists(assetPath)) {
+                            return InputSupplier.create(assetPath);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }*/
                 }
             }
         } catch (IOException e) {
@@ -82,18 +97,38 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
                 if (!addonPath.equals(addonsPath)) {
-                    Path namespacePath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
-                    Path prefixPath = namespacePath.resolve(prefix);
-                    String separator = addonsPath.getFileSystem().getSeparator();
-                    if (Files.isDirectory(prefixPath)) {
-                        try {
-                            Files.walk(prefixPath).forEach(assetPath -> {
-                                if (!assetPath.equals(prefixPath) && hasAcceptableFileExtension(assetPath.toString())) {
-                                    String asset = prefixPath.relativize(assetPath).toString().replace(separator, "/");
-                                    consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(assetPath));                                }
-                            });
+                    if (Files.isDirectory(addonPath)) {
+                        Path namespacePath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
+                        Path prefixPath = namespacePath.resolve(prefix);
+                        String separator = addonsPath.getFileSystem().getSeparator();
+                        if (Files.isDirectory(prefixPath)) {
+                            try {
+                                Files.walk(prefixPath).forEach(assetPath -> {
+                                    if (!assetPath.equals(prefixPath) && hasAcceptableFileExtension(assetPath.toString())) {
+                                        String asset = prefixPath.relativize(assetPath).toString().replace(separator, "/");
+                                        consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(assetPath));
+                                    }
+                                });
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else if (addonPath.toString().endsWith(".zip")) {
+                        try (ZipFile zipFile = new ZipFile(addonPath.toFile())) {
+                            String prefixDir = (type == ResourceType.SERVER_DATA ? "data/" : "assets/") + namespace + "/" + prefix + "/";
+
+                            zipFile.stream().filter(entry -> !entry.isDirectory() && entry.getName().startsWith(prefixDir))
+                                    .forEach(zipEntry -> {
+                                        String asset = zipEntry.getName().substring(prefixDir.length());
+                                        if (hasAcceptableFileExtension(asset)) {
+                                            consumer.accept(
+                                                    Identifier.of(namespace, prefix + "/" + asset),
+                                                    InputSupplier.create(zipFile, zipEntry)
+                                            );
+                                        }
+                                    });
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException("Error accessing or processing ZIP file: " + addonPath, e);
                         }
                     }
                 }

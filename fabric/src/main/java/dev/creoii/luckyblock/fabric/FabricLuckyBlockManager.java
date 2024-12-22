@@ -43,7 +43,21 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
         }
 
         try {
-            Files.walk(getAddonsPath(), 4).forEach(path -> tryLoadAddon(getAddonsPath().relativize(path), builder, true));
+            Files.walk(getAddonsPath(), 1).forEach(addonPath -> {
+                if (Files.isDirectory(addonPath)) {
+                    try {
+                        Files.walk(addonPath, 3).forEach(path -> tryLoadAddon(getAddonsPath().relativize(path), builder, LoadType.FILE_ADDON));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (addonPath.toString().endsWith(".zip")) {
+                    try {
+                        tryLoadZipAddon(addonPath, builder);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to process zip file: " + addonPath, e);
+                    }
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +67,7 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
                 Path root = modContainer.findPath("data").orElse(null);
                 if (root != null) {
                     try {
-                        Files.walk(root, 4).forEach(path -> tryLoadAddon(path, builder, false));
+                        Files.walk(root, 4).forEach(path -> tryLoadAddon(path, builder, LoadType.MOD));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -65,10 +79,10 @@ public class FabricLuckyBlockManager extends LuckyBlockManager {
     }
 
     @Override
-    public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, boolean fromAddon) {
-        if (fromAddon ? ADDON_PATH_PATTERN.matcher(path.toString()).matches() : PATH_PATTERN.matcher(path.toString()).matches()) {
+    public void tryLoadAddon(Path path, ImmutableMap.Builder<String, LuckyBlockContainer> builder, LoadType loadType) {
+        if (loadType.test(path.toString())) {
             try {
-                String file = Files.readString(fromAddon ? getAddonsPath().resolve(path) : path);
+                String file = Files.readString(loadType == LoadType.FILE_ADDON ? getAddonsPath().resolve(path) : path);
                 JsonElement element = JsonParser.parseString(file);
                 if (element.isJsonObject()) {
                     DataResult<LuckyBlockContainer> dataResult = LuckyBlockContainer.CODEC.parse(JsonOps.INSTANCE, element);
