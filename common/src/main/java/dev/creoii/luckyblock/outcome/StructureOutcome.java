@@ -32,7 +32,7 @@ public class StructureOutcome extends Outcome {
                 createGlobalDelayField(Outcome::getDelay),
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId),
-                IntProvider.createValidatingCodec(0, 7).optionalFieldOf("depth").forGetter(outcome -> outcome.depth), // TODO: Set max to 20 for Minecraft 1.21
+                IntProvider.createValidatingCodec(0, 20).optionalFieldOf("depth").forGetter(outcome -> outcome.depth),
                 LuckyBlockCodecs.StructurePlacementData.CODEC.fieldOf("placement_data").orElse(LuckyBlockCodecs.StructurePlacementData.DEFAULT).forGetter(outcome -> outcome.structurePlacementData)
         ).apply(instance, StructureOutcome::new);
     });
