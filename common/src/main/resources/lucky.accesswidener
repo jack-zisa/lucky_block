@@ -8,3 +8,6 @@ accessible field net/minecraft/entity/projectile/WindChargeEntity EXPLOSION_BEHA
 accessible field net/minecraft/resource/JsonDataLoader dataType Ljava/lang/String;
 accessible method net/minecraft/entity/passive/CatEntity setCollarColor (Lnet/minecraft/util/DyeColor;)V
 accessible method net/minecraft/entity/passive/WolfEntity setCollarColor (Lnet/minecraft/util/DyeColor;)V
+accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TYPE_BY_ID Lcom/google/common/collect/BiMap;
+accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
+accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;

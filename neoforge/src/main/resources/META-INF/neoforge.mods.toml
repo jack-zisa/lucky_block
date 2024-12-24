@@ -3,6 +3,9 @@ loaderVersion = "[2,)"
 #issueTrackerURL = ""
 license = "ARR"
 
+[[mixins]]
+config = "lucky.mixins.json"
+
 [[mods]]
 modId = "lucky"
 version = "${version}"

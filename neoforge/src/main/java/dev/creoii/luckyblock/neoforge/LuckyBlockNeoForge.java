@@ -33,6 +33,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
+import java.util.Set;
+
 @Mod(LuckyBlockMod.NAMESPACE)
 public final class LuckyBlockNeoForge {
     private static final LuckyBlockManager LUCKY_BLOCK_MANAGER = new NeoForgeLuckyBlockManager();
@@ -67,7 +69,7 @@ public final class LuckyBlockNeoForge {
         });
 
         event.register(RegistryKeys.BLOCK_ENTITY_TYPE, registry -> {
-            luckyBlockEntity = new BlockEntityType<>(LuckyBlockEntity::new, LUCKY_BLOCK_MANAGER.getAllBlocks());
+            luckyBlockEntity = new BlockEntityType<>(LuckyBlockEntity::new, Set.of(LUCKY_BLOCK_MANAGER.getAllBlocks()));
             Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block");
             LuckyBlockMod.setLuckyBlockEntity(luckyBlockEntity);
             registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), luckyBlockEntity);
@@ -87,7 +89,7 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == ItemGroups.BUILDING_BLOCKS) {
+        if (event.getTabKey() == ItemGroups.FUNCTIONAL) {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
                 event.add(item);
 
