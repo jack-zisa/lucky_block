@@ -13,6 +13,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
@@ -32,22 +33,19 @@ public class ItemOutcome extends Outcome {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
                 }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
     private final IntProvider count;
-    private final ComponentChanges components;
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
-        this.components = components;
         this.nbt = nbt;
         this.velocity = velocity;
     }
@@ -66,8 +64,6 @@ public class ItemOutcome extends Outcome {
                 ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
                 if (entity != null) {
                     ItemStack newStack = stack.copy();
-                    if (components != ComponentChanges.EMPTY)
-                        newStack.applyChanges(components);
 
                     entity.setStack(newStack);
                     nbt.ifPresent(compound -> {
@@ -93,8 +89,6 @@ public class ItemOutcome extends Outcome {
             ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack newStack = stack.copy();
-                if (components != ComponentChanges.EMPTY)
-                    newStack.applyChanges(components);
 
                 newStack.setCount(stack.getMaxCount());
                 entity.setStack(newStack);
@@ -116,8 +110,6 @@ public class ItemOutcome extends Outcome {
             ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack remainder = stack.copy();
-                if (components != ComponentChanges.EMPTY)
-                    remainder.applyChanges(components);
 
                 remainder.setCount(total % stack.getMaxCount());
                 entity.setStack(remainder);

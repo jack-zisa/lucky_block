@@ -32,7 +32,7 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     public OutcomeManager() {
-        super(null, "outcomes");
+        super(null, "outcome");
     }
 
     @Override
