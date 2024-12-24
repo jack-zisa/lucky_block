@@ -49,7 +49,7 @@ public class EntityOutcome extends Outcome {
 
     @Override
     public void run(Context context) {
-        Vec3d spawnPos = getPos(context).getVec(context);
+        Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
