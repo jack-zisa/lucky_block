@@ -22,8 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
@@ -38,17 +36,6 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
     }
 
     public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {
-        Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
-        try {
-            for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
-                if (!addonPath.equals(addonsPath)) {
-
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         ResourceFinder resourceFinder = ResourceFinder.json("outcome");
         for (Map.Entry<Identifier, Resource> entry : resourceFinder.findResources(manager).entrySet()) {
             Identifier identifier = entry.getKey();
