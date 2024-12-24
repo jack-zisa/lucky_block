@@ -10,10 +10,7 @@ import dev.creoii.luckyblock.util.FunctionUtils;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -27,23 +24,19 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 
-public class OutcomeManager extends JsonDataLoader<JsonElement> {
+public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
-
-    public OutcomeManager() {
-        super(null, "outcome");
-    }
 
     @Override
     protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
         Map<Identifier, JsonElement> prepared = new HashMap<>();
-        load(resourceManager, dataType, GSON, prepared);
+        load(resourceManager, GSON, prepared);
         return prepared;
     }
 
-    public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {
-        ResourceFinder resourceFinder = ResourceFinder.json(dataType);
+    public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {
+        ResourceFinder resourceFinder = ResourceFinder.json("outcome");
         for (Map.Entry<Identifier, Resource> identifierResourceEntry : resourceFinder.findResources(manager).entrySet()) {
             Identifier identifier = identifierResourceEntry.getKey();
             Identifier identifier2 = resourceFinder.toResourceId(identifier);
@@ -157,7 +150,8 @@ public class OutcomeManager extends JsonDataLoader<JsonElement> {
         }
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found in Lucky Block container: " + namespace);
+            LuckyBlockMod.LOGGER.warn("No outcomes found in Lucky Block container: {}", namespace);
+            return null;
         }
 
         if (player != null) {
