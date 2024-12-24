@@ -10,27 +10,62 @@ import dev.creoii.luckyblock.util.FunctionUtils;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.profiler.Profiler;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.*;
 
-public class OutcomeManager extends JsonDataLoader {
+public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
-    public OutcomeManager() {
-        super(GSON, "outcomes");
+    @Override
+    protected Map<Identifier, JsonElement> prepare(ResourceManager manager, Profiler profiler) {
+        Map<Identifier, JsonElement> map = new HashMap<>();
+        load(manager, GSON, map);
+        return map;
+    }
+
+    public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {
+        ResourceFinder resourceFinder = ResourceFinder.json("outcome");
+        for (Map.Entry<Identifier, Resource> entry : resourceFinder.findResources(manager).entrySet()) {
+            Identifier identifier = entry.getKey();
+            Identifier identifier2 = resourceFinder.toResourceId(identifier);
+
+            try {
+                Reader reader = entry.getValue().getReader();
+                try {
+                    JsonElement jsonElement = JsonHelper.deserialize(gson, reader, JsonElement.class);
+                    JsonElement jsonElement2 = results.put(identifier2, jsonElement);
+                    if (jsonElement2 != null) {
+                        throw new IllegalStateException("Duplicate data file ignored with ID " + identifier2);
+                    }
+                } catch (Throwable var13) {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (Throwable var12) {
+                            var13.addSuppressed(var12);
+                        }
+                    }
+
+                    throw var13;
+                }
+
+                reader.close();
+            } catch (IllegalArgumentException | IOException | JsonParseException var14) {
+                LuckyBlockMod.LOGGER.error("Couldn't parse data file {} from {}", identifier2, identifier, var14);
+            }
+        }
     }
 
     @Override
@@ -45,10 +80,7 @@ public class OutcomeManager extends JsonDataLoader {
 
             if (container.isDebug())
                 LuckyBlockMod.LOGGER.info("Loading outcome '{}'", entry.getKey());
-            /**
-             * FOR LATER:
-             * - Define a custom prefix in lucky_block.json, which will then be used later for this
-             */
+
             if (entry.getKey().getPath().startsWith("nonrandom/")) {
                 container.addNonRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
             } else container.addRandomOutcome(entry.getKey(), (JsonObject) entry.getValue());
@@ -116,7 +148,8 @@ public class OutcomeManager extends JsonDataLoader {
         }
         Map<Identifier, JsonObject> randomOutcomes = container.getRandomOutcomes();
         if (randomOutcomes.isEmpty()) {
-            throw new IllegalArgumentException("No outcomes found in Lucky Block container: " + namespace);
+            LuckyBlockMod.LOGGER.warn("No outcomes found in Lucky Block container: {}", namespace);
+            return null;
         }
 
         if (player != null) {

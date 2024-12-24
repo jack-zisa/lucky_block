@@ -94,6 +94,9 @@ public class LuckyBlock extends BlockWithEntity {
         }
 
         Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player);
+        if (pair == null)
+            return null;
+
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.isDebug()) {
             LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getLeft());
@@ -107,7 +110,11 @@ public class LuckyBlock extends BlockWithEntity {
         if (container != null && ((container.hasActivation(LuckyBlockContainer.Activation.BREAK_SURVIVAL) && !player.isCreative()) || (container.hasActivation(LuckyBlockContainer.Activation.BREAK_CREATIVE) && player.isCreative()))) {
             if (!world.isClient) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
+                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, player);
+                if (outcomeElement == null)
+                    return super.onBreak(world, pos, state, player);
+
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
                     outcome.runOutcome(context);
                 }
@@ -122,7 +129,11 @@ public class LuckyBlock extends BlockWithEntity {
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.RIGHT_CLICK)) {
             if (!world.isClient) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, player), context);
+                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, player);
+                if (outcomeElement == null)
+                    return ActionResult.FAIL;
+
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
                     outcome.runOutcome(context);
@@ -139,7 +150,11 @@ public class LuckyBlock extends BlockWithEntity {
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
             if (!world.isClient && world.isReceivingRedstonePower(pos)) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, null);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, null);
+                if (outcomeElement == null)
+                    return;
+
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
                     outcome.runOutcome(context);
@@ -154,7 +169,11 @@ public class LuckyBlock extends BlockWithEntity {
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
             if (!world.isClient && world.isReceivingRedstonePower(pos)) {
                 Outcome.Context context = new Outcome.Context(world, pos, state, null);
-                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(getOutcomeFromState(world, state, pos, null), context);
+                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, placer instanceof PlayerEntity player ? player : null);
+                if (outcomeElement == null)
+                    return;
+
+                Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
                     world.breakBlock(pos, false);
                     outcome.runOutcome(context);
