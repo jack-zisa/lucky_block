@@ -83,7 +83,7 @@ public class ContextualNbtList extends NbtList {
                 DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (short) intProvider.get().get(context.world().getRandom());
+                    return (short) intProvider.get().get(context.random());
                 }
             }
         }
@@ -100,7 +100,7 @@ public class ContextualNbtList extends NbtList {
                 DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return intProvider.get().get(context.random());
                 }
             }
         }
@@ -155,7 +155,7 @@ public class ContextualNbtList extends NbtList {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return floatProvider.get().get(context.random());
                 }
             }
         }
@@ -173,7 +173,7 @@ public class ContextualNbtList extends NbtList {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return floatProvider.get().get(context.random());
                 }
             }
         }

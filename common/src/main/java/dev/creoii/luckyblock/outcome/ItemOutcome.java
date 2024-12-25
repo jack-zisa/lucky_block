@@ -50,7 +50,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
         ItemInfo info = new ItemInfo(getPos(context).getVec(context));
         Function.applyPre(functionContainer, this, context.withInfo(info));
 
-        for (int i = 0; i < this.count.get(context.world().getRandom()); ++i) {
+        for (int i = 0; i < this.count.get(context.random()); ++i) {
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (itemEntity != null) {
                 ItemStackWrapper stackWrapper = stack.init(context);

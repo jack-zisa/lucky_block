@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,6 +155,10 @@ public abstract class Outcome<T extends ContextInfo> {
 
         public PlayerEntity player() {
             return player;
+        }
+
+        public Random random() {
+            return world.getRandom();
         }
 
         public T info() {

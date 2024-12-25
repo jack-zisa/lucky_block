@@ -29,6 +29,6 @@ public class RandomCountFunctionTarget extends FunctionTarget<Target<?>> {
     public List<Target<?>> getTargets(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         List<Target<?>> targets = new ArrayList<>(target.getTargets(outcome, context));
         Collections.shuffle(targets);
-        return new ArrayList<>(targets.subList(0, Math.min(count.get(context.world().getRandom()), targets.size())));
+        return new ArrayList<>(targets.subList(0, Math.min(count.get(context.random()), targets.size())));
     }
 }

@@ -1,0 +1,24 @@
+{
+  "type": "lucky:item",
+  "stack": {
+    "stack_provider": "minecraft:diamond_pickaxe",
+    "functions": {
+      "lucky:add_enchantments": {
+        "enchantments": {
+          "minecraft:efficiency": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 5
+          },
+          "minecraft:unbreaking": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 3
+          },
+          "minecraft:silk_touch": 1,
+          "minecraft:mending": 1
+        }
+      }
+    }
+  }
+}

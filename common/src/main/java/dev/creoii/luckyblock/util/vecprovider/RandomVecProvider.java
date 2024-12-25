@@ -38,7 +38,7 @@ public class RandomVecProvider extends VecProvider {
 
     @Override
     public Vec3d getVec(Outcome.Context<?> context) {
-        return new Vec3d(x.get(context.world().getRandom()), y.get(context.world().getRandom()), z.get(context.world().getRandom()));
+        return new Vec3d(x.get(context.random()), y.get(context.random()), z.get(context.random()));
     }
 
     @Override

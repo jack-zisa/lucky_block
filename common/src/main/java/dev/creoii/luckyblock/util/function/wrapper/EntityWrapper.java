@@ -114,7 +114,7 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
 
     @Override
     public EntityWrapper setRotation(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, FloatProvider pitch, FloatProvider yaw) {
-        entity.setAngles(yaw.get(context.world().getRandom()) % 360f, pitch.get(context.world().getRandom()) % 360f);
+        entity.setAngles(yaw.get(context.random()) % 360f, pitch.get(context.random()) % 360f);
         return this;
     }
 

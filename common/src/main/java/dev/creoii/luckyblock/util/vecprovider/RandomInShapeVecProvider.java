@@ -43,7 +43,7 @@ public class RandomInShapeVecProvider extends VecProvider {
             return ConstantVecProvider.ZERO.getPos(context);
         }
         BlockPos center = this.pos.isPresent() ? this.pos.get().getPos(context) : context.pos();
-        return positions.get(context.world().getRandom().nextInt(positions.size())).add(center);
+        return positions.get(context.random().nextInt(positions.size())).add(center);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class RandomInShapeVecProvider extends VecProvider {
         }
         BlockPos pos = this.pos.isPresent() ? this.pos.get().getPos(context) : context.pos();
 
-        int count = this.count.get(context.world().getRandom());
+        int count = this.count.get(context.random());
         if (count > 1) {
             List<BlockPos> result = new ArrayList<>();
             Collections.shuffle(positions);
@@ -69,7 +69,7 @@ public class RandomInShapeVecProvider extends VecProvider {
             return result;
         }
 
-        return List.of(positions.get(context.world().getRandom().nextInt(positions.size())).add(pos));
+        return List.of(positions.get(context.random().nextInt(positions.size())).add(pos));
     }
 
     @Override

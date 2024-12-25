@@ -49,7 +49,7 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
         Map<BlockPos, Pair<BlockState, BlockEntity>> blocks = Maps.newHashMap();
         if (shape != null) {
             shape.getBlockPositions(context).forEach(pos1 -> {
-                BlockState state = stateProvider.get(context.world().getRandom(), pos.add(pos1));
+                BlockState state = stateProvider.get(context.random(), pos.add(pos1));
                 if (blockEntityNbt != null) {
                     blockEntityNbt.setContext(context);
                     BlockEntity blockEntity = BlockEntity.createFromNbt(pos.add(pos1), state, blockEntityNbt, context.world().getRegistryManager());
@@ -60,7 +60,7 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
             });
             blockInfo = new BlockInfo(pos, blocks);
         } else {
-            BlockState state = stateProvider.get(context.world().getRandom(), pos);
+            BlockState state = stateProvider.get(context.random(), pos);
             if (blockEntityNbt != null) {
                 blockEntityNbt.setContext(context);
                 BlockEntity blockEntity = BlockEntity.createFromNbt(pos, state, blockEntityNbt, context.world().getRegistryManager());

@@ -44,7 +44,7 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
         EntityInfo info = new EntityInfo(getPos(context).getVec(context));
         Function.applyPre(functionContainer, this, context.withInfo(info));
 
-        int count = this.count.get(context.world().getRandom());
+        int count = this.count.get(context.random());
         for (int i = 0; i < count; ++i) {
             EntityWrapper entity = this.entity.init(context);
             info.entities.add(entity);

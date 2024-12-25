@@ -28,11 +28,11 @@ public class RandomVelocityVecProvider extends VecProvider {
 
     @Override
     public Vec3d getVec(Outcome.Context<?> context) {
-        float power = this.power.get(context.world().getRandom());
-        int pitch = this.pitch.get(context.world().getRandom());
+        float power = this.power.get(context.random());
+        int pitch = this.pitch.get(context.random());
 
-        float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
-        float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween(-pitch, pitch));
+        float yawRad = (float) Math.toRadians(context.random().nextBetween(-180, 180));
+        float pitchRad = (float) Math.toRadians(-90d + context.random().nextBetween(-pitch, pitch));
         return new Vec3d(-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad) * power, -MathHelper.sin(pitchRad) * power, MathHelper.cos(yawRad) * MathHelper.cos(pitchRad) * power);
     }
 

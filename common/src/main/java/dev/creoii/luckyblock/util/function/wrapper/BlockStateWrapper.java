@@ -18,7 +18,7 @@ public record BlockStateWrapper(BlockStateProvider state, FunctionContainer func
 
     @Override
     public Block getRegistryObject(Outcome.Context<?> context) {
-        return state.get(context.world().getRandom(), context.pos()).getBlock();
+        return state.get(context.random(), context.pos()).getBlock();
     }
 
     @Override

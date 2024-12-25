@@ -77,7 +77,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return intProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}
@@ -95,7 +95,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, element);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (short) intProvider.get().get(context.world().getRandom());
+                    return (short) intProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}
@@ -113,7 +113,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (byte) intProvider.get().get(context.world().getRandom());
+                    return (byte) intProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}
@@ -131,7 +131,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return intProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}
@@ -147,7 +147,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return floatProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}
@@ -163,7 +163,7 @@ public class ContextualNbtCompound extends NbtCompound {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return floatProvider.get().get(context.random());
                 }
             }
         } catch (ClassCastException ignored) {}

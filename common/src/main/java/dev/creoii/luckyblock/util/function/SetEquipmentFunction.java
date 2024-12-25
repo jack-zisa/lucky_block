@@ -47,19 +47,19 @@ public class SetEquipmentFunction extends Function<Target<?>> {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof EquipmentTarget<?> equipmentTarget) {
                 if (headProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.HEAD, headProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.HEAD, headProvider.getStackProvider().get(context.random())));
                 if (chestProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.CHEST, chestProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.CHEST, chestProvider.getStackProvider().get(context.random())));
                 if (legsProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.LEGS, legsProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.LEGS, legsProvider.getStackProvider().get(context.random())));
                 if (feetProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.FEET, feetProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.FEET, feetProvider.getStackProvider().get(context.random())));
                 if (mainhandProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.MAINHAND, mainhandProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.MAINHAND, mainhandProvider.getStackProvider().get(context.random())));
                 if (offhandProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.OFFHAND, offhandProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.OFFHAND, offhandProvider.getStackProvider().get(context.random())));
                 if (bodyProvider != EMPTY)
-                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.BODY, bodyProvider.getStackProvider().get(context.world().getRandom())));
+                    target.update(this, equipmentTarget.setStack(outcome, context, EquipmentSlot.BODY, bodyProvider.getStackProvider().get(context.random())));
             }
         }
     }

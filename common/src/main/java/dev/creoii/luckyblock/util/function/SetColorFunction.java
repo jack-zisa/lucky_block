@@ -25,9 +25,9 @@ public class SetColorFunction extends Function<Target<?>> {
     public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof ColorTarget<?> colorTarget) {
-                //target.update(this, colorTarget.setColor(outcome, context, color.getInt(context.world().getRandom())));
-                //target.update(this, colorTarget.setRgb(outcome, context, color.getRgb(context.world().getRandom())));
-                target.update(this, colorTarget.setDyeColor(outcome, context, color.getDyeColor(context.world().getRandom())));
+                //target.update(this, colorTarget.setColor(outcome, context, color.getInt(context.random())));
+                //target.update(this, colorTarget.setRgb(outcome, context, color.getRgb(context.random())));
+                target.update(this, colorTarget.setDyeColor(outcome, context, color.getDyeColor(context.random())));
             }
         }
     }

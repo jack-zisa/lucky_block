@@ -29,7 +29,7 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
 
     public ItemStackWrapper(ItemStackProvider stackProvider, FunctionContainer functionContainer, Outcome.Context<? extends ContextInfo> context) {
         this.stackProvider = stackProvider;
-        this.stack = stackProvider.get(context.world().getRandom());
+        this.stack = stackProvider.get(context.random());
 
         if (functionContainer.has(FunctionType.SET_VELOCITY)) {
             this.functionContainer = functionContainer;
@@ -91,7 +91,7 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
 
     @Override
     public ItemStackWrapper setCount(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, IntProvider count) {
-        stack.setCount(count.get(context.world().getRandom()));
+        stack.setCount(count.get(context.random()));
         return this;
     }
 
