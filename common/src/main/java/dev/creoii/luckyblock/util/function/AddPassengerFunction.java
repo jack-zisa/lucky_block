@@ -10,7 +10,7 @@ import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
 public class AddPassengerFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<AddPassengerFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasPassengersFunctionTarget.INSTANCE).forGetter(Function::getTarget),
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(IsEntityFunctionTarget.DEFAULT).forGetter(Function::getTarget),
                 FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("passenger").forGetter(function -> function.passenger)
         ).apply(instance, (functionTarget, passenger) -> new AddPassengerFunction((FunctionTarget<Target<?>>) functionTarget, passenger));
     });

@@ -9,10 +9,10 @@ import dev.creoii.luckyblock.util.vecprovider.RandomVecProvider;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 
 public class SetVelocityFunction extends Function<Target<?>> {
-    public static final SetVelocityFunction DEFAULT_ITEM_VELOCITY = new SetVelocityFunction(HasVelocityFunctionTarget.INSTANCE, RandomVecProvider.DEFAULT_ITEM_VELOCITY);
+    public static final SetVelocityFunction DEFAULT_ITEM_VELOCITY = new SetVelocityFunction(IsEntityFunctionTarget.DEFAULT, RandomVecProvider.DEFAULT_ITEM_VELOCITY);
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetVelocityFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasVelocityFunctionTarget.INSTANCE).forGetter(Function::getTarget),
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(IsEntityFunctionTarget.DEFAULT).forGetter(Function::getTarget),
                 VecProvider.VALUE_CODEC.fieldOf("velocity").orElse(RandomVecProvider.DEFAULT_ITEM_VELOCITY).forGetter(function -> function.velocity)
         ).apply(instance, (functionTarget, count) -> new SetVelocityFunction((FunctionTarget<Target<?>>) functionTarget, count));
     });
