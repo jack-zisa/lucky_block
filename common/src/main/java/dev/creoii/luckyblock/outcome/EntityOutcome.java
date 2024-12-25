@@ -10,6 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -68,7 +70,7 @@ public class EntityOutcome extends Outcome {
 
                 if (nbtCompound.contains("nbt", 10)) {
                     ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
-                    entity.readNbt(nbt);
+                    readNbt(entity, nbtCompound, context);
 
                     if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
                         ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
@@ -78,14 +80,14 @@ public class EntityOutcome extends Outcome {
                             passenger.startRiding(entity);
                     }
                 } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
-                    entity.readNbt(nbtCompound);
+                    readNbt(entity, nbtCompound, context);
 
                     ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
                     Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
                     if (passenger != null)
                         passenger.startRiding(entity);
-                } else entity.readNbt(nbtCompound);
+                } else readNbt(entity, nbtCompound, context);
             }
             if (entity instanceof MobEntity mob && context.world() instanceof ServerWorld serverWorld && initializeMobs) {
                 mob.initialize(serverWorld, context.world().getLocalDifficulty(BlockPos.ofFloored(spawnPos.x, spawnPos.y, spawnPos.z)), SpawnReason.NATURAL, null);
@@ -94,5 +96,20 @@ public class EntityOutcome extends Outcome {
             context.world().spawnEntity(entity);
         }
         return entity;
+    }
+
+    private void readNbt(Entity entity, ContextualNbtCompound nbtCompound, Context context) {
+        entity.readNbt(nbtCompound);
+
+        if (entity instanceof TameableEntity tameable) {
+            boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting");
+            tameable.setSitting(sitting);
+            tameable.setInSittingPose(sitting);
+            tameable.setJumping(false);
+            tameable.getNavigation().stop();
+            tameable.setTarget(null);
+        } else if (entity instanceof ProjectileEntity projectile && context.player() != null) {
+            projectile.setOwner(context.player());
+        }
     }
 }
