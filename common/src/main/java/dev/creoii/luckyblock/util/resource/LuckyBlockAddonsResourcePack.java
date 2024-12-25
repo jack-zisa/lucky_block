@@ -33,7 +33,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     }
 
     public static boolean hasAcceptableFileExtension(String s) {
-        return s.endsWith(".json") || s.endsWith(".png") || s.endsWith(".nbt") || s.endsWith(".png.mcmeta");
+        return s.endsWith(".json") || s.endsWith(".png") || s.endsWith(".nbt") || s.endsWith(".png.mcmeta") || s.endsWith(".mcfunction");
     }
 
     public PackResourceMetadata getMetadata() {
