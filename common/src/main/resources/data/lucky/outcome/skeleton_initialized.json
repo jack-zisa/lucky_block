@@ -1,0 +1,9 @@
+{
+  "type": "lucky:entity",
+  "entity": {
+    "type": "minecraft:skeleton",
+    "functions": {
+      "lucky:initialize_mobs": {}
+    }
+  }
+}
