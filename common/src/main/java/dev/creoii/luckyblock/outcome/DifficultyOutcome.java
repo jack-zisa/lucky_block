@@ -20,7 +20,7 @@ public class DifficultyOutcome extends Outcome {
     private final Difficulty difficulty;
 
     public DifficultyOutcome(int luck, float chance, IntProvider weightProvider, int delay, Difficulty difficulty) {
-        super(OutcomeType.COMMAND, luck, chance, weightProvider, delay, Optional.empty(), false);
+        super(OutcomeType.DIFFICULTY, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.difficulty = difficulty;
     }
 

@@ -22,7 +22,7 @@ public class AdvancementOutcome extends Outcome {
     private final Identifier advancement;
 
     public AdvancementOutcome(int luck, float chance, IntProvider weightProvider, int delay, Identifier advancement) {
-        super(OutcomeType.COMMAND, luck, chance, weightProvider, delay, Optional.empty(), false);
+        super(OutcomeType.ADVANCEMENT, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.advancement = advancement;
     }
 
