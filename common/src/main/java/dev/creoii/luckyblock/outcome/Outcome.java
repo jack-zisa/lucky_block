@@ -10,7 +10,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -22,15 +24,15 @@ public abstract class Outcome {
     private final int luck;
     private final float chance;
     private final IntProvider weightProvider;
-    private final int delay;
+    protected final IntProvider delay;
     private final Optional<VecProvider> pos;
     private final boolean reinit;
 
     public Outcome(OutcomeType type) {
-        this(type, 0, 1f, LuckyBlockCodecs.ONE, 0, Optional.empty(), false);
+        this(type, 0, 1f, LuckyBlockCodecs.ONE, ConstantIntProvider.ZERO, Optional.empty(), false);
     }
 
-    public Outcome(OutcomeType type, int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit) {
+    public Outcome(OutcomeType type, int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit) {
         this.type = type;
         this.luck = luck;
         this.chance = chance;
@@ -60,8 +62,8 @@ public abstract class Outcome {
         return reinit;
     }
 
-    public int getDelay() {
-        return delay;
+    public int getDelay(Random random) {
+        return delay.get(random);
     }
 
     public Optional<VecProvider> getPos() {
@@ -84,8 +86,8 @@ public abstract class Outcome {
         return IntProvider.POSITIVE_CODEC.fieldOf("weight").orElse(LuckyBlockCodecs.ONE).forGetter(getter);
     }
 
-    public static <O> RecordCodecBuilder<O, Integer> createGlobalDelayField(Function<O, Integer> getter) {
-        return Codec.INT.fieldOf("delay").orElse(0).forGetter(getter);
+    public static <O> RecordCodecBuilder<O, IntProvider> createGlobalDelayField(Function<O, IntProvider> getter) {
+        return IntProvider.NON_NEGATIVE_CODEC.fieldOf("delay").orElse(ConstantIntProvider.ZERO).forGetter(getter);
     }
 
     public static <O> RecordCodecBuilder<O, Optional<VecProvider>> createGlobalPosField(Function<O, Optional<VecProvider>> getter) {
@@ -97,9 +99,10 @@ public abstract class Outcome {
     }
 
     public void runOutcome(Context context) {
-        if (getDelay() == 0) {
+        int delay = getDelay(context.world.getRandom());
+        if (delay == 0) {
             run(context);
-        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, getDelay());
+        } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, delay);
     }
 
     public abstract void run(Context context);

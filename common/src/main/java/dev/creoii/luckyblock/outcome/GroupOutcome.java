@@ -13,13 +13,13 @@ public class GroupOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes)
         ).apply(instance, GroupOutcome::new);
     });
     private final List<Outcome> outcomes;
 
-    public GroupOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome> outcomes) {
+    public GroupOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, List<Outcome> outcomes) {
         super(OutcomeType.GROUP, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes instanceof ArrayList<Outcome> ? outcomes : new ArrayList<>(outcomes);
     }

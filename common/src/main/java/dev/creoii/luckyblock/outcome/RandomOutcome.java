@@ -15,7 +15,7 @@ public class RandomOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 Codec.BOOL.fieldOf("duplicates").orElse(false).forGetter(outcome -> outcome.duplicates)
@@ -25,7 +25,7 @@ public class RandomOutcome extends Outcome {
     private final IntProvider count;
     private final boolean duplicates;
 
-    public RandomOutcome(int luck, float chance, IntProvider weightProvider, int delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
+    public RandomOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
         super(OutcomeType.RANDOM, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes;
         this.count = count;

@@ -19,7 +19,7 @@ public class ParticleOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 ParticleTypes.TYPE_CODEC.fieldOf("particle").forGetter(outcome -> outcome.particle),
@@ -33,7 +33,7 @@ public class ParticleOutcome extends Outcome {
     private final Optional<VecProvider> velocity;
     private final Optional<FloatProvider> speed;
 
-    public ParticleOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<FloatProvider> speed) {
+    public ParticleOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ParticleEffect particle, IntProvider count, Optional<VecProvider> velocity, Optional<FloatProvider> speed) {
         super(OutcomeType.PARTICLE, luck, chance, weightProvider, delay, pos, reinit);
         this.particle = particle;
         this.count = count;

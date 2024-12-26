@@ -17,7 +17,7 @@ public class MessageOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 TextCodecs.CODEC.fieldOf("message").forGetter(outcome -> outcome.message),
                 Codec.BOOL.fieldOf("overlay").orElse(false).forGetter(outcome -> outcome.overlay)
         ).apply(instance, MessageOutcome::new);
@@ -25,7 +25,7 @@ public class MessageOutcome extends Outcome {
     private final Text message;
     private final boolean overlay;
 
-    public MessageOutcome(int luck, float chance, IntProvider weightProvider, int delay, Text message, boolean overlay) {
+    public MessageOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Text message, boolean overlay) {
         super(OutcomeType.MESSAGE, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.message = message;
         this.overlay = overlay;
