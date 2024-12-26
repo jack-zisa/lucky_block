@@ -11,7 +11,7 @@ public class HasStatusEffectsFunctionTarget extends FunctionTarget<Target<?>> {
     public static final MapCodec<HasStatusEffectsFunctionTarget> CODEC = MapCodec.unit(INSTANCE);
 
     public HasStatusEffectsFunctionTarget() {
-        super(FunctionTargetType.HAS_PASSENGERS);
+        super(FunctionTargetType.IS_ENTITY);
     }
 
     @Override

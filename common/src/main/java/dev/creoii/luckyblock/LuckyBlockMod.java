@@ -10,6 +10,7 @@ import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
+import dev.creoii.luckyblock.util.textprovider.TextProviderType;
 import dev.creoii.luckyblock.util.vecprovider.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
@@ -40,6 +41,9 @@ public final class LuckyBlockMod {
 
     public static final RegistryKey<Registry<ItemStackProviderType<?>>> ITEM_STACK_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "item_stack_provider_type"));
     public static final Registry<ItemStackProviderType<?>> ITEM_STACK_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_stack_provider", ITEM_STACK_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);
+
+    public static final RegistryKey<Registry<TextProviderType<?>>> TEXT_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "text_provider_type"));
+    public static final Registry<TextProviderType<?>> TEXT_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_text_provider", TEXT_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);
 
     public static final RegistryKey<Registry<ColorProviderType<?>>> COLOR_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "color_provider_type"));
     public static final Registry<ColorProviderType<?>> COLOR_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_color_provider", COLOR_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);

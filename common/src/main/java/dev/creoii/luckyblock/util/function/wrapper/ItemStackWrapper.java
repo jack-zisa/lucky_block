@@ -6,10 +6,7 @@ import dev.creoii.luckyblock.util.function.Function;
 import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.FunctionContainer;
 import dev.creoii.luckyblock.util.function.SetVelocityFunction;
-import dev.creoii.luckyblock.util.function.target.ColorTarget;
-import dev.creoii.luckyblock.util.function.target.ComponentsTarget;
-import dev.creoii.luckyblock.util.function.target.CountTarget;
-import dev.creoii.luckyblock.util.function.target.Target;
+import dev.creoii.luckyblock.util.function.target.*;
 import dev.creoii.luckyblock.util.stackprovider.ItemStackProvider;
 import dev.creoii.luckyblock.util.stackprovider.SimpleItemStackProvider;
 import net.minecraft.component.ComponentChanges;
@@ -17,11 +14,12 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.intprovider.IntProvider;
 
-public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper> {
+public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, ComponentsTarget<ItemStackWrapper>, CountTarget<ItemStackWrapper>, ColorTarget<ItemStackWrapper>, NameTarget<ItemStackWrapper> {
     public static final FunctionContainer DEFAULT_FUNCTIONS = new FunctionContainer.Builder().add(SetVelocityFunction.DEFAULT_ITEM_VELOCITY).build();
     private final FunctionContainer functionContainer;
     private final ItemStackProvider stackProvider;
@@ -110,6 +108,13 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
     @Override
     public ItemStackWrapper setDyeColor(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, DyeColor dyeColor) {
         stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(dyeColor.getMapColor().color, true));
+        return this;
+    }
+
+    @Override
+    public ItemStackWrapper setName(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, Text name) {
+        if (name != null)
+            stack.set(DataComponentTypes.CUSTOM_NAME, name);
         return this;
     }
 }

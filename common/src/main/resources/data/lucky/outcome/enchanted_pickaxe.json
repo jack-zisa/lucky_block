@@ -18,6 +18,9 @@
           "minecraft:silk_touch": 1,
           "minecraft:mending": 1
         }
+      },
+      "lucky:set_name": {
+        "name": "Lucky Pickaxe"
       }
     }
   }

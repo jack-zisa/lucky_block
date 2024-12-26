@@ -18,6 +18,7 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType SET_EQUIPMENT = new FunctionType(SetEquipmentFunction.CODEC);
     public static final FunctionType SET_DIRECTION = new FunctionType(SetDirectionFunction.CODEC);
     public static final FunctionType SET_ROTATION = new FunctionType(SetRotationFunction.CODEC);
+    public static final FunctionType SET_NAME = new FunctionType(SetNameFunction.CODEC);
     public static final FunctionType ADD_PASSENGER = new FunctionType(AddPassengerFunction.CODEC);
     public static final FunctionType ADD_STATUS_EFFECTS = new FunctionType(AddStatusEffectsFunction.CODEC);
     public static final FunctionType ADD_ENCHANTMENTS = new FunctionType(AddEnchantmentsFunction.CODEC);
@@ -33,6 +34,7 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_equipment"), SET_EQUIPMENT);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_direction"), SET_DIRECTION);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_rotation"), SET_ROTATION);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_name"), SET_NAME);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "add_passenger"), ADD_PASSENGER);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "add_status_effects"), ADD_STATUS_EFFECTS);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "add_enchantments"), ADD_ENCHANTMENTS);

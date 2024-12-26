@@ -7,6 +7,69 @@
         "color": {
           "type": "lucky:random_color_provider"
         }
+      },
+      "lucky:set_name": {
+        "name": {
+          "type": "lucky:random_text_provider",
+          "texts": [
+            {
+              "type": "lucky:compound_text_provider",
+              "texts": [
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "Mr",
+                  "formatting": "yellow"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": ".",
+                  "formatting": "gold"
+                },
+                " ",
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "R",
+                  "formatting": "red"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "a",
+                  "formatting": "light_purple"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "i",
+                  "formatting": "dark_purple"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "n",
+                  "formatting": "blue"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "b",
+                  "formatting": "dark_aqua"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "o",
+                  "formatting": "aqua"
+                },
+                {
+                  "type": "lucky:simple_text_provider",
+                  "text": "w",
+                  "formatting": "green"
+                }
+              ]
+            },
+            "§aMr§bs§3. §9R§5a§di§cn§6b§eow",
+            "Ms. Rainbow",
+            "§aSi§br §3R§9a§5i§dn§cb§6o§ew",
+            "Dr. Rainbow",
+            "§aRa§bi§3n§9b§5o§dw §cJ§6r§e."
+          ]
+        }
       }
     }
   },

@@ -12,12 +12,13 @@ import net.minecraft.entity.passive.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 
 import java.util.Optional;
 
-public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, PassengersTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper> {
+public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, PassengersTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper>, NameTarget<EntityWrapper> {
     private final FunctionContainer functionContainer;
     private final EntityType<?> entityType; // need this field because entity may be null
     private final Entity entity;
@@ -139,6 +140,15 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
     public EntityWrapper addStatusEffect(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, StatusEffectInstance statusEffectInstance) {
         if (entity instanceof LivingEntity living) {
             living.addStatusEffect(statusEffectInstance);
+        }
+        return this;
+    }
+
+    @Override
+    public EntityWrapper setName(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, Text name) {
+        if (name != null) {
+            entity.setCustomName(name);
+            entity.setCustomNameVisible(true);
         }
         return this;
     }

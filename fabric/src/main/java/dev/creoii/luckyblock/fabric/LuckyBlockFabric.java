@@ -8,6 +8,7 @@ import dev.creoii.luckyblock.util.function.FunctionType;
 import dev.creoii.luckyblock.util.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
+import dev.creoii.luckyblock.util.textprovider.TextProviderType;
 import dev.creoii.luckyblock.util.vecprovider.VecProviderType;
 import net.fabricmc.api.ModInitializer;
 
@@ -39,6 +40,7 @@ public final class LuckyBlockFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         ItemStackProviderType.init();
+        TextProviderType.init();
         VecProviderType.init();
         ColorProviderType.init();
         OutcomeType.init();
