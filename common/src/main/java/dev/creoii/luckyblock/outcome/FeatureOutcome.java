@@ -22,7 +22,7 @@ public class FeatureOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("feature").forGetter(outcome -> outcome.featureId),
                 PlacementModifier.CODEC.listOf().fieldOf("placement").orElse(List.of()).forGetter(outcome -> outcome.placementModifiers)
@@ -31,7 +31,7 @@ public class FeatureOutcome extends Outcome {
     private final Identifier featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
+    public FeatureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
         super(OutcomeType.FEATURE, luck, chance, weightProvider, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;

@@ -19,7 +19,7 @@ public class BlockOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 BlockStateProvider.TYPE_CODEC.fieldOf("state_provider").forGetter(outcome -> outcome.stateProvider),
                 ContextualNbtCompound.CODEC.optionalFieldOf("block_entity").forGetter(outcome -> outcome.blockEntity),
@@ -30,7 +30,7 @@ public class BlockOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> blockEntity;
     private final Optional<Shape> shape;
 
-    public BlockOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
+    public BlockOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, BlockStateProvider stateProvider, Optional<ContextualNbtCompound> blockEntity, Optional<Shape> shape) {
         super(OutcomeType.BLOCK, luck, chance, weightProvider, delay, pos, false);
         this.stateProvider = stateProvider;
         this.blockEntity = blockEntity;

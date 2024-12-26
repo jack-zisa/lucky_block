@@ -29,7 +29,7 @@ public class StructureOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId),
                 IntProvider.createValidatingCodec(0, 20).optionalFieldOf("depth").forGetter(outcome -> outcome.depth),
@@ -40,7 +40,7 @@ public class StructureOutcome extends Outcome {
     private final Optional<IntProvider> depth;
     private final LuckyBlockCodecs.StructurePlacementData structurePlacementData;
 
-    public StructureOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, Identifier structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
+    public StructureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, Identifier structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
         super(OutcomeType.STRUCTURE, luck, chance, weightProvider, delay, pos, false);
         this.structureId = structureId;
         this.depth = depth;
