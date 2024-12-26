@@ -11,6 +11,8 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
     public static final OutcomeType GROUP = new OutcomeType(GroupOutcome.CODEC);
     public static final OutcomeType MESSAGE = new OutcomeType(MessageOutcome.CODEC);
     public static final OutcomeType COMMAND = new OutcomeType(CommandOutcome.CODEC);
+    public static final OutcomeType DIFFICULTY = new OutcomeType(DifficultyOutcome.CODEC);
+    public static final OutcomeType ADVANCEMENT = new OutcomeType(AdvancementOutcome.CODEC);
     public static final OutcomeType BLOCK = new OutcomeType(BlockOutcome.CODEC);
     public static final OutcomeType ITEM = new OutcomeType(ItemOutcome.CODEC);
     public static final OutcomeType ENTITY = new OutcomeType(EntityOutcome.CODEC);
@@ -27,6 +29,8 @@ public record OutcomeType(MapCodec<? extends Outcome> codec) {
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "group"), GROUP);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "message"), MESSAGE);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "command"), COMMAND);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "difficulty"), DIFFICULTY);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "advancement"), ADVANCEMENT);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "block"), BLOCK);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "item"), ITEM);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "entity"), ENTITY);
