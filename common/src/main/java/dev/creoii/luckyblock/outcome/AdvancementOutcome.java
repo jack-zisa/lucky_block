@@ -15,13 +15,13 @@ public class AdvancementOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 Identifier.CODEC.fieldOf("advancement").forGetter(outcome -> outcome.advancement)
         ).apply(instance, AdvancementOutcome::new);
     });
     private final Identifier advancement;
 
-    public AdvancementOutcome(int luck, float chance, IntProvider weightProvider, int delay, Identifier advancement) {
+    public AdvancementOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Identifier advancement) {
         super(OutcomeType.ADVANCEMENT, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.advancement = advancement;
     }
