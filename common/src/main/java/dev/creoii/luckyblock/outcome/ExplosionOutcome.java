@@ -15,14 +15,14 @@ public class ExplosionOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 LuckyBlockCodecs.Explosion.CODEC.fieldOf("explosion").forGetter(outcome -> outcome.explosion)
         ).apply(instance, ExplosionOutcome::new);
     });
     private final LuckyBlockCodecs.Explosion explosion;
 
-    public ExplosionOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
+    public ExplosionOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, LuckyBlockCodecs.Explosion explosion) {
         super(OutcomeType.EXPLOSION, luck, chance, weightProvider, delay, pos, false);
         this.explosion = explosion;
     }

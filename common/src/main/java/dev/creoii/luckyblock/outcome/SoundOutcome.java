@@ -20,7 +20,7 @@ public class SoundOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 SoundEvent.CODEC.fieldOf("sound_event").forGetter(outcome -> outcome.soundEvent),
                 FloatProvider.createValidatedCodec(0f, Float.MAX_VALUE).fieldOf("volume").orElse(LuckyBlockCodecs.ONE_F).forGetter(outcome -> outcome.volume),
@@ -31,7 +31,7 @@ public class SoundOutcome extends Outcome {
     private final FloatProvider volume;
     private final FloatProvider pitch;
 
-    public SoundOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, SoundEvent soundEvent, FloatProvider volume, FloatProvider pitch) {
+    public SoundOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, SoundEvent soundEvent, FloatProvider volume, FloatProvider pitch) {
         super(OutcomeType.SOUND, luck, chance, weightProvider, delay, pos, false);
         this.soundEvent = soundEvent;
         this.volume = volume;

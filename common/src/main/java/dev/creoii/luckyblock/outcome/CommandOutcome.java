@@ -16,14 +16,14 @@ public class CommandOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 Codec.STRING.fieldOf("command").forGetter(outcome -> outcome.command)
         ).apply(instance, CommandOutcome::new);
     });
     private final String command;
 
-    public CommandOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, String command) {
+    public CommandOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, String command) {
         super(OutcomeType.COMMAND, luck, chance, weightProvider, delay, pos, false);
         this.command = command;
     }

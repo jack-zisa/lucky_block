@@ -16,7 +16,7 @@ public class EffectOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 StatusEffectInstance.CODEC.fieldOf("status_effect").forGetter(outcome -> outcome.statusEffectInstance),
                 Shape.CODEC.optionalFieldOf("shape").forGetter(outcome -> outcome.shape),
@@ -27,7 +27,7 @@ public class EffectOutcome extends Outcome {
     private final Optional<Shape> shape;
     private final boolean excludePlayer;
 
-    public EffectOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, StatusEffectInstance statusEffectInstance, Optional<Shape> shape, boolean excludePlayer) {
+    public EffectOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, StatusEffectInstance statusEffectInstance, Optional<Shape> shape, boolean excludePlayer) {
         super(OutcomeType.EFFECT, luck, chance, weightProvider, delay, pos, false);
         this.statusEffectInstance = statusEffectInstance;
         this.shape = shape;

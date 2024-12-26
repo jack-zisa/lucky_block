@@ -27,7 +27,7 @@ public class EntityOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
                 Identifier.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
@@ -41,7 +41,7 @@ public class EntityOutcome extends Outcome {
     private final Optional<ContextualNbtCompound> nbt;
     private final boolean initializeMobs;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, int delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, boolean initializeMobs) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, Identifier entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, boolean initializeMobs) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;

@@ -13,13 +13,13 @@ public class DifficultyOutcome extends Outcome {
         return instance.group(createGlobalLuckField(Outcome::getLuck),
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
-                createGlobalDelayField(Outcome::getDelay),
+                createGlobalDelayField(outcome -> outcome.delay),
                 Difficulty.CODEC.fieldOf("difficulty").forGetter(outcome -> outcome.difficulty)
         ).apply(instance, DifficultyOutcome::new);
     });
     private final Difficulty difficulty;
 
-    public DifficultyOutcome(int luck, float chance, IntProvider weightProvider, int delay, Difficulty difficulty) {
+    public DifficultyOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Difficulty difficulty) {
         super(OutcomeType.DIFFICULTY, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.difficulty = difficulty;
     }
