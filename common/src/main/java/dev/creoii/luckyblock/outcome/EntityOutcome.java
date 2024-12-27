@@ -9,9 +9,11 @@ import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -63,7 +65,7 @@ public class EntityOutcome extends Outcome {
     }
 
     private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
-        Entity entity = entityType.create(context.world());
+        Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
         if (entity != null) {
             if (nbtCompound != null) {
                 nbtCompound.setContext(context);
@@ -75,7 +77,7 @@ public class EntityOutcome extends Outcome {
                     if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
                         ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                         EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
                         if (passenger != null)
                             passenger.startRiding(entity);
                     }
@@ -84,7 +86,7 @@ public class EntityOutcome extends Outcome {
 
                     ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
                     if (passenger != null)
                         passenger.startRiding(entity);
                 } else readNbt(entity, nbtCompound, context);
