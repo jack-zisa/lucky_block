@@ -108,7 +108,9 @@ public class EntityOutcome extends Outcome {
             tameable.setJumping(false);
             tameable.getNavigation().stop();
             tameable.setTarget(null);
-        } else if (nbtCompound.contains("Owner") && context.player() != null) {
+        }
+
+        if (nbtCompound.contains("Owner") && context.player() != null) {
             if (entity instanceof ProjectileEntity projectile) {
                 projectile.setOwner(context.player());
             } else if (entity instanceof TameableEntity tameable) {
