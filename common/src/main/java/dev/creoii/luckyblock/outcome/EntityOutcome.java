@@ -75,7 +75,7 @@ public class EntityOutcome extends Outcome {
                     if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
                         ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                         EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
                         if (passenger != null)
                             passenger.startRiding(entity);
                     }
@@ -84,7 +84,7 @@ public class EntityOutcome extends Outcome {
 
                     ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound);
+                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
                     if (passenger != null)
                         passenger.startRiding(entity);
                 } else readNbt(entity, nbtCompound, context);
