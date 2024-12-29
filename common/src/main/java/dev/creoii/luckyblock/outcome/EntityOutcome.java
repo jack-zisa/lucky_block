@@ -65,7 +65,7 @@ public class EntityOutcome extends Outcome {
     }
 
     private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
-        Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
+        Entity entity = entityType.create(context.world());
         if (entity != null) {
             if (nbtCompound != null) {
                 nbtCompound.setContext(context);
