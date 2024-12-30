@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -24,6 +25,6 @@ public interface VecProviderType<T extends VecProvider> {
     }
 
     private static void register(Identifier id, VecProviderType<?> type) {
-        Registry.register(LuckyBlockMod.POS_PROVIDER_TYPES, id, type);
+        Registry.register(LuckyBlockRegistries.POS_PROVIDER_TYPES, id, type);
     }
 }

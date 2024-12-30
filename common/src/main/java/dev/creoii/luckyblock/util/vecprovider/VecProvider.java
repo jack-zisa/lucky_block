@@ -2,7 +2,7 @@ package dev.creoii.luckyblock.util.vecprovider;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public abstract class VecProvider {
-    private static final Codec<Either<List<FloatProvider>, VecProvider>> VEC_3D_CODEC = Codec.either(RandomVecProvider.BASE_FLOAT_PROVIDER_CODEC, LuckyBlockMod.POS_PROVIDER_TYPES.getCodec().dispatch(VecProvider::getType, VecProviderType::codec));
+    private static final Codec<Either<List<FloatProvider>, VecProvider>> VEC_3D_CODEC = Codec.either(RandomVecProvider.BASE_FLOAT_PROVIDER_CODEC, LuckyBlockRegistries.POS_PROVIDER_TYPES.getCodec().dispatch(VecProvider::getType, VecProviderType::codec));
     public static final Codec<VecProvider> VALUE_CODEC = VEC_3D_CODEC.xmap(either -> {
         return either.map(list -> switch (list.size()) {
             case 0 -> ConstantVecProvider.ZERO;

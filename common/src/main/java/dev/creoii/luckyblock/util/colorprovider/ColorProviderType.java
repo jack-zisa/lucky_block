@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.colorprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -17,6 +18,6 @@ public record ColorProviderType<P extends ColorProvider>(MapCodec<P> codec) {
     }
 
     private static void registerColorProviderType(Identifier id, ColorProviderType<?> providerType) {
-        Registry.register(LuckyBlockMod.COLOR_PROVIDER_TYPE, id, providerType);
+        Registry.register(LuckyBlockRegistries.COLOR_PROVIDER_TYPE, id, providerType);
     }
 }

@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.stackprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -15,6 +16,6 @@ public record ItemStackProviderType<P extends ItemStackProvider>(MapCodec<P> cod
     }
 
     private static void registerItemStackProviderType(Identifier id, ItemStackProviderType<?> providerType) {
-        Registry.register(LuckyBlockMod.ITEM_STACK_PROVIDER_TYPE, id, providerType);
+        Registry.register(LuckyBlockRegistries.ITEM_STACK_PROVIDER_TYPE, id, providerType);
     }
 }

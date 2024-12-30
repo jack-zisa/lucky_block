@@ -4,13 +4,12 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import dev.creoii.luckyblock.util.function.Function;
-import dev.creoii.luckyblock.util.function.FunctionContainer;
-import dev.creoii.luckyblock.util.function.FunctionObjectCodecs;
-import dev.creoii.luckyblock.util.function.target.CountTarget;
-import dev.creoii.luckyblock.util.function.target.Target;
-import dev.creoii.luckyblock.util.function.wrapper.EntityWrapper;
-import dev.creoii.luckyblock.util.function.wrapper.ItemStackWrapper;
+import dev.creoii.luckyblock.function.Function;
+import dev.creoii.luckyblock.function.FunctionContainer;
+import dev.creoii.luckyblock.function.FunctionObjectCodecs;
+import dev.creoii.luckyblock.function.target.CountTarget;
+import dev.creoii.luckyblock.function.target.Target;
+import dev.creoii.luckyblock.function.wrapper.ItemStackWrapper;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -18,7 +17,6 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

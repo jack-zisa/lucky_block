@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.textprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -17,6 +18,6 @@ public record TextProviderType<P extends TextProvider>(MapCodec<P> codec) {
     }
 
     private static void registerItemStackProviderType(Identifier id, TextProviderType<?> providerType) {
-        Registry.register(LuckyBlockMod.TEXT_PROVIDER_TYPE, id, providerType);
+        Registry.register(LuckyBlockRegistries.TEXT_PROVIDER_TYPE, id, providerType);
     }
 }

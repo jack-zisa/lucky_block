@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.random.Random;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,21 +42,22 @@ public class SimpleTextProvider extends TextProvider {
         if (text != null && !text.isEmpty()) {
 
             if (text.contains("§")) {
-                String[] strings = text.split("§");
-                System.out.println(Arrays.toString(strings));
+                String[] strings = text.split("(?=§)");
+                //System.out.println(Arrays.toString(strings));
                 List<TextProvider> texts = new ArrayList<>();
 
                 for (String s : strings) {
                     if (s.isEmpty())
                         continue;
 
-                    char code = s.charAt(0);
-                    Formatting formatting1;
-                    if ((formatting1 = Formatting.byCode(code)) == null)
-                        continue;
+                    if (s.startsWith("§")) {
+                        Formatting formatting1;
+                        if ((formatting1 = Formatting.byCode(s.charAt(1))) == null)
+                            continue;
 
-                    String s1 = s.substring(1);
-                    texts.add(new SimpleTextProvider(s1, null, List.of(formatting1)));
+                        String s1 = s.substring(2);
+                        texts.add(new SimpleTextProvider(s1, null, List.of(formatting1)));
+                    } else texts.add(new SimpleTextProvider(s, null, List.of()));
                 }
 
                 return new CompoundTextProvider(texts).get(random);

@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -21,6 +22,6 @@ public record ShapeType(MapCodec<? extends Shape> codec) {
     }
 
     private static void registerShapeType(Identifier id, ShapeType shapeType) {
-        Registry.register(LuckyBlockMod.SHAPE_TYPES, id, shapeType);
+        Registry.register(LuckyBlockRegistries.SHAPE_TYPES, id, shapeType);
     }
 }

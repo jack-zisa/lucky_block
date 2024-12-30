@@ -1,12 +1,12 @@
 package dev.creoii.luckyblock.util.colorprovider;
 
 import com.mojang.serialization.Codec;
-import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.random.Random;
 
 public abstract class ColorProvider {
-    public static final Codec<ColorProvider> TYPE_CODEC = LuckyBlockMod.COLOR_PROVIDER_TYPE.getCodec().dispatch(ColorProvider::getType, ColorProviderType::codec);
+    public static final Codec<ColorProvider> TYPE_CODEC = LuckyBlockRegistries.COLOR_PROVIDER_TYPE.getCodec().dispatch(ColorProvider::getType, ColorProviderType::codec);
 
     public static SimpleColorProvider of(int color) {
         return new SimpleColorProvider(color);

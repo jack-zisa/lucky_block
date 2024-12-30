@@ -2,7 +2,7 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vecprovider.ConstantVecProvider;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class Shape {
-    public static final Codec<Shape> CODEC = LuckyBlockMod.SHAPE_TYPES.getCodec().dispatch(Shape::getType, ShapeType::codec);
+    public static final Codec<Shape> CODEC = LuckyBlockRegistries.SHAPE_TYPES.getCodec().dispatch(Shape::getType, ShapeType::codec);
     private final ShapeType type;
     protected final VecProvider size;
 

@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -19,6 +20,6 @@ public record OutcomeType(MapCodec<? extends Outcome<? extends ContextInfo>> cod
     }
 
     private static void registerOutcomeType(Identifier id, OutcomeType outcomeType) {
-        Registry.register(LuckyBlockMod.OUTCOME_TYPES, id, outcomeType);
+        Registry.register(LuckyBlockRegistries.OUTCOME_TYPES, id, outcomeType);
     }
 }

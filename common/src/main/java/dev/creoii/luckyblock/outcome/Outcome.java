@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vecprovider.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class Outcome<T extends ContextInfo> {
-    public static final Codec<Outcome<? extends ContextInfo>> CODEC = LuckyBlockMod.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
+    public static final Codec<Outcome<? extends ContextInfo>> CODEC = LuckyBlockRegistries.OUTCOME_TYPES.getCodec().dispatch(Outcome::getType, OutcomeType::codec);
     private final OutcomeType type;
     private final int luck;
     private final float chance;
