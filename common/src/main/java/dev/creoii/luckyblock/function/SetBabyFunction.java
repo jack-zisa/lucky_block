@@ -18,7 +18,7 @@ public class SetBabyFunction extends Function<Target<?>> {
     private static final MapCodec<SetBabyFunction> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
     @SuppressWarnings("unchecked")
     private static final MapCodec<SetBabyFunction> BASE_CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(HasStatusEffectsFunctionTarget.INSTANCE).forGetter(Function::getTarget)
+        return instance.group(FunctionTarget.CODEC.fieldOf("target").orElse(IsEntityFunctionTarget.DEFAULT).forGetter(Function::getTarget)
         ).apply(instance, functionTarget -> new SetBabyFunction((FunctionTarget<Target<?>>) functionTarget));
     });
     public static final MapCodec<SetBabyFunction> CODEC = Codec.mapEither(DEFAULT_CODEC, BASE_CODEC).xmap(either -> {

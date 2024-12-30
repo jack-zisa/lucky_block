@@ -26,6 +26,8 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
     public static final FunctionType ADD_ENCHANTMENTS = new FunctionType(AddEnchantmentsFunction.CODEC);
     public static final FunctionType INITIALIZE_MOBS = new FunctionType(InitializeMobsFunction.CODEC);
     public static final FunctionType SET_BABY = new FunctionType(SetBabyFunction.CODEC);
+    public static final FunctionType SET_TARGET = new FunctionType(SetTargetFunction.CODEC);
+    public static final FunctionType SET_OWNER = new FunctionType(SetOwnerFunction.CODEC);
 
     public static void init() {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
@@ -44,6 +46,8 @@ public record FunctionType(MapCodec<? extends Function<?>> codec) {
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "add_enchantments"), ADD_ENCHANTMENTS);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "initialize_mobs"), INITIALIZE_MOBS);
         registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_baby"), SET_BABY);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_target"), SET_TARGET);
+        registerFunctionType(Identifier.of(LuckyBlockMod.NAMESPACE, "set_owner"), SET_OWNER);
     }
 
     private static void registerFunctionType(Identifier id, FunctionType function) {

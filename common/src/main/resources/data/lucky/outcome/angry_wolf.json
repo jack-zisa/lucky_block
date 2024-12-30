@@ -1,0 +1,9 @@
+{
+  "type": "lucky:entity",
+  "entity": {
+    "type": "minecraft:wolf",
+    "functions": {
+      "lucky:set_target": {}
+    }
+  }
+}
