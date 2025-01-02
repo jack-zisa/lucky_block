@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.textprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextContent;
@@ -24,10 +25,10 @@ public class CompoundTextProvider extends TextProvider {
         return TextProviderType.COMPOUND_TEXT_PROVIDER;
     }
 
-    public Text get(Random random) {
-        MutableText text = texts.getFirst().get(random).copy();
+    public Text get(Outcome.Context<?> context, Random random) {
+        MutableText text = texts.getFirst().get(context, random).copy();
         for (int i = 1; i < texts.size(); ++i) {
-            text.append(texts.get(i).get(random));
+            text.append(texts.get(i).get(context, random));
         }
         return text;
     }

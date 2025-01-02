@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.textprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.Random;
 
@@ -22,7 +23,7 @@ public class RandomTextProvider extends TextProvider {
         return TextProviderType.RANDOM_TEXT_PROVIDER;
     }
 
-    public Text get(Random random) {
-        return texts.get(random.nextInt(texts.size())).get(random);
+    public Text get(Outcome.Context<?> context, Random random) {
+        return texts.get(random.nextInt(texts.size())).get(context, random);
     }
 }

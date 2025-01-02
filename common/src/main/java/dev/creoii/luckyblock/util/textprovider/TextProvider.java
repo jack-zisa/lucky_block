@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.util.textprovider;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockRegistries;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.Random;
 
@@ -21,5 +22,5 @@ public abstract class TextProvider {
 
     protected abstract TextProviderType<?> getType();
 
-    public abstract Text get(Random random);
+    public abstract Text get(Outcome.Context<?> context, Random random);
 }

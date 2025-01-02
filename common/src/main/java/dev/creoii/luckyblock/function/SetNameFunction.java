@@ -28,7 +28,7 @@ public class SetNameFunction extends Function<Target<?>> {
     public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof NameTarget<?> nameTarget) {
-                target.update(this, nameTarget.setName(outcome, context, name.get(context.random())));
+                target.update(this, nameTarget.setName(outcome, context, name.get(context, context.random())));
             }
         }
     }

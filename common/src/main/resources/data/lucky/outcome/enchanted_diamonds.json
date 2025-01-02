@@ -10,6 +10,23 @@
       },
       "lucky:set_count": {
         "count": 8
+      },
+      "lucky:set_name": {
+        "name": {
+          "type": "lucky:compound_text_provider",
+          "texts": [
+            {
+              "type": "lucky:simple_text_provider",
+              "text": "Lucky ",
+              "formatting": "aqua"
+            },
+            {
+              "type": "lucky:world_text_provider",
+              "value": "dimension",
+              "formatting": "aqua"
+            }
+          ]
+        }
       }
     }
   },

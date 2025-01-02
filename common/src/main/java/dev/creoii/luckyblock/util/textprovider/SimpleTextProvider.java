@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.random.Random;
@@ -38,7 +39,7 @@ public class SimpleTextProvider extends TextProvider {
         return TextProviderType.SIMPLE_TEXT_PROVIDER;
     }
 
-    public Text get(Random random) {
+    public Text get(Outcome.Context<?> context, Random random) {
         if (text != null && !text.isEmpty()) {
 
             if (text.contains("§")) {
@@ -60,7 +61,7 @@ public class SimpleTextProvider extends TextProvider {
                     } else texts.add(new SimpleTextProvider(s, null, List.of()));
                 }
 
-                return new CompoundTextProvider(texts).get(random);
+                return new CompoundTextProvider(texts).get(context, random);
             }
 
             return net.minecraft.text.Text.literal(text).formatted(formatting.toArray(new Formatting[0]));
