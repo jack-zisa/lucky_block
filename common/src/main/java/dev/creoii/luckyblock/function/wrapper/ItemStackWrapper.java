@@ -49,7 +49,7 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
         this.stack = stack;
     }
 
-    public FunctionContainer getFunctionContainer() {
+    public FunctionContainer getFunctions() {
         return functionContainer;
     }
 

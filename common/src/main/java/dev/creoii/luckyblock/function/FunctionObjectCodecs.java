@@ -24,7 +24,7 @@ public class FunctionObjectCodecs {
 
     public static final Codec<ItemStackWrapper> INLINE_ITEM_STACK = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             ITEM_STACK.fieldOf("stack_provider").forGetter(ItemStackWrapper::getStackProvider),
-            FunctionContainer.CODEC.optionalFieldOf("functions").forGetter(itemStackWrapper -> Optional.of(itemStackWrapper.getFunctionContainer()))
+            FunctionContainer.CODEC.optionalFieldOf("functions").forGetter(itemStackWrapper -> Optional.of(itemStackWrapper.getFunctions()))
     ).apply(instance, (itemStackProvider, functionContainer) -> new ItemStackWrapper(itemStackProvider, functionContainer.orElse(ItemStackWrapper.DEFAULT_FUNCTIONS)))));
 
     public static final Codec<ItemStackWrapper> ITEM_STACK_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ITEM_STACK).xmap(either -> {

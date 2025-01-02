@@ -53,7 +53,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
             if (itemEntity != null) {
                 ItemStackWrapper stackWrapper = stack.init(context);
                 info.stacks.add(stackWrapper);
-                Function.applyPre(stackWrapper.getFunctionContainer(), this, context);
+                Function.applyPre(stackWrapper.getFunctions(), this, context);
             }
         }
 
@@ -67,7 +67,7 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
             ItemStackWrapper stackWrapper = context.info().stacks.get(i);
             ItemEntity itemEntity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (itemEntity != null) {
-                Function.applyPost(stackWrapper.getFunctionContainer(), this, context);
+                Function.applyPost(stackWrapper.getFunctions(), this, context);
                 itemEntity.setStack(stackWrapper.getStack());
                 itemEntity.refreshPositionAndAngles(context.info().pos, itemEntity.getYaw(), itemEntity.getPitch());
                 context.world().spawnEntity(itemEntity);
