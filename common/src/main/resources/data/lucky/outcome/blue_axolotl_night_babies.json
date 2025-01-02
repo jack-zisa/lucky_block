@@ -8,7 +8,8 @@
       },
       "lucky:set_baby": {
         "baby": {
-          "type": "lucky:random_boolean_provider"
+          "type": "lucky:world_boolean_provider",
+          "value": "is_night"
         }
       },
       "lucky:set_name": {

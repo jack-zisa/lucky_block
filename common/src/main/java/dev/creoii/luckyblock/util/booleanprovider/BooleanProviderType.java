@@ -9,10 +9,12 @@ import net.minecraft.util.Identifier;
 public record BooleanProviderType<P extends BooleanProvider>(MapCodec<P> codec) {
     public static final BooleanProviderType<SimpleBooleanProvider> SIMPLE_BOOLEAN_PROVIDER = new BooleanProviderType<>(SimpleBooleanProvider.CODEC);
     public static final BooleanProviderType<RandomBooleanProvider> RANDOM_BOOLEAN_PROVIDER = new BooleanProviderType<>(RandomBooleanProvider.CODEC);
+    public static final BooleanProviderType<WorldBooleanProvider> WORLD_BOOLEAN_PROVIDER = new BooleanProviderType<>(WorldBooleanProvider.CODEC);
 
     public static void init() {
         registerBooleanProviderType(Identifier.of(LuckyBlockMod.NAMESPACE, "simple_boolean_provider"), SIMPLE_BOOLEAN_PROVIDER);
         registerBooleanProviderType(Identifier.of(LuckyBlockMod.NAMESPACE, "random_boolean_provider"), RANDOM_BOOLEAN_PROVIDER);
+        registerBooleanProviderType(Identifier.of(LuckyBlockMod.NAMESPACE, "world_boolean_provider"), WORLD_BOOLEAN_PROVIDER);
     }
 
     private static void registerBooleanProviderType(Identifier id, BooleanProviderType<?> providerType) {
