@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.function.target.FunctionTarget;
 import dev.creoii.luckyblock.function.target.IsEntityFunctionTarget;
-import dev.creoii.luckyblock.function.target.PassengersTarget;
 import dev.creoii.luckyblock.function.target.Target;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
@@ -17,7 +16,7 @@ public class AddPassengerFunction extends Function<Target<?>> {
                 FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("passenger").forGetter(function -> function.passenger)
         ).apply(instance, (functionTarget, passenger) -> new AddPassengerFunction((FunctionTarget<Target<?>>) functionTarget, passenger));
     });
-    private final EntityWrapper passenger;
+    private EntityWrapper passenger;
 
     protected AddPassengerFunction(FunctionTarget<Target<?>> target, EntityWrapper passenger) {
         super(FunctionType.ADD_PASSENGER, Phase.POST, target);
@@ -27,8 +26,19 @@ public class AddPassengerFunction extends Function<Target<?>> {
     @Override
     public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         for (Target<?> target : target.getTargets(outcome, context)) {
-            if (target instanceof PassengersTarget<?> passengersTarget) {
-                target.update(this, passengersTarget.addPassenger(outcome, context, passenger));
+            if (target instanceof EntityWrapper wrapper) {
+                if (passenger == null) {
+                    passenger = passenger.init(context);
+                }
+
+                Function.applyAll(passenger.getFunctions(), outcome, context);
+                passenger.getEntity().refreshPositionAndAngles(context.pos(), passenger.getEntity().getYaw(), passenger.getEntity().getPitch());
+
+                if (wrapper.getEntity().hasPassengers()) {
+                    passenger.getEntity().startRiding(wrapper.getEntity().getPassengerList().getLast(), true);
+                } else passenger.getEntity().startRiding(wrapper.getEntity(), true);
+
+                context.world().spawnEntity(passenger.getEntity());
             }
         }
     }
