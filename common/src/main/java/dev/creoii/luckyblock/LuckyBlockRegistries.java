@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.function.target.FunctionTargetType;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.util.booleanprovider.BooleanProviderType;
 import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
+import dev.creoii.luckyblock.util.entityprovider.EntityProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
 import dev.creoii.luckyblock.util.textprovider.TextProviderType;
@@ -31,6 +32,9 @@ public class LuckyBlockRegistries {
     public static final RegistryKey<Registry<BooleanProviderType<?>>> BOOLEAN_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(LuckyBlockMod.NAMESPACE, "boolean_provider_type"));
     public static final Registry<BooleanProviderType<?>> BOOLEAN_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_boolean_provider", BOOLEAN_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);
 
+    public static final RegistryKey<Registry<EntityProviderType<?>>> ENTITY_PROVIDER_TYPE_KEY = RegistryKey.ofRegistry(Identifier.of(LuckyBlockMod.NAMESPACE, "entity_provider_type"));
+    public static final Registry<EntityProviderType<?>> ENTITY_PROVIDER_TYPE = new SimpleDefaultedRegistry<>("lucky:simple_entity_provider", ENTITY_PROVIDER_TYPE_KEY, Lifecycle.stable(), false);
+
     public static final RegistryKey<Registry<FunctionType>> FUNCTION_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(LuckyBlockMod.NAMESPACE, "function_types"));
     public static final Registry<FunctionType> FUNCTION_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", FUNCTION_TYPES_KEY, Lifecycle.stable(), false);
 
@@ -49,6 +53,7 @@ public class LuckyBlockRegistries {
         VecProviderType.init();
         ColorProviderType.init();
         BooleanProviderType.init();
+        EntityProviderType.init();
         OutcomeType.init();
         FunctionType.init();
         FunctionTargetType.init();

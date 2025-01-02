@@ -27,8 +27,12 @@ public class AddPassengerFunction extends Function<Target<?>> {
     public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         for (Target<?> target : target.getTargets(outcome, context)) {
             if (target instanceof EntityWrapper wrapper) {
-                if (passenger == null) {
+                if (passenger.getEntity() == null) {
                     passenger = passenger.init(context);
+                }
+
+                if (wrapper.getEntity() == null) {
+                    wrapper = wrapper.init(context);
                 }
 
                 Function.applyAll(passenger.getFunctions(), outcome, context);

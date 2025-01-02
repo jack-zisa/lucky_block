@@ -20,12 +20,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.floatprovider.FloatProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper>, NameTarget<EntityWrapper>, VariantTarget<EntityWrapper> {
     private final FunctionContainer functionContainer;
     private final EntityType<?> entityType; // need this field because entity may be null
+    @Nullable
     private final Entity entity;
 
     public EntityWrapper(EntityType<?> entityType, FunctionContainer functionContainer, Outcome.Context<? extends ContextInfo> context) {
@@ -40,11 +42,17 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         this.entity = null;
     }
 
+    public EntityWrapper(Entity entity, FunctionContainer functionContainer) {
+        this.functionContainer = functionContainer;
+        this.entityType = entity.getType();
+        this.entity = entity;
+    }
+
     public FunctionContainer getFunctions() {
         return functionContainer;
     }
 
-    public Entity getEntity() {
+    public @Nullable Entity getEntity() {
         return entity;
     }
 
