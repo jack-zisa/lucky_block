@@ -1,0 +1,23 @@
+{
+  "type": "lucky:entity",
+  "entity": {
+    "type": "minecraft:axolotl",
+    "functions": {
+      "lucky:set_variant": {
+        "variant": "blue"
+      },
+      "lucky:set_baby": {
+        "baby": {
+          "type": "lucky:random_boolean_provider"
+        }
+      },
+      "lucky:set_name": {
+        "name": {
+          "type": "lucky:simple_text_provider",
+          "text": "Lucky Axolotl",
+          "formatting": "blue"
+        }
+      }
+    }
+  }
+}

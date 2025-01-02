@@ -53,7 +53,7 @@ public class SetAttributeModifiersFunction extends Function<Target<?>> {
                         });
 
                         if (bl.booleanValue()) {
-                            instance.addTemporaryModifier(modifier.modifier());
+                            instance.addPersistentModifier(modifier.modifier());
                         }
                     }
                 });

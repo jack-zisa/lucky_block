@@ -2,16 +2,9 @@ package dev.creoii.luckyblock.neoforge;
 
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockManager;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
-import dev.creoii.luckyblock.outcome.OutcomeType;
-import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
-import dev.creoii.luckyblock.function.FunctionType;
-import dev.creoii.luckyblock.function.target.FunctionTargetType;
-import dev.creoii.luckyblock.util.shape.ShapeType;
-import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
-import dev.creoii.luckyblock.util.textprovider.TextProviderType;
-import dev.creoii.luckyblock.util.vecprovider.VecProviderType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntityType;
@@ -110,13 +103,6 @@ public final class LuckyBlockNeoForge {
     }
 
     public void register() {
-        ItemStackProviderType.init();
-        TextProviderType.init();
-        VecProviderType.init();
-        ColorProviderType.init();
-        OutcomeType.init();
-        FunctionType.init();
-        FunctionTargetType.init();
-        ShapeType.init();
+        LuckyBlockRegistries.registerAll();
     }
 }

@@ -12,13 +12,14 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * This utility class contains wrapper {@link Codec} for all used objects in the Lucky Block mod, including, but not limited to, {@link ItemStack}, {@link net.minecraft.block.BlockState}, and {@link net.minecraft.entity.Entity}.
  */
 public class FunctionObjectCodecs {
     public static final Codec<ItemStackProvider> ITEM_STACK = Codec.either(Identifier.CODEC, ItemStackProvider.TYPE_CODEC).xmap(either -> {
-        return either.map(identifier -> SimpleItemStackProvider.of(Registries.ITEM.get(identifier).getDefaultStack()), java.util.function.Function.identity());
+        return either.map(identifier -> SimpleItemStackProvider.of(Registries.ITEM.get(identifier).getDefaultStack()), Function.identity());
     }, Either::right);
 
     public static final Codec<ItemStackWrapper> INLINE_ITEM_STACK = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
@@ -27,7 +28,7 @@ public class FunctionObjectCodecs {
     ).apply(instance, (itemStackProvider, functionContainer) -> new ItemStackWrapper(itemStackProvider, functionContainer.orElse(ItemStackWrapper.DEFAULT_FUNCTIONS)))));
 
     public static final Codec<ItemStackWrapper> ITEM_STACK_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ITEM_STACK).xmap(either -> {
-        return either.map(identifier -> new ItemStackWrapper(Registries.ITEM.get(identifier).getDefaultStack()), java.util.function.Function.identity());
+        return either.map(identifier -> new ItemStackWrapper(Registries.ITEM.get(identifier).getDefaultStack()), Function.identity());
     }, Either::right);
 
     public static final Codec<EntityWrapper> INLINE_ENTITY = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
@@ -36,6 +37,6 @@ public class FunctionObjectCodecs {
     ).apply(instance, (identifier, functions) -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), functions.orElse(FunctionContainer.EMPTY)))));
 
     public static final Codec<EntityWrapper> ENTITY_WRAPPER = Codec.either(Identifier.CODEC, INLINE_ENTITY).xmap(either -> {
-        return either.map(identifier -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), FunctionContainer.EMPTY), java.util.function.Function.identity());
+        return either.map(identifier -> new EntityWrapper(Registries.ENTITY_TYPE.get(identifier), FunctionContainer.EMPTY), Function.identity());
     }, Either::right);
 }

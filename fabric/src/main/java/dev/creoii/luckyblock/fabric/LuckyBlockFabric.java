@@ -1,15 +1,8 @@
 package dev.creoii.luckyblock.fabric;
 
 import dev.creoii.luckyblock.LuckyBlockManager;
+import dev.creoii.luckyblock.LuckyBlockRegistries;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
-import dev.creoii.luckyblock.outcome.OutcomeType;
-import dev.creoii.luckyblock.util.colorprovider.ColorProviderType;
-import dev.creoii.luckyblock.function.FunctionType;
-import dev.creoii.luckyblock.function.target.FunctionTargetType;
-import dev.creoii.luckyblock.util.shape.ShapeType;
-import dev.creoii.luckyblock.util.stackprovider.ItemStackProviderType;
-import dev.creoii.luckyblock.util.textprovider.TextProviderType;
-import dev.creoii.luckyblock.util.vecprovider.VecProviderType;
 import net.fabricmc.api.ModInitializer;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
@@ -39,14 +32,7 @@ public final class LuckyBlockFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ItemStackProviderType.init();
-        TextProviderType.init();
-        VecProviderType.init();
-        ColorProviderType.init();
-        OutcomeType.init();
-        FunctionType.init();
-        FunctionTargetType.init();
-        ShapeType.init();
+        LuckyBlockRegistries.registerAll();
 
         Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);

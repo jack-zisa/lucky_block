@@ -1,5 +1,6 @@
 package dev.creoii.luckyblock.function.wrapper;
 
+import com.mojang.datafixers.util.Either;
 import dev.creoii.luckyblock.function.Function;
 import dev.creoii.luckyblock.function.FunctionContainer;
 import dev.creoii.luckyblock.function.target.*;
@@ -8,18 +9,24 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.mob.HuskEntity;
+import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.entity.mob.ShulkerEntity;
+import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 
 import java.util.Optional;
 
-public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, PassengersTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper>, NameTarget<EntityWrapper> {
+public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, VelocityTarget<EntityWrapper>, NbtTarget<EntityWrapper>, ColorTarget<EntityWrapper>, EquipmentTarget<EntityWrapper>, RotationTarget<EntityWrapper>, PassengersTarget<EntityWrapper>, StatusEffectsTarget<EntityWrapper>, NameTarget<EntityWrapper>, VariantTarget<EntityWrapper> {
     private final FunctionContainer functionContainer;
     private final EntityType<?> entityType; // need this field because entity may be null
     private final Entity entity;
@@ -150,6 +157,43 @@ public class EntityWrapper implements Wrapper<EntityType<?>, EntityWrapper>, Vel
         if (name != null) {
             entity.setCustomName(name);
             entity.setCustomNameVisible(true);
+        }
+        return this;
+    }
+
+    @Override
+    public EntityWrapper setVariant(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context, Either<Integer, String> variant) {
+        if (entity instanceof AxolotlEntity axolotl) {
+            variant.left().ifPresent(integer -> axolotl.setVariant(AxolotlEntity.Variant.byId(integer)));
+            variant.right().ifPresent(s -> axolotl.setVariant(AxolotlEntity.Variant.valueOf(s.toUpperCase())));
+        } else if (entity instanceof CatEntity cat) {
+            Registry<CatVariant> catVariantRegistry = context.world().getRegistryManager().getOrThrow(RegistryKeys.CAT_VARIANT);
+            variant.left().ifPresent(integer -> cat.setVariant(catVariantRegistry.getEntry(integer).get()));
+            variant.right().ifPresent(s -> cat.setVariant(catVariantRegistry.getEntry(Identifier.tryParse(s)).get()));
+        } else if (entity instanceof FoxEntity fox) {
+            variant.left().ifPresent(integer -> fox.setVariant(FoxEntity.Type.fromId(integer)));
+            variant.right().ifPresent(s -> fox.setVariant(FoxEntity.Type.byName(s.toLowerCase())));
+        } else if (entity instanceof GoatEntity goat) {
+            variant.left().ifPresent(integer -> goat.setScreaming(integer == 1));
+            variant.right().ifPresent(s -> goat.setScreaming(s.equalsIgnoreCase("screaming")));
+        } else if (entity instanceof HorseEntity horse) {
+            variant.left().ifPresent(integer -> horse.setVariant(HorseColor.byId(integer)));
+            variant.right().ifPresent(s -> horse.setVariant(HorseColor.valueOf(s.toUpperCase())));
+        } else if (entity instanceof LlamaEntity llama) {
+            variant.left().ifPresent(integer -> llama.setVariant(LlamaEntity.Variant.byId(integer)));
+            variant.right().ifPresent(s -> llama.setVariant(LlamaEntity.Variant.valueOf(s.toUpperCase())));
+        } else if (entity instanceof MooshroomEntity mooshroom) {
+            variant.left().ifPresent(integer -> mooshroom.setVariant(integer == 1 ? MooshroomEntity.Type.BROWN : MooshroomEntity.Type.RED));
+            variant.right().ifPresent(s -> mooshroom.setVariant(MooshroomEntity.Type.valueOf(s.toUpperCase())));
+        } else if (entity instanceof ParrotEntity parrot) {
+            variant.left().ifPresent(integer -> parrot.setVariant(ParrotEntity.Variant.byIndex(integer)));
+            variant.right().ifPresent(s -> parrot.setVariant(ParrotEntity.Variant.valueOf(s.toUpperCase())));
+        } else if (entity instanceof RabbitEntity rabbit) {
+            variant.left().ifPresent(integer -> rabbit.setVariant(RabbitEntity.RabbitType.byId(integer)));
+            variant.right().ifPresent(s -> rabbit.setVariant(RabbitEntity.RabbitType.valueOf(s.toUpperCase())));
+        } else if (entity instanceof TropicalFishEntity tropicalFish) {
+            variant.left().ifPresent(integer -> tropicalFish.setVariant(TropicalFishEntity.Variety.fromId(integer)));
+            variant.right().ifPresent(s -> tropicalFish.setVariant(TropicalFishEntity.Variety.valueOf(s.toUpperCase())));
         }
         return this;
     }

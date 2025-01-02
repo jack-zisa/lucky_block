@@ -87,7 +87,9 @@
           }
         ]
       },
-      "lucky:set_baby": {}
+      "lucky:set_baby": {
+        "baby": true
+      }
     }
   },
   "functions": {
