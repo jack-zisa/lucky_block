@@ -1,6 +1,7 @@
 package dev.creoii.luckyblock.util.stackprovider;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
 
@@ -16,7 +17,7 @@ public class SimpleItemStackProvider extends ItemStackProvider {
         return ItemStackProviderType.SIMPLE_STACK_PROVIDER;
     }
 
-    public ItemStack get(Random random) {
+    public ItemStack get(Outcome.Context<?> context, Random random) {
         return stack;
     }
 }

@@ -10,11 +10,31 @@ public final class ReflectionUtils {
 
         for (Method method : clazz.getMethods()) {
             if (method.getReturnType() == boolean.class && method.getParameterCount() == 0) {
-                method.setAccessible(true);
                 methods.add(method);
             }
         }
 
         return methods;
     }
+
+    /*public enum Args {
+        NONE,
+        BLOCK_POS(ArgType.BLOCK_POS);
+
+        private final ArgType[] argumentTypes;
+
+        Args(ArgType... argumentTypes) {
+            this.argumentTypes = argumentTypes;
+        }
+
+        public ArgType[] getArgumentTypes() {
+            return argumentTypes;
+        }
+    }
+
+    public enum ArgType {
+        BLOCK_POS,
+        BLOCK_STATE,
+        DOUBLE
+    }*/
 }

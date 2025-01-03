@@ -44,6 +44,7 @@ public class EntityBooleanProvider extends BooleanProvider {
         for (Method method : ReflectionUtils.getPredicates(wrapper.getEntity().getClass())) {
             if (value.equals(method.getName())) {
                 try {
+                    method.setAccessible(true);
                     return (boolean) method.invoke(wrapper.getEntity());
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new IllegalArgumentException("No method " + value + " found in class " + wrapper.getEntity().getClass().getSimpleName());

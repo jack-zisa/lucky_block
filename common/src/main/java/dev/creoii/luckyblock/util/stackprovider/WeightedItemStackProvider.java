@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.stackprovider;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.random.Random;
@@ -31,7 +32,7 @@ public class WeightedItemStackProvider extends ItemStackProvider {
     }
 
     @Override
-    public ItemStack get(Random random) {
+    public ItemStack get(Outcome.Context<?> context, Random random) {
         return stacks.getDataOrEmpty(random).orElseThrow(IllegalStateException::new);
     }
 }

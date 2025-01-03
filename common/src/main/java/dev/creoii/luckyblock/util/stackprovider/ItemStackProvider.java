@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.util.stackprovider;
 
 import com.mojang.serialization.Codec;
 import dev.creoii.luckyblock.LuckyBlockRegistries;
+import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
@@ -19,5 +20,5 @@ public abstract class ItemStackProvider {
 
     protected abstract ItemStackProviderType<?> getType();
 
-    public abstract ItemStack get(Random random);
+    public abstract ItemStack get(Outcome.Context<?> context, Random random);
 }
