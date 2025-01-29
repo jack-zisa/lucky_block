@@ -1,6 +1,5 @@
 {
   "type": "lucky:entity",
-  "chance": 1000,
   "entity": {
     "type": "minecraft:axolotl",
     "functions": {

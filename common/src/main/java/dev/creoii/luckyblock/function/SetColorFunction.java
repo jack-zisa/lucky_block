@@ -10,6 +10,8 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.colorprovider.ColorProvider;
 
+import java.util.List;
+
 public class SetColorFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetColorFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -25,13 +27,15 @@ public class SetColorFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof ColorTarget<?> colorTarget) {
                 //target.update(this, colorTarget.setColor(outcome, context, color.getInt(context.random())));
                 //target.update(this, colorTarget.setRgb(outcome, context, color.getRgb(context.random())));
                 target.update(this, colorTarget.setDyeColor(outcome, context, color.getDyeColor(context.random())));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

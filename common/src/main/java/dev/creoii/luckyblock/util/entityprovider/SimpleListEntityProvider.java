@@ -9,21 +9,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SimpleEntityProvider extends EntityProvider {
-    public static final MapCodec<SimpleEntityProvider> CODEC = FunctionObjectCodecs.ENTITY_WRAPPER.fieldOf("entity").xmap(SimpleEntityProvider::new, provider -> provider.entity);
-    private final EntityWrapper entity;
+public class SimpleListEntityProvider extends EntityProvider {
+    public static final MapCodec<SimpleListEntityProvider> CODEC = FunctionObjectCodecs.ENTITY_WRAPPER.listOf().fieldOf("entities").xmap(SimpleListEntityProvider::new, provider -> provider.entities);
+    private final List<EntityWrapper> entities;
 
-    protected SimpleEntityProvider(EntityWrapper entity) {
-        super(true);
-        this.entity = entity;
+    protected SimpleListEntityProvider(List<EntityWrapper> entities) {
+        super(false);
+        this.entities = entities;
     }
 
     protected EntityProviderType<?> getType() {
-        return EntityProviderType.SIMPLE_ENTITY_PROVIDER;
+        return EntityProviderType.SIMPLE_LIST_ENTITY_PROVIDER;
     }
 
     @Override
     public @Nullable List<EntityWrapper> getEntities(Outcome.Context<?> context, Random random) {
-        return List.of(entity);
+        return entities;
     }
 }

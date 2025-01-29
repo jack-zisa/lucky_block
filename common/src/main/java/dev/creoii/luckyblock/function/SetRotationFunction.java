@@ -11,6 +11,8 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 
+import java.util.List;
+
 public class SetRotationFunction extends Function<Target<?>> {
     public static final SetRotationFunction DEFAULT_ENTITY_ROTATION = new SetRotationFunction(HasRotationFunctionTarget.INSTANCE, ConstantFloatProvider.ZERO, ConstantFloatProvider.ZERO);
     @SuppressWarnings("unchecked")
@@ -30,11 +32,13 @@ public class SetRotationFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof RotationTarget<?> rotationTarget) {
                 target.update(this, rotationTarget.setRotation(outcome, context, pitch, yaw));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

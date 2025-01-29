@@ -13,6 +13,8 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 
+import java.util.List;
+
 public class SetOwnerFunction extends Function<Target<?>> {
     private static final SetOwnerFunction DEFAULT = new SetOwnerFunction(IsEntityFunctionTarget.DEFAULT);
     private static final MapCodec<SetOwnerFunction> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
@@ -30,18 +32,20 @@ public class SetOwnerFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        if (context.player() == null)
-            return;
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        if (context.source() == null)
+            return context;
 
-        for (Target<?> target : target.getTargets(outcome, context)) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof EntityWrapper wrapper) {
                 if (wrapper.getEntity() instanceof TameableEntity tameable) {
-                    tameable.setOwner(context.player());
+                    tameable.setOwner(context.source());
                 } else if (wrapper.getEntity() instanceof ProjectileEntity projectile) {
-                    projectile.setOwner(context.player());
+                    projectile.setOwner(context.source());
                 }
             }
         }
+        return context.copyFiltered(targets);
     }
 }

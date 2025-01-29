@@ -39,7 +39,7 @@ public class EntityTextProvider extends TextProvider {
     }
 
     public Text get(Outcome.Context<?> context, Random random) {
-        EntityWrapper wrapper = entity.getEntity(context, random);
+        EntityWrapper wrapper = entity.getEntities(context, random);
         if (wrapper == null) {
             return ScreenTexts.EMPTY;
         }

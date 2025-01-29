@@ -1,6 +1,7 @@
 package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.luckyblock.function.target.Target;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class NoneOutcome extends Outcome<NoneOutcome.NoneInfo> {
         @Override
         public List<Object> getTargets() {
             return List.of();
+        }
+
+        @Override
+        public void setTargets(List<Target<?>> targets) {
         }
     }
 }

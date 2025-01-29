@@ -32,7 +32,7 @@ public class EntityBooleanProvider extends BooleanProvider {
 
     @Override
     public boolean getBoolean(Outcome.Context<?> context, Random random) {
-        EntityWrapper wrapper = entity.getEntity(context, random);
+        EntityWrapper wrapper = entity.getEntities(context, random);
         if (wrapper == null) {
             return false;
         }

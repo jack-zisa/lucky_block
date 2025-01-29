@@ -10,6 +10,8 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.util.math.Direction;
 
+import java.util.List;
+
 public class SetDirectionFunction extends Function<Target<?>> {
     public static final SetDirectionFunction DEFAULT_DIRECTION = new SetDirectionFunction(HasDirectionFunctionTarget.INSTANCE, Direction.NORTH);
     @SuppressWarnings("unchecked")
@@ -26,11 +28,13 @@ public class SetDirectionFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof DirectionTarget<?> directionTarget) {
                 target.update(this, directionTarget.setDirection(outcome, context, direction));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

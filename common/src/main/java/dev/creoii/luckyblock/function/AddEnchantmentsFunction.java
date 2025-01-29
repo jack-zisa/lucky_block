@@ -17,6 +17,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.IntProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AddEnchantmentsFunction extends Function<Target<?>> {
@@ -34,8 +35,9 @@ public class AddEnchantmentsFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof ItemStackWrapper wrapper) {
                 enchantments.forEach((id, level) -> {
                     Optional<RegistryEntry.Reference<Enchantment>> optional = context.world().getRegistryManager().getOptionalEntry(RegistryKey.of(RegistryKeys.ENCHANTMENT, id));
@@ -43,5 +45,6 @@ public class AddEnchantmentsFunction extends Function<Target<?>> {
                 });
             }
         }
+        return context.copyFiltered(targets);
     }
 }

@@ -14,6 +14,8 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 
+import java.util.List;
+
 public class InitializeMobsFunction extends Function<Target<?>> {
     private static final InitializeMobsFunction DEFAULT = new InitializeMobsFunction(HasStatusEffectsFunctionTarget.INSTANCE);
     private static final MapCodec<InitializeMobsFunction> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
@@ -31,11 +33,13 @@ public class InitializeMobsFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof EntityWrapper entityWrapper && entityWrapper.getEntity() instanceof MobEntity mob && context.world() instanceof ServerWorld serverWorld) {
                 mob.initialize(serverWorld, serverWorld.getLocalDifficulty(context.pos()), SpawnReason.NATURAL, null);
             }
         }
+        return context.copyFiltered(targets);
     }
 }

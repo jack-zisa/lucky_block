@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.function.target.Target;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import dev.creoii.luckyblock.util.shape.Shape;
@@ -13,7 +14,9 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,7 +61,6 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
                     blocks.put(pos, new Pair<>(state, null));
                 }
             });
-            blockInfo = new BlockInfo(pos, blocks);
         } else {
             BlockState state = stateProvider.get(context.random(), pos);
             if (blockEntityNbt != null) {
@@ -68,8 +70,8 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
             } else {
                 blocks.put(pos, new Pair<>(state, null));
             }
-            blockInfo = new BlockInfo(pos, blocks);
         }
+        blockInfo = new BlockInfo(pos, blocks);
         return context.withInfo(blockInfo);
     }
 
@@ -86,10 +88,13 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
     public class BlockInfo implements ContextInfo {
         private final BlockPos pos;
         private final Map<BlockPos, Pair<BlockState, BlockEntity>> blocks;
+        @Nullable
+        private List<Object> cachedTargets;
 
         public BlockInfo(BlockPos pos, Map<BlockPos, Pair<BlockState, BlockEntity>> blocks) {
             this.pos = pos;
             this.blocks = blocks;
+            cachedTargets = null;
         }
 
         public BlockPos getPos() {
@@ -98,6 +103,9 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
 
         @Override
         public List<Object> getTargets() {
+            if (cachedTargets != null)
+                return cachedTargets;
+
             List<Object> targets = Lists.newArrayList(BlockOutcome.this, pos);
             for (Map.Entry<BlockPos, Pair<BlockState, BlockEntity>> entry : blocks.entrySet()) {
                 targets.add(entry.getKey());
@@ -107,7 +115,12 @@ public class BlockOutcome extends Outcome<BlockOutcome.BlockInfo> {
                     targets.add(pair.getRight());
                 }
             }
-            return targets;
+            return cachedTargets = targets;
+        }
+
+        @Override
+        public void setTargets(List<Target<?>> targets) {
+            cachedTargets = Collections.singletonList(targets);
         }
     }
 }

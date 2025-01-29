@@ -1,39 +1,65 @@
 {
   "type": "lucky:entity",
+  "chance": 100,
   "entity": {
     "type": "minecraft:bat",
     "functions": {
       "lucky:add_passenger": {
-        "passenger": {
-          "type": "minecraft:pig",
-          "functions": {
-            "lucky:add_passenger": {
-              "passenger": {
-                "type": "minecraft:pig",
-                "functions": {
-                  "lucky:add_passenger": {
-                    "passenger": {
-                      "type": "minecraft:pig",
-                      "functions": {
-                        "lucky:add_passenger": {
-                          "passenger": {
-                            "type": "minecraft:pig",
+        "target": {
+          "type": "lucky:is_entity",
+          "entity": {
+            "type": "lucky:entity_entity_provider",
+            "value": "vehicle",
+            "functions": {
+              "lucky:add_passenger": {
+                "target": {
+                  "type": "lucky:is_entity",
+                  "entity": {
+                    "type": "lucky:entity_entity_provider",
+                    "value": "vehicle",
+                    "functions": {
+                      "lucky:add_passenger": {
+                        "target": {
+                          "type": "lucky:is_entity",
+                          "entity": {
+                            "type": "lucky:entity_entity_provider",
+                            "value": "vehicle",
                             "functions": {
                               "lucky:add_passenger": {
+                                "target": {
+                                  "type": "lucky:is_entity",
+                                  "entity": {
+                                    "type": "lucky:entity_entity_provider",
+                                    "value": "vehicle"
+                                  }
+                                },
                                 "passenger": {
-                                  "type": "minecraft:pig"
+                                  "type": "lucky:simple_entity_provider",
+                                  "entity": "minecraft:pig"
                                 }
                               }
                             }
                           }
+                        },
+                        "passenger": {
+                          "type": "lucky:simple_entity_provider",
+                          "entity": "minecraft:pig"
                         }
                       }
                     }
                   }
+                },
+                "passenger": {
+                  "type": "lucky:simple_entity_provider",
+                  "entity": "minecraft:pig"
                 }
               }
             }
           }
+        },
+        "passenger": {
+          "type": "lucky:simple_entity_provider",
+          "entity": "minecraft:pig"
         }
       },
       "lucky:add_status_effects": {

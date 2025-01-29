@@ -27,7 +27,7 @@ public class ItemStackWrapper implements Wrapper<Item, ItemStackWrapper>, Compon
 
     public ItemStackWrapper(ItemStackProvider stackProvider, FunctionContainer functionContainer, Outcome.Context<? extends ContextInfo> context) {
         this.stackProvider = stackProvider;
-        this.stack = stackProvider.get(context.random());
+        this.stack = stackProvider.get(context, context.random());
 
         if (functionContainer.has(FunctionType.SET_VELOCITY)) {
             this.functionContainer = functionContainer;

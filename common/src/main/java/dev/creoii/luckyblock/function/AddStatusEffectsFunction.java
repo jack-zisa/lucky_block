@@ -31,12 +31,14 @@ public class AddStatusEffectsFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof StatusEffectsTarget<?> statusEffectsTarget) {
                 for (StatusEffectInstance statusEffectInstance : statusEffects)
                     target.update(this, statusEffectsTarget.addStatusEffect(outcome, context, statusEffectInstance));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

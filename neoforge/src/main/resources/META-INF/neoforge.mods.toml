@@ -10,7 +10,7 @@ config = "lucky.mixins.json"
 modId = "lucky"
 version = "${version}"
 displayName = "Lucky Block"
-authors = "Me!"
+authors = "creoii"
 description = '''
 A Lucky Block mod recreation for modern Minecraft utilizing the datapack system.
 '''

@@ -13,7 +13,9 @@ import dev.creoii.luckyblock.function.wrapper.EntityWrapper;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,10 +87,13 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
     public class EntityInfo implements ContextInfo {
         private final Vec3d pos;
         private final List<EntityWrapper> entities;
+        @Nullable
+        private List<Object> cachedTargets;
 
         public EntityInfo(Vec3d pos, List<EntityWrapper> entities) {
             this.pos = pos;
             this.entities = entities;
+            cachedTargets = null;
         }
 
         public EntityInfo(Vec3d pos) {
@@ -97,9 +102,17 @@ public class EntityOutcome extends Outcome<EntityOutcome.EntityInfo> implements 
 
         @Override
         public List<Object> getTargets() {
+            if (cachedTargets != null)
+                return cachedTargets;
+
             List<Object> targets = Lists.newArrayList(EntityOutcome.this, pos);
             targets.addAll(entities);
-            return targets;
+            return cachedTargets = targets;
+        }
+
+        @Override
+        public void setTargets(List<Target<?>> targets) {
+            cachedTargets = Collections.singletonList(targets);
         }
     }
 }

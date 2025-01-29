@@ -11,6 +11,8 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vecprovider.RandomVecProvider;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 
+import java.util.List;
+
 public class SetVelocityFunction extends Function<Target<?>> {
     public static final SetVelocityFunction DEFAULT_ITEM_VELOCITY = new SetVelocityFunction(IsEntityFunctionTarget.DEFAULT, RandomVecProvider.DEFAULT_ITEM_VELOCITY);
     @SuppressWarnings("unchecked")
@@ -27,11 +29,13 @@ public class SetVelocityFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof VelocityTarget<?> countTarget) {
                 target.update(this, countTarget.setVelocity(outcome, context, velocity));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

@@ -103,7 +103,7 @@ public class LuckyBlockCodecs {
                 return new EntityExplosionBehavior(entity);
             }
             return switch (explosionBehavior.toLowerCase()) {
-                case "entity" -> new EntityExplosionBehavior(context.player());
+                case "entity" -> new EntityExplosionBehavior(context.source());
                 case "wind_charge" -> WindChargeEntity.EXPLOSION_BEHAVIOR;
                 default -> new net.minecraft.world.explosion.ExplosionBehavior();
             };

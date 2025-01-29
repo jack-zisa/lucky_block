@@ -35,8 +35,9 @@ public class SetAttributeModifiersFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof ItemStackWrapper wrapper && wrapper.getStack().get(DataComponentTypes.ATTRIBUTE_MODIFIERS) != null) {
                 modifiers.forEach(wrapper.getStack().get(DataComponentTypes.ATTRIBUTE_MODIFIERS).modifiers()::add);
             } else if (target instanceof EntityWrapper wrapper && wrapper.getEntity() instanceof LivingEntity living) {
@@ -59,5 +60,6 @@ public class SetAttributeModifiersFunction extends Function<Target<?>> {
                 });
             }
         }
+        return context.copyFiltered(targets);
     }
 }

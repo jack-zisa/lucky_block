@@ -31,7 +31,7 @@ public class EntityItemStackProvider extends ItemStackProvider {
     }
 
     public ItemStack get(Outcome.Context<?> context, Random random) {
-        EntityWrapper wrapper = entity.getEntity(context, random);
+        EntityWrapper wrapper = entity.getEntities(context, random);
         if (wrapper == null) {
             return ItemStack.EMPTY;
         }

@@ -16,7 +16,9 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,10 +96,13 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
     public class ItemInfo implements ContextInfo {
         private final List<ItemStackWrapper> stacks;
         private final Vec3d pos;
+        @Nullable
+        private List<Object> cachedTargets;
 
         public ItemInfo(List<ItemStackWrapper> stacks, Vec3d pos) {
             this.stacks = stacks;
             this.pos = pos;
+            cachedTargets = null;
         }
 
         public ItemInfo(Vec3d pos) {
@@ -106,9 +111,17 @@ public class ItemOutcome extends Outcome<ItemOutcome.ItemInfo> implements CountT
 
         @Override
         public List<Object> getTargets() {
+            if (cachedTargets != null)
+                return cachedTargets;
+
             List<Object> targets = Lists.newArrayList(ItemOutcome.this, pos);
             targets.addAll(stacks);
-            return targets;
+            return cachedTargets = targets;
+        }
+
+        @Override
+        public void setTargets(List<Target<?>> targets) {
+            cachedTargets = Collections.singletonList(targets);
         }
     }
 }

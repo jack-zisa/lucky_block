@@ -7,44 +7,37 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.function.wrapper.EntityWrapper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.entity.passive.TameableEntity;
+import dev.creoii.luckyblock.util.entityprovider.EntityProvider;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class IsEntityFunctionTarget extends FunctionTarget<Target<?>> {
-    public static final IsEntityFunctionTarget DEFAULT = new IsEntityFunctionTarget("");
+    public static final IsEntityFunctionTarget DEFAULT = new IsEntityFunctionTarget(null);
     private static final MapCodec<IsEntityFunctionTarget> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
     private static final MapCodec<IsEntityFunctionTarget> BASE_CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(Codec.STRING.fieldOf("type_filter").orElse("").forGetter(functionTarget -> functionTarget.typeFilter)
+        return instance.group(EntityProvider.CODEC.optionalFieldOf("provider", null).forGetter(functionTarget -> functionTarget.provider)
         ).apply(instance, IsEntityFunctionTarget::new);
     });
     public static final MapCodec<IsEntityFunctionTarget> CODEC = Codec.mapEither(DEFAULT_CODEC, BASE_CODEC).xmap(either -> {
         return either.map(java.util.function.Function.identity(), java.util.function.Function.identity());
     }, Either::right);
-    private final String typeFilter;
+    private final EntityProvider provider;
 
-    public IsEntityFunctionTarget(String typeFilter) {
+    public IsEntityFunctionTarget(EntityProvider provider) {
         super(FunctionTargetType.IS_ENTITY);
-        this.typeFilter = typeFilter;
+        this.provider = provider;
     }
 
     @Override
     public List<Target<?>> getTargets(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
         List<Target<?>> targets = getEntityTargets(context.info());
-        if (typeFilter.isEmpty())
+        if (provider == null)
             return targets;
         else {
-            return switch (typeFilter) {
-                case "living" -> targets.stream().filter(target -> target instanceof EntityWrapper wrapper && !(wrapper.getEntity() instanceof LivingEntity)).collect(Collectors.toList());
-                case "mob" -> targets.stream().filter(target -> target instanceof EntityWrapper wrapper && !(wrapper.getEntity() instanceof MobEntity)).collect(Collectors.toList());
-                case "pet" -> targets.stream().filter(target -> target instanceof EntityWrapper wrapper && !(wrapper.getEntity() instanceof TameableEntity)).collect(Collectors.toList());
-                case "monster" -> targets.stream().filter(target -> target instanceof EntityWrapper wrapper && !(wrapper.getEntity() instanceof Monster)).collect(Collectors.toList());
-                default -> throw new IllegalStateException("Unexpected value: " + typeFilter);
-            };
+            EntityWrapper wrapper = provider.getEntities(context, context.random());
+            if (wrapper == null)
+                return List.of();
+            return List.of(wrapper);
         }
     }
 }

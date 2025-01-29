@@ -3,17 +3,27 @@ package dev.creoii.luckyblock.function;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.creoii.luckyblock.LuckyBlockRegistries;
+import dev.creoii.luckyblock.function.target.Target;
+import dev.creoii.luckyblock.function.wrapper.EntityWrapper;
+import dev.creoii.luckyblock.outcome.ContextInfo;
+import dev.creoii.luckyblock.outcome.Outcome;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class FunctionContainer {
+public record FunctionContainer(Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions) {
     public static final FunctionContainer EMPTY = new FunctionContainer(Reference2ObjectMaps.emptyMap());
     public static final Codec<FunctionContainer> CODEC = Codec.dispatchedMap(Type.CODEC, Type::getValueCodec).xmap(map -> {
         if (map.isEmpty()) {
@@ -32,14 +42,9 @@ public class FunctionContainer {
         }
         return map;
     });
-    private final Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions;
-
-    public FunctionContainer(Reference2ObjectMap<FunctionType, Optional<Function<?>>> functions) {
-        this.functions = functions;
-    }
 
     public boolean has(FunctionType type) {
-        return functions.containsKey(type);
+        return functions.containsKey(type) && functions.get(type).isPresent();
     }
 
     public void forEach(Consumer<Function<?>> action) {
@@ -103,4 +108,18 @@ public class FunctionContainer {
             return (Codec<Function<?>>) this.type.codec().codec();
         }
     }
+
+    /*public static class Context extends Outcome.Context<ContextInfo> {
+        private final BlockPos pos;
+        private final
+        private final List<Target<?>> targets;
+
+        public Context(World world, BlockPos pos, BlockState state, PlayerEntity player, @Nullable ContextInfo info) {
+            super(world, pos, state, player, info);
+        }
+
+        public Context copyOf(Outcome.Context<?> context) {
+            return new Context();
+        }
+    }*/
 }

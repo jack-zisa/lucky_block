@@ -10,6 +10,8 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.component.ComponentChanges;
 
+import java.util.List;
+
 public class SetComponentsFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetComponentsFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -25,12 +27,14 @@ public class SetComponentsFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof ComponentsTarget<?> componentsTarget) {
                 if (components != ComponentChanges.EMPTY)
                     target.update(this, componentsTarget.setComponents(outcome, context, components));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

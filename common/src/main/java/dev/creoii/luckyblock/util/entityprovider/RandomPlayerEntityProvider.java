@@ -15,17 +15,20 @@ public class RandomPlayerEntityProvider extends EntityProvider {
     private static final RandomPlayerEntityProvider DEFAULT = new RandomPlayerEntityProvider();
     public static final MapCodec<RandomPlayerEntityProvider> CODEC = MapCodec.unit(DEFAULT);
 
+    public RandomPlayerEntityProvider() {
+        super(true);
+    }
+
     protected EntityProviderType<?> getType() {
         return EntityProviderType.RANDOM_PLAYER_ENTITY_PROVIDER;
     }
 
     @Override
-    @Nullable
-    public EntityWrapper getEntity(Outcome.Context<?> context, Random random) {
+    public @Nullable List<EntityWrapper> getEntities(Outcome.Context<?> context, Random random) {
         if (!(context.world() instanceof ServerWorld))
             return null;
 
         List<ServerPlayerEntity> players = ((ServerWorld) context.world()).getPlayers();
-        return new EntityWrapper(players.get(context.random().nextInt(players.size())), FunctionContainer.EMPTY);
+        return List.of(new EntityWrapper(players.get(context.random().nextInt(players.size())), FunctionContainer.EMPTY));
     }
 }

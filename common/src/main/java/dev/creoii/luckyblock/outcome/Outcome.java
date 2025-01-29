@@ -4,18 +4,22 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.LuckyBlockRegistries;
+import dev.creoii.luckyblock.function.target.Target;
+import dev.creoii.luckyblock.function.target.VecTarget;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vecprovider.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -126,19 +130,19 @@ public abstract class Outcome<T extends ContextInfo> {
         run((Context<T>) context);
     }
 
-    public static class Context<T extends ContextInfo> {
+    public static class Context<T extends ContextInfo> implements VecTarget<Context<T>> {
         private final World world;
-        private final BlockPos pos;
+        private BlockPos pos;
         private final BlockState state;
-        private final PlayerEntity player;
+        private final LivingEntity source;
         @Nullable
         private T info;
 
-        public Context(World world, BlockPos pos, BlockState state, PlayerEntity player, @Nullable T info) {
+        public Context(World world, BlockPos pos, BlockState state, LivingEntity source, @Nullable T info) {
             this.world = world;
             this.pos = pos;
             this.state = state;
-            this.player = player;
+            this.source = source;
             this.info = info;
         }
 
@@ -154,8 +158,8 @@ public abstract class Outcome<T extends ContextInfo> {
             return state;
         }
 
-        public PlayerEntity player() {
-            return player;
+        public LivingEntity source() {
+            return source;
         }
 
         public Random random() {
@@ -166,9 +170,30 @@ public abstract class Outcome<T extends ContextInfo> {
             return info;
         }
 
+        @Override
+        public Target<Context<T>> update(dev.creoii.luckyblock.function.Function<Target<?>> function, Object newObject) {
+            return this;
+        }
+
+        @Override
+        public Context<T> setVec(Outcome<? extends ContextInfo> outcome, Context<? extends ContextInfo> context, Vec3d vec3d) {
+            this.pos = BlockPos.ofFloored(vec3d.x + .5d, vec3d.y + .5d, vec3d.z + .5d);
+            return this;
+        }
+
         public Context<T> withInfo(T info) {
             this.info = info;
             return this;
+        }
+
+        public Context<T> copyFiltered(List<Target<?>> toKeep) {
+            if (info == null) {
+                throw new IllegalStateException("Attempted copying outcome context before creating info.");
+            }
+            Context<T> context = new Context<>(world, pos, state, source, info);
+            toKeep.add(context);
+            context.info.setTargets(toKeep);
+            return context;
         }
     }
 }

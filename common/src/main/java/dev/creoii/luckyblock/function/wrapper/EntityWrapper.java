@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.function.FunctionContainer;
 import dev.creoii.luckyblock.function.target.*;
 import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
+import dev.creoii.luckyblock.util.Provider;
 import dev.creoii.luckyblock.util.vecprovider.VecProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.effect.StatusEffectInstance;

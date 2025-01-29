@@ -13,6 +13,8 @@ public interface VecProviderType<T extends VecProvider> {
     VecProviderType<RandomVelocityVecProvider> RANDOM_VELOCITY = () -> RandomVelocityVecProvider.CODEC;
     VecProviderType<ClampToHeightmapVecProvider> CLAMP_TO_HEIGHTMAP = () -> ClampToHeightmapVecProvider.CODEC;
     VecProviderType<RandomVecProvider> RANDOM = () -> RandomVecProvider.CODEC;
+    VecProviderType<EntityVecProvider> ENTITY = () -> EntityVecProvider.CODEC;
+    VecProviderType<WorldVecProvider> WORLD = () -> WorldVecProvider.CODEC;
 
     MapCodec<T> codec();
 
@@ -22,6 +24,8 @@ public interface VecProviderType<T extends VecProvider> {
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "random_velocity"), RANDOM_VELOCITY);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "clamp_to_heightmap"), CLAMP_TO_HEIGHTMAP);
         register(Identifier.of(LuckyBlockMod.NAMESPACE, "random"), RANDOM);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "entity"), ENTITY);
+        register(Identifier.of(LuckyBlockMod.NAMESPACE, "world"), WORLD);
     }
 
     private static void register(Identifier id, VecProviderType<?> type) {

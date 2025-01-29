@@ -17,15 +17,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RandomInRangeEntityProvider extends EntityProvider {
-    public static final MapCodec<RandomInRangeEntityProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+public class AllInRangeEntityProvider extends EntityProvider {
+    public static final MapCodec<AllInRangeEntityProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(VecProvider.VALUE_CODEC.fieldOf("center").forGetter(provider -> provider.center),
                 FloatProvider.VALUE_CODEC.fieldOf("dx").forGetter(provider -> provider.dx),
                 FloatProvider.VALUE_CODEC.fieldOf("dy").forGetter(provider -> provider.dy),
                 FloatProvider.VALUE_CODEC.fieldOf("dz").forGetter(provider -> provider.dz),
                 EntityPredicate.CODEC.fieldOf("predicate").forGetter(provider -> provider.predicate),
                 FunctionContainer.CODEC.fieldOf("functions").forGetter(provider -> provider.functions)
-        ).apply(instance, RandomInRangeEntityProvider::new);
+        ).apply(instance, AllInRangeEntityProvider::new);
     });
     private final VecProvider center;
     private final FloatProvider dx;
@@ -34,8 +34,8 @@ public class RandomInRangeEntityProvider extends EntityProvider {
     private final EntityPredicate predicate;
     private final FunctionContainer functions;
 
-    protected RandomInRangeEntityProvider(VecProvider center, FloatProvider dx, FloatProvider dy, FloatProvider dz, EntityPredicate predicate, FunctionContainer functions) {
-        super(true);
+    protected AllInRangeEntityProvider(VecProvider center, FloatProvider dx, FloatProvider dy, FloatProvider dz, EntityPredicate predicate, FunctionContainer functions) {
+        super(false);
         this.center = center;
         this.dx = dx;
         this.dy = dy;
@@ -45,7 +45,7 @@ public class RandomInRangeEntityProvider extends EntityProvider {
     }
 
     protected EntityProviderType<?> getType() {
-        return EntityProviderType.RANDOM_IN_RANGE_ENTITY_PROVIDER;
+        return EntityProviderType.ALL_IN_RANGE_ENTITY_PROVIDER;
     }
 
     @Override
@@ -55,6 +55,6 @@ public class RandomInRangeEntityProvider extends EntityProvider {
             return null;
 
         List<Entity> entities = context.world().getOtherEntities(null, Box.of(vec3d, dx.get(context.random()), dy.get(context.random()), dz.get(context.random())), entity1 -> predicate.test((ServerWorld) context.world(), vec3d, entity1));
-        return List.of(new EntityWrapper(entities.get(context.random().nextInt(entities.size())), functions));
+        return entities.stream().map(entity -> new EntityWrapper(entity, functions)).toList();
     }
 }

@@ -13,11 +13,13 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class EntityEntityProvider extends EntityProvider {
     public static final MapCodec<EntityEntityProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(EntityProvider.CODEC.fieldOf("entity").forGetter(provider -> provider.entity),
                 Codec.STRING.fieldOf("value").forGetter(provider -> provider.value),
-                FunctionContainer.CODEC.fieldOf("functions").forGetter(provider -> provider.functions)
+                FunctionContainer.CODEC.optionalFieldOf("functions", FunctionContainer.EMPTY).forGetter(provider -> provider.functions)
         ).apply(instance, EntityEntityProvider::new);
     });
     private final EntityProvider entity;
@@ -25,9 +27,14 @@ public class EntityEntityProvider extends EntityProvider {
     private final FunctionContainer functions;
 
     protected EntityEntityProvider(EntityProvider entity, String value, FunctionContainer functions) {
+        super(false);
         this.entity = entity;
         this.value = value;
         this.functions = functions;
+    }
+
+    public static EntityEntityProvider of(EntityProvider provider, String value, FunctionContainer functions) {
+        return new EntityEntityProvider(provider, value, functions);
     }
 
     protected EntityProviderType<?> getType() {
@@ -35,41 +42,46 @@ public class EntityEntityProvider extends EntityProvider {
     }
 
     @Override
-    @Nullable
-    public EntityWrapper getEntity(Outcome.Context<?> context, Random random) {
-        if (context.player() == null)
-            return null;
+    public @Nullable List<EntityWrapper> getEntities(Outcome.Context<?> context, Random random) {
+        Entity base = entity.getEntities(context, random).get(0).getEntity();
 
-        Entity base = entity.getEntity(context, random).getEntity();
-        Entity entity1 = switch (value) {
-            case "owner" -> {
-                if (base instanceof ProjectileEntity projectile) {
-                    yield projectile.getOwner();
-                } else if (base instanceof Tameable tameable) {
-                    yield tameable.getOwner();
+        if (value.equals("all_passengers")) {
+            return base.getPassengerList().stream().map(entity1 -> new EntityWrapper(entity1, FunctionContainer.EMPTY)).toList();
+        } else {
+            Entity entity1 = switch (value) {
+                case "owner" -> {
+                    if (base instanceof ProjectileEntity projectile) {
+                        yield projectile.getOwner();
+                    } else if (base instanceof Tameable tameable) {
+                        yield tameable.getOwner();
+                    }
+                    yield null;
                 }
-                yield null;
-            }
-            case "attacker" -> {
-                if (base instanceof LivingEntity living) {
-                    yield living.getAttacker();
+                case "attacker" -> {
+                    if (base instanceof LivingEntity living) {
+                        yield living.getAttacker();
+                    }
+                    yield null;
                 }
-                yield null;
-            }
-            case "attacking" -> {
-                if (base instanceof LivingEntity living) {
-                    yield living.getAttacking();
+                case "attacking" -> {
+                    if (base instanceof LivingEntity living) {
+                        yield living.getAttacking();
+                    }
+                    yield null;
                 }
-                yield null;
-            }
-            case "vehicle" -> base.getVehicle();
-            case "passenger" -> base.getFirstPassenger();
-            case "random_passenger" -> base.getPassengerList().get(random.nextInt(base.getPassengerList().size()));
-            default -> throw new IllegalStateException("Unexpected value: " + value);
-        };
+                case "vehicle" -> base.getVehicle();
+                case "passenger" -> base.getFirstPassenger();
+                case "random_passenger" -> base.getPassengerList().get(random.nextInt(base.getPassengerList().size()));
+                default -> throw new IllegalStateException("Unexpected value: " + value);
+            };
 
-        if (entity1 != null)
-            return new EntityWrapper(entity1, functions);
+            if (entity1 != null) {
+                System.out.println(entity1.getType());
+                return List.of(new EntityWrapper(entity1, functions));
+            }
+
+            System.out.println("null entity");
+        }
 
         return null;
     }

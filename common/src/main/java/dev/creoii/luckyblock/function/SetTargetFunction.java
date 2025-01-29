@@ -13,6 +13,8 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 
+import java.util.List;
+
 public class SetTargetFunction extends Function<Target<?>> {
     private static final SetTargetFunction DEFAULT = new SetTargetFunction(IsEntityFunctionTarget.DEFAULT);
     private static final MapCodec<SetTargetFunction> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
@@ -30,19 +32,21 @@ public class SetTargetFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        if (context.player() == null)
-            return;
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        if (context.source() == null)
+            return context;
 
-        for (Target<?> target : target.getTargets(outcome, context)) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof EntityWrapper wrapper && wrapper.getEntity() instanceof MobEntity mob) {
-                mob.setTarget(context.player());
+                mob.setTarget(context.source());
 
                 if (wrapper.getEntity() instanceof Angerable angerable) {
                     angerable.chooseRandomAngerTime();
-                    angerable.setTarget(context.player());
+                    angerable.setTarget(context.source());
                 }
             }
         }
+        return context.copyFiltered(targets);
     }
 }

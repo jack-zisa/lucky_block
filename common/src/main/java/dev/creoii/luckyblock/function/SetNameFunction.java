@@ -10,6 +10,8 @@ import dev.creoii.luckyblock.outcome.ContextInfo;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.textprovider.TextProvider;
 
+import java.util.List;
+
 public class SetNameFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetNameFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -25,11 +27,13 @@ public class SetNameFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof NameTarget<?> nameTarget) {
                 target.update(this, nameTarget.setName(outcome, context, name.get(context, context.random())));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

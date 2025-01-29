@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class RandomVecProvider extends VecProvider {
-    public static final RandomVecProvider ZERO = new RandomVecProvider(LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F);
+    public static final RandomVecProvider ONE = new RandomVecProvider(LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F);
     public static final RandomVecProvider DEFAULT_ITEM_VELOCITY = new RandomVecProvider(UniformFloatProvider.create(-.1f, .1f), ConstantFloatProvider.create(.2f), UniformFloatProvider.create(-.1f, .1f));
     public static Codec<List<FloatProvider>> BASE_FLOAT_PROVIDER_CODEC = Codec.either(Vec3d.CODEC, FloatProvider.VALUE_CODEC.listOf()).xmap(either -> {
         return either.map(vec3d -> List.of(ConstantFloatProvider.create((float) vec3d.x), ConstantFloatProvider.create((float) vec3d.y), ConstantFloatProvider.create((float) vec3d.z)), Function.identity());

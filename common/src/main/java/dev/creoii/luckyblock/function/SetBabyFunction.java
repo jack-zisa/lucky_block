@@ -11,6 +11,8 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.booleanprovider.BooleanProvider;
 import net.minecraft.entity.passive.PassiveEntity;
 
+import java.util.List;
+
 public class SetBabyFunction extends Function<Target<?>> {
     private static final SetBabyFunction DEFAULT = new SetBabyFunction(IsEntityFunctionTarget.DEFAULT, BooleanProvider.TRUE);
     private static final MapCodec<SetBabyFunction> DEFAULT_CODEC = MapCodec.unit(DEFAULT);
@@ -28,11 +30,13 @@ public class SetBabyFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof EntityWrapper entityWrapper && entityWrapper.getEntity() instanceof PassiveEntity passive) {
                 passive.setBaby(baby.getBoolean(context, context.random()));
             }
         }
+        return context.copyFiltered(targets);
     }
 }

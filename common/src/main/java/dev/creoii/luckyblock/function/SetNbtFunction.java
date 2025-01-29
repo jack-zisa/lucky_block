@@ -11,6 +11,8 @@ import dev.creoii.luckyblock.function.target.FunctionTarget;
 import dev.creoii.luckyblock.function.target.Target;
 import net.minecraft.nbt.NbtElement;
 
+import java.util.List;
+
 public class SetNbtFunction extends Function<Target<?>> {
     @SuppressWarnings("unchecked")
     public static final MapCodec<SetNbtFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -26,11 +28,13 @@ public class SetNbtFunction extends Function<Target<?>> {
     }
 
     @Override
-    public void apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
-        for (Target<?> target : target.getTargets(outcome, context)) {
+    public Outcome.Context<? extends ContextInfo> apply(Outcome<? extends ContextInfo> outcome, Outcome.Context<? extends ContextInfo> context) {
+        List<Target<?>> targets = target.getTargets(outcome, context);
+        for (Target<?> target : targets) {
             if (target instanceof NbtTarget<?> nbtTarget) {
                 nbtTarget.update(this, nbtTarget.setNbt(outcome, context, nbt));
             }
         }
+        return context.copyFiltered(targets);
     }
 }
