@@ -19,7 +19,7 @@ logoFile = "assets/lucky/icon.png"
 [[dependencies.lucky]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.6,)"
+versionRange = "[20.5,)"
 ordering = "NONE"
 side = "BOTH"
 
