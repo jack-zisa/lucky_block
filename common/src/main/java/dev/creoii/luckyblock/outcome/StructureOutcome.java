@@ -7,18 +7,24 @@ import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.structure.StructureTemplate;
+import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.Optional;
@@ -62,14 +68,15 @@ public class StructureOutcome extends Outcome {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }
             } else {
-                Structure structure = dynamicRegistryManager.getOptional(RegistryKeys.STRUCTURE).get().get(structureId);
+                Registry<Structure> registry = dynamicRegistryManager.getOrThrow(RegistryKeys.STRUCTURE);
+                Structure structure = registry.get(structureId);
                 if (structure == null) {
                     LuckyBlockMod.LOGGER.error("Structure identifier '{}' is invalid", structureId);
                     return;
                 }
                 ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
                 Chunk chunk = serverWorld.getChunk(pos);
-                StructureStart start = structure.createStructureStart(dynamicRegistryManager, chunkGenerator, chunkGenerator.getBiomeSource(), serverWorld.getChunkManager().getNoiseConfig(), serverWorld.getStructureTemplateManager(), serverWorld.getSeed(), chunk.getPos(), 0, serverWorld, biome -> true);
+                StructureStart start = structure.createStructureStart(registry.getEntry(structureId).get(), serverWorld.getRegistryKey(), dynamicRegistryManager, serverWorld.getChunkManager().getChunkGenerator(), chunkGenerator.getBiomeSource(), serverWorld.getChunkManager().getNoiseConfig(), serverWorld.getStructureTemplateManager(), serverWorld.getSeed(), chunk.getPos(), 0, serverWorld, biome -> true);
                 start.place(serverWorld, serverWorld.getStructureAccessor(), chunkGenerator, serverWorld.getRandom(), start.getBoundingBox(), chunk.getPos());
             }
         }

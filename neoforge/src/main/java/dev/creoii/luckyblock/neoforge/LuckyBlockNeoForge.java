@@ -24,7 +24,7 @@ import net.neoforged.fml.common.Mod;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -80,8 +80,8 @@ public final class LuckyBlockNeoForge {
         });
     }
 
-    private static void onAddReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(LuckyBlockMod.OUTCOME_MANAGER);
+    private static void onAddReloadListeners(AddServerReloadListenersEvent event) {
+        event.addListener(Identifier.of(LuckyBlockMod.NAMESPACE, "outcome_manager"), LuckyBlockMod.OUTCOME_MANAGER);
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {

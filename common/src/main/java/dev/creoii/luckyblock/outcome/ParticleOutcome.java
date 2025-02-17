@@ -53,7 +53,7 @@ public class ParticleOutcome extends Outcome {
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
-                ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed);
+                ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, true, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed);
 
                 if (shouldReinit()) {
                     pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();

@@ -1,0 +1,7 @@
+TODO:
+Update to 1.21.4
+Add new providers to this version
+Update default addon for 1.21.4 model jsons
+Bandaid fix for item enchantments component, and possibly others needed?
+
+This will all be part of version 0.1.5, with addon version 0.1.0+1.21.4 being released alongside it

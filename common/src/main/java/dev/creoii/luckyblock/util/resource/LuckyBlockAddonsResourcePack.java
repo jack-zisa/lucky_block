@@ -1,12 +1,12 @@
 package dev.creoii.luckyblock.util.resource;
 
-import com.google.gson.Gson;
+import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.*;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataMap;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
 public class LuckyBlockAddonsResourcePack implements ResourcePack {
-    public static final Gson GSON = new Gson();
     public static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
     private static final long MAX_IN_MEMORY_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
     private final ResourceType type;
@@ -47,7 +46,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
             switch (segments[0]) {
                 case "pack.mcmeta":
                     return () -> {
-                        String metadata = GSON.toJson(PackResourceMetadata.SERIALIZER.toJson(getMetadata()));
+                        String metadata = PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadata()).getOrThrow().toString();
                         return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
                     };
                 case "pack.png":
@@ -169,10 +168,9 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         return Arrays.stream(LuckyBlockMod.luckyBlockManager.getAllContainers()).map(container -> container.getId().getNamespace()).collect(Collectors.toSet());
     }
 
-    @Nullable
     @Override
-    public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) {
-        return ResourceMetadataMap.of(PackResourceMetadata.SERIALIZER, getMetadata()).get(metaReader);
+    public @Nullable <T> T parseMetadata(ResourceMetadataSerializer<T> metadataSerializer) {
+        return ResourceMetadataMap.of(PackResourceMetadata.SERIALIZER, getMetadata()).get(metadataSerializer);
     }
 
     @Override
