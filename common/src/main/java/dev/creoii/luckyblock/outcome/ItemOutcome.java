@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -54,6 +55,10 @@ public class ItemOutcome extends Outcome {
         Vec3d velocity = null;
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
+        }
+        IntProvider count = this.count;
+        if (count instanceof ContextualIntProvider contextualIntProvider) {
+            count = contextualIntProvider.withContext(context);
         }
         int total = count.get(context.world().getRandom()) * stack.getCount();
 

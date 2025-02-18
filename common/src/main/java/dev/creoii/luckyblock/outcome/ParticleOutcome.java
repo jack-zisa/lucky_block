@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.particle.ParticleEffect;
@@ -52,6 +53,10 @@ public class ParticleOutcome extends Outcome {
         }
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
+            IntProvider count = this.count;
+            if (count instanceof ContextualIntProvider contextualIntProvider) {
+                count = contextualIntProvider.withContext(context);
+            }
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
                 ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, true, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed);
 

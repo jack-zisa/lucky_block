@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
@@ -13,18 +14,13 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.structure.StructureTemplate;
-import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.Optional;
@@ -64,7 +60,11 @@ public class StructureOutcome extends Outcome {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
                 }
             } else if (pool.isPresent()) {
-                if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.orElse(LuckyBlockCodecs.ONE).get(context.world().getRandom()), pos, false)) {
+                IntProvider depth = this.depth.orElse(LuckyBlockCodecs.ONE);
+                if (depth instanceof ContextualIntProvider contextualIntProvider) {
+                    depth = contextualIntProvider.withContext(context);
+                }
+                if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.get(context.world().getRandom()), pos, false)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }
             } else {

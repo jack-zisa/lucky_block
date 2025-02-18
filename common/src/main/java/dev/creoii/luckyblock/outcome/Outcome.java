@@ -3,6 +3,8 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -58,12 +60,24 @@ public abstract class Outcome {
         return weightProvider;
     }
 
+    public Integer getWeight(Context context) {
+        IntProvider weight = this.weightProvider;
+        if (weight instanceof ContextualIntProvider contextualIntProvider) {
+            weight = contextualIntProvider.withContext(context);
+        }
+        return weight.get(context.world().getRandom());
+    }
+
     public boolean shouldReinit() {
         return reinit;
     }
 
-    public Integer getDelay(Random random) {
-        return delay.get(random);
+    public Integer getDelay(Context context) {
+        IntProvider delay = this.delay;
+        if (delay instanceof ContextualIntProvider contextualIntProvider) {
+            delay = contextualIntProvider.withContext(context);
+        }
+        return delay.get(context.world().getRandom());
     }
 
     public Optional<VecProvider> getPos() {
@@ -99,7 +113,7 @@ public abstract class Outcome {
     }
 
     public void runOutcome(Context context) {
-        int delay = getDelay(context.world.getRandom());
+        int delay = getDelay(context);
         if (delay == 0) {
             run(context);
         } else LuckyBlockMod.OUTCOME_MANAGER.addDelay(this, context, delay);
@@ -107,5 +121,53 @@ public abstract class Outcome {
 
     public abstract void run(Context context);
 
-    public record Context(World world, BlockPos pos, BlockState state, PlayerEntity player) {}
+    public class Context {
+        private World world;
+        private BlockPos pos;
+        private BlockState state;
+        private PlayerEntity player;
+
+        public Context(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+            this.world = world;
+            this.pos = pos;
+            this.state = state;
+            this.player = player;
+        }
+
+        public World world() {
+            return world;
+        }
+
+        public BlockPos pos() {
+            return pos;
+        }
+
+        public BlockState state() {
+            return state;
+        }
+
+        public PlayerEntity player() {
+            return player;
+        }
+
+        public Context withWorld(World world) {
+            this.world = world;
+            return this;
+        }
+
+        public Context withPos(BlockPos pos) {
+            this.pos = pos;
+            return this;
+        }
+
+        public Context withState(BlockState state) {
+            this.state = state;
+            return this;
+        }
+
+        public Context withPlayer(PlayerEntity player) {
+            this.player = player;
+            return this;
+        }
+    }
 }

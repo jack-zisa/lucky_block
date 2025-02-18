@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.util.vec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.shape.Shape;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +60,11 @@ public class RandomInShapeVecProvider extends VecProvider {
         }
         BlockPos center = this.center.isPresent() ? this.center.get().getPos(context) : context.pos();
 
-        int count = this.count.get(context.world().getRandom());
+        IntProvider countProvider = this.count;
+        if (countProvider instanceof ContextualIntProvider contextualIntProvider) {
+            countProvider = contextualIntProvider.withContext(context);
+        }
+        int count = countProvider.get(context.world().getRandom());
         if (count > 1) {
             List<BlockPos> result = new ArrayList<>();
             Collections.shuffle(positions);

@@ -3,17 +3,16 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -55,6 +54,10 @@ public class EntityOutcome extends Outcome {
     public void run(Context context) {
         Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
+        IntProvider count = this.count;
+        if (count instanceof ContextualIntProvider contextualIntProvider) {
+            count = contextualIntProvider.withContext(context);
+        }
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 

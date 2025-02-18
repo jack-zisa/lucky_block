@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import net.minecraft.util.math.intprovider.IntProvider;
 
@@ -35,7 +36,11 @@ public class RandomOutcome extends Outcome {
     @Override
     public void run(Context context) {
         List<Outcome> runOutcomes = new ArrayList<>(outcomes);
-        int count = this.count.get(context.world().getRandom());
+        IntProvider countProvider = this.count;
+        if (countProvider instanceof ContextualIntProvider contextualIntProvider) {
+            countProvider = contextualIntProvider.withContext(context);
+        }
+        int count = countProvider.get(context.world().getRandom());
         if (!duplicates) {
             count = Math.clamp(count, 0, runOutcomes.size());
         }
@@ -48,7 +53,7 @@ public class RandomOutcome extends Outcome {
             for (Outcome outcome : runOutcomes) {
                 double outcomeWeight;
                 try {
-                    outcomeWeight = outcome.getWeightProvider().get(context.world().getRandom());
+                    outcomeWeight = outcome.getWeight(context);
                 } catch (Exception e) {
                     outcomeWeight = 1d;
                 }

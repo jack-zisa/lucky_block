@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.util.vec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
+import dev.creoii.luckyblock.util.ContextualIntProvider;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
@@ -29,7 +30,11 @@ public class RandomVelocityVecProvider extends VecProvider {
     @Override
     public Vec3d getVec(Outcome.Context context) {
         float power = this.power.get(context.world().getRandom());
-        int pitch = this.pitch.get(context.world().getRandom());
+        IntProvider pitchProvider = this.pitch;
+        if (pitchProvider instanceof ContextualIntProvider contextualIntProvider) {
+            pitchProvider = contextualIntProvider.withContext(context);
+        }
+        int pitch = pitchProvider.get(context.world().getRandom());
 
         float yawRad = (float) Math.toRadians(context.world().getRandom().nextBetween(-180, 180));
         float pitchRad = (float) Math.toRadians(-90d + context.world().getRandom().nextBetween(-pitch, pitch));

@@ -28,7 +28,7 @@ public class GroupOutcome extends Outcome {
     public void run(Context context) {
         List<Outcome> runOutcomes = new ArrayList<>(outcomes);
         // sort by chance
-        runOutcomes.sort((o1, o2) -> (int) ((o1.getWeightProvider().get(context.world().getRandom()) - o2.getWeightProvider().get(context.world().getRandom())) * 100f));
+        runOutcomes.sort((o1, o2) -> (int) ((o1.getWeight(context) - o2.getWeight(context)) * 100f));
         for (Outcome outcome : runOutcomes) {
             outcome.runOutcome(context);
         }
