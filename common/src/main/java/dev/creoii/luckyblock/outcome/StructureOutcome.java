@@ -3,8 +3,9 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.ContextualIntProvider;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.provider.string.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -33,16 +34,16 @@ public class StructureOutcome extends Outcome {
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
-                Identifier.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId),
+                StringProvider.CODEC.fieldOf("structure").forGetter(outcome -> outcome.structureId),
                 IntProvider.createValidatingCodec(0, 20).optionalFieldOf("depth").forGetter(outcome -> outcome.depth),
                 LuckyBlockCodecs.StructurePlacementData.CODEC.fieldOf("placement_data").orElse(LuckyBlockCodecs.StructurePlacementData.DEFAULT).forGetter(outcome -> outcome.structurePlacementData)
         ).apply(instance, StructureOutcome::new);
     });
-    private final Identifier structureId;
+    private final StringProvider structureId;
     private final Optional<IntProvider> depth;
     private final LuckyBlockCodecs.StructurePlacementData structurePlacementData;
 
-    public StructureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, Identifier structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
+    public StructureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, StringProvider structureId, Optional<IntProvider> depth, LuckyBlockCodecs.StructurePlacementData structurePlacementData) {
         super(OutcomeType.STRUCTURE, luck, chance, weightProvider, delay, pos, false);
         this.structureId = structureId;
         this.depth = depth;
@@ -52,6 +53,7 @@ public class StructureOutcome extends Outcome {
     @Override
     public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
+            Identifier structureId = Identifier.tryParse(this.structureId.get(context.world().getRandom()));
             BlockPos pos = getPos(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
             Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.getOptional(RegistryKeys.TEMPLATE_POOL).get().getEntry(structureId);
@@ -61,8 +63,9 @@ public class StructureOutcome extends Outcome {
                 }
             } else if (pool.isPresent()) {
                 IntProvider depth = this.depth.orElse(LuckyBlockCodecs.ONE);
-                if (depth instanceof ContextualIntProvider contextualIntProvider) {
-                    depth = contextualIntProvider.withContext(context);
+                if (depth instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
+                    System.out.println("set context");
+                    depth = (IntProvider) contextualProvider.withContext(context);
                 }
                 if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.get(context.world().getRandom()), pos, false)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);

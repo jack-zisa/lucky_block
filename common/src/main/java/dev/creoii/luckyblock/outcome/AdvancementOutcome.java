@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.provider.string.StringProvider;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,12 +17,12 @@ public class AdvancementOutcome extends Outcome {
                 createGlobalChanceField(Outcome::getChance),
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(outcome -> outcome.delay),
-                Identifier.CODEC.fieldOf("advancement").forGetter(outcome -> outcome.advancement)
+                StringProvider.CODEC.fieldOf("advancement").forGetter(outcome -> outcome.advancement)
         ).apply(instance, AdvancementOutcome::new);
     });
-    private final Identifier advancement;
+    private final StringProvider advancement;
 
-    public AdvancementOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Identifier advancement) {
+    public AdvancementOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, StringProvider advancement) {
         super(OutcomeType.ADVANCEMENT, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.advancement = advancement;
     }
@@ -33,7 +34,7 @@ public class AdvancementOutcome extends Outcome {
 
         MinecraftServer server = context.world().getServer();
         if (server != null && context.player() instanceof ServerPlayerEntity serverPlayer) {
-            AdvancementEntry entry = server.getAdvancementLoader().get(advancement);
+            AdvancementEntry entry = server.getAdvancementLoader().get(Identifier.tryParse(advancement.get(context.world().getRandom())));
             if (entry == null)
                 return;
 

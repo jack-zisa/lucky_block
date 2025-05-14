@@ -9,3 +9,4 @@ accessible field net/minecraft/resource/JsonDataLoader dataType Ljava/lang/Strin
 accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TYPE_BY_ID Lcom/google/common/collect/BiMap;
 accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
 accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
+accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILnet/minecraft/component/MergedComponentMap;)V

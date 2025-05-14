@@ -3,7 +3,6 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import dev.creoii.luckyblock.util.ContextualIntProvider;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
@@ -14,7 +13,6 @@ import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -62,8 +60,8 @@ public abstract class Outcome {
 
     public Integer getWeight(Context context) {
         IntProvider weight = this.weightProvider;
-        if (weight instanceof ContextualIntProvider contextualIntProvider) {
-            weight = contextualIntProvider.withContext(context);
+        if (weight instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
+            weight = (IntProvider) contextualProvider.withContext(context);
         }
         return weight.get(context.world().getRandom());
     }
@@ -74,8 +72,8 @@ public abstract class Outcome {
 
     public Integer getDelay(Context context) {
         IntProvider delay = this.delay;
-        if (delay instanceof ContextualIntProvider contextualIntProvider) {
-            delay = contextualIntProvider.withContext(context);
+        if (delay instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
+            delay = (IntProvider) contextualProvider.withContext(context);
         }
         return delay.get(context.world().getRandom());
     }
@@ -121,7 +119,7 @@ public abstract class Outcome {
 
     public abstract void run(Context context);
 
-    public class Context {
+    public static class Context {
         private World world;
         private BlockPos pos;
         private BlockState state;

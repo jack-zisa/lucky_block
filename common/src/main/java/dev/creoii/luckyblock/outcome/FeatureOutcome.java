@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
+import dev.creoii.luckyblock.util.provider.string.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKeys;
@@ -24,14 +25,14 @@ public class FeatureOutcome extends Outcome {
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
-                Identifier.CODEC.fieldOf("feature").forGetter(outcome -> outcome.featureId),
+                StringProvider.CODEC.fieldOf("feature").forGetter(outcome -> outcome.featureId),
                 PlacementModifier.CODEC.listOf().fieldOf("placement").orElse(List.of()).forGetter(outcome -> outcome.placementModifiers)
         ).apply(instance, FeatureOutcome::new);
     });
-    private final Identifier featureId;
+    private final StringProvider featureId;
     private final List<PlacementModifier> placementModifiers;
 
-    public FeatureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, Identifier featureId, List<PlacementModifier> placementModifiers) {
+    public FeatureOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, StringProvider featureId, List<PlacementModifier> placementModifiers) {
         super(OutcomeType.FEATURE, luck, chance, weightProvider, delay, pos, false);
         this.featureId = featureId;
         this.placementModifiers = placementModifiers;
@@ -40,6 +41,7 @@ public class FeatureOutcome extends Outcome {
     @Override
     public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
+            Identifier featureId = Identifier.tryParse(this.featureId.get(context.world().getRandom()));
             ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().get(featureId);
             if (configuredFeature == null) {
                 LuckyBlockMod.LOGGER.error("Feature identifier '{}' is invalid", featureId);

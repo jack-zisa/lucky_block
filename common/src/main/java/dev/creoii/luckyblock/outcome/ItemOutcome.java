@@ -4,10 +4,11 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.ContextualIntProvider;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
+import net.minecraft.component.MergedComponentMap;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
@@ -31,17 +32,17 @@ public class ItemOutcome extends Outcome {
                 Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
                 }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
+                IntProvider.NON_NEGATIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
-    private final IntProvider count;
+    private final Optional<IntProvider> count;
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, Optional<IntProvider> count, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
@@ -56,17 +57,14 @@ public class ItemOutcome extends Outcome {
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
         }
-        IntProvider count = this.count;
-        if (count instanceof ContextualIntProvider contextualIntProvider) {
-            count = contextualIntProvider.withContext(context);
-        }
+        IntProvider count = ContextualProvider.applyContext(this.count.orElse(LuckyBlockCodecs.ONE), context);
         int total = count.get(context.world().getRandom()) * stack.getCount();
 
         if (shouldReinit()) {
             for (int i = 0; i < total; ++i) {
                 ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
                 if (entity != null) {
-                    ItemStack newStack = stack.copy();
+                    ItemStack newStack = copyStack(stack);
 
                     entity.setStack(newStack);
                     nbt.ifPresent(compound -> {
@@ -91,7 +89,7 @@ public class ItemOutcome extends Outcome {
         for (int i = 0; i < total / stack.getMaxCount(); ++i) {
             ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
-                ItemStack newStack = stack.copy();
+                ItemStack newStack = copyStack(stack);
 
                 newStack.setCount(stack.getMaxCount());
                 entity.setStack(newStack);
@@ -112,7 +110,7 @@ public class ItemOutcome extends Outcome {
         if (total % stack.getMaxCount() > 0) {
             ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
             if (entity != null) {
-                ItemStack remainder = stack.copy();
+                ItemStack remainder = copyStack(stack);
 
                 remainder.setCount(total % stack.getMaxCount());
                 entity.setStack(remainder);
@@ -128,6 +126,16 @@ public class ItemOutcome extends Outcome {
 
                 context.world().spawnEntity(entity);
             }
+        }
+    }
+
+    public static ItemStack copyStack(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        } else {
+            ItemStack itemStack = new ItemStack(stack.getItem(), stack.getCount(), MergedComponentMap.create(stack.getItem().getComponents(), stack.getComponentChanges()));
+            itemStack.setBobbingAnimationTime(stack.getBobbingAnimationTime());
+            return itemStack;
         }
     }
 }

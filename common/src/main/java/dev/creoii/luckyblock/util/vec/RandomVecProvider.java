@@ -15,10 +15,10 @@ import java.util.function.Function;
 
 public class RandomVecProvider extends VecProvider {
     public static final RandomVecProvider ZERO = new RandomVecProvider(LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F, LuckyBlockCodecs.ONE_F);
-    public static Codec<List<FloatProvider>> BASE_FLOAT_PROVIDER_CODEC = Codec.either(Vec3d.CODEC, FloatProvider.VALUE_CODEC.listOf()).xmap(either -> {
+    public static final Codec<List<FloatProvider>> BASE_FLOAT_PROVIDER_CODEC = Codec.either(Vec3d.CODEC, FloatProvider.VALUE_CODEC.listOf()).xmap(either -> {
         return either.map(vec3d -> List.of(ConstantFloatProvider.create((float) vec3d.x), ConstantFloatProvider.create((float) vec3d.y), ConstantFloatProvider.create((float) vec3d.z)), Function.identity());
     }, Either::right);
-    public static MapCodec<RandomVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final MapCodec<RandomVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(FloatProvider.VALUE_CODEC.fieldOf("x").forGetter(provider -> provider.x),
                 FloatProvider.VALUE_CODEC.fieldOf("y").forGetter(provider -> provider.y),
                 FloatProvider.VALUE_CODEC.fieldOf("z").forGetter(provider -> provider.z)
