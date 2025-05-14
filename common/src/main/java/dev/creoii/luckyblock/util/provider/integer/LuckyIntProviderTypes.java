@@ -14,5 +14,10 @@ public class LuckyIntProviderTypes {
     public static final IntProviderType<WorldIntProvider> WORLD = () -> WorldIntProvider.CODEC;
 
     public static void register() {
+        Registry.register(Registries.INT_PROVIDER_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "add"), ADD);
+        Registry.register(Registries.INT_PROVIDER_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "sub"), SUB);
+        Registry.register(Registries.INT_PROVIDER_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "mul"), MUL);
+        Registry.register(Registries.INT_PROVIDER_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "div"), DIV);
+        Registry.register(Registries.INT_PROVIDER_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "world"), WORLD);
     }
 }

@@ -77,7 +77,6 @@ public class WorldIntProvider extends IntProvider implements ContextualProvider<
 
     public enum Value implements StringIdentifiable {
         MOON_PHASE(0, 7, (key, context1) -> {
-            System.out.println(getSourceWorld(key, context1).getMoonPhase());
             return getSourceWorld(key, context1).getMoonPhase();
         }),
         AMBIENT_DARKNESS(0, 11, (key, context1) -> {
