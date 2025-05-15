@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -30,19 +31,19 @@ public class ItemOutcome extends Outcome {
                 Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
                 }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
+                IntProvider.POSITIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count),
                 ComponentChanges.CODEC.fieldOf("components").orElse(ComponentChanges.EMPTY).forGetter(outcome -> outcome.components),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
-    private final IntProvider count;
+    private final Optional<IntProvider> count;
     private final ComponentChanges components;
     private final Optional<ContextualNbtCompound> nbt;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, IntProvider count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, Optional<IntProvider> count, ComponentChanges components, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
@@ -58,7 +59,7 @@ public class ItemOutcome extends Outcome {
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
         }
-        int total = count.get(context.world().getRandom()) * stack.getCount();
+        int total = ContextualProvider.applyContext(count.orElse(LuckyBlockCodecs.ONE), context).get(context.world().getRandom()) * stack.getCount();
 
         if (shouldReinit()) {
             for (int i = 0; i < total; ++i) {
