@@ -62,11 +62,7 @@ public class StructureOutcome extends Outcome {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
                 }
             } else if (pool.isPresent()) {
-                IntProvider depth = this.depth.orElse(LuckyBlockCodecs.ONE);
-                if (depth instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
-                    System.out.println("set context");
-                    depth = (IntProvider) contextualProvider.withContext(context);
-                }
+                IntProvider depth = ContextualProvider.applyContext(this.depth.orElse(LuckyBlockCodecs.ONE), context);
                 if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.get(context.world().getRandom()), pos, false)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }

@@ -55,10 +55,7 @@ public class EntityOutcome extends Outcome {
     public void run(Context context) {
         Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(Identifier.tryParse(entityTypeId.get(context.world().getRandom())));
-        IntProvider count = this.count;
-        if (count instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
-            count = (IntProvider) contextualProvider.withContext(context);
-        }
+        IntProvider count = ContextualProvider.applyContext(this.count, context);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 

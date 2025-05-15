@@ -36,11 +36,7 @@ public class RandomOutcome extends Outcome {
     @Override
     public void run(Context context) {
         List<Outcome> runOutcomes = new ArrayList<>(outcomes);
-        IntProvider countProvider = this.count;
-        if (countProvider instanceof ContextualProvider<?> contextualProvider && contextualProvider.getValueType() == ContextualProvider.Type.INT) {
-            System.out.println("set context");
-            countProvider = (IntProvider) contextualProvider.withContext(context);
-        }
+        IntProvider countProvider = ContextualProvider.applyContext(this.count, context);
         int count = countProvider.get(context.world().getRandom());
         if (!duplicates) {
             count = Math.clamp(count, 0, runOutcomes.size());
