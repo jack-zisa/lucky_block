@@ -55,14 +55,12 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     @Nullable
     @Override
     public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
-        System.out.println("open " + id + ": " + type);
         Path addonsPath = FabricLoader.getInstance().getGameDir().resolve("addons");
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
                 if (!addonPath.equals(addonsPath)) {
                     Path assetPath = addonPath.resolve("assets").resolve(id.getNamespace()).resolve(id.getPath());
                     if (Files.exists(assetPath)) {
-                        System.out.println("asset: " + assetPath);
                         return InputSupplier.create(assetPath);
                     }
                 }

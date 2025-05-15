@@ -43,12 +43,9 @@ public class AddonAtlasSource implements AtlasSource {
                                 Files.walk(resourcesPath).forEach(resourcePath -> {
                                     if (!resourcePath.equals(resourcesPath) && resourcePath.toString().endsWith(".png")) {
                                         Identifier id = Identifier.of(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
-                                        System.out.println("relative id: " + id.toString());
                                         Optional<ResourcePack> optionalResourcePack = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getName().equals(LuckyBlockMod.NAMESPACE)).findFirst();
-                                        System.out.println("pack present? " + optionalResourcePack.isPresent());
 
                                         optionalResourcePack.ifPresent(resourcePack -> {
-                                            System.out.println("found pack " + LuckyBlockMod.NAMESPACE);
                                             Resource texture = new Resource(resourcePack, InputSupplier.create(resourcePath));
                                             regions.add(id, texture);
                                             //MinecraftClient.getInstance().getTextureManager().registerTexture(id, new ResourceTexture(id));

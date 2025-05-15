@@ -66,7 +66,7 @@ public abstract class LuckyBlockManager {
                         Files.walk(datapackPath, 1).forEach(dataPath -> {
                             if (!dataPath.equals(datapackPath)) {
                                 String namespace = datapackPath.relativize(dataPath).toString();
-                                Path outcomesPath = dataPath.resolve("outcomes");
+                                Path outcomesPath = dataPath.resolve("outcome");
                                 String separator = getAddonsPath().getFileSystem().getSeparator();
                                 try {
                                     Files.walk(outcomesPath).forEach(outcomePath -> {
