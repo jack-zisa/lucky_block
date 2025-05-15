@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
+import dev.creoii.luckyblock.util.provider.integer.LuckyIntProviderTypes;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.minecraft.block.AbstractBlock;
@@ -78,6 +79,14 @@ public final class LuckyBlockNeoForge {
 
         event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry -> {
             registry.register(new Identifier(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
+        });
+
+        event.register(RegistryKeys.INT_PROVIDER_TYPE, registry -> {
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "add"), LuckyIntProviderTypes.ADD);
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "sub"), LuckyIntProviderTypes.SUB);
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "mul"), LuckyIntProviderTypes.MUL);
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "div"), LuckyIntProviderTypes.DIV);
+            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "world"), LuckyIntProviderTypes.WORLD);
         });
     }
 

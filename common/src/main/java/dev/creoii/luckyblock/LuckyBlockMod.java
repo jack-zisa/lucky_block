@@ -6,6 +6,7 @@ import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeManager;
 import dev.creoii.luckyblock.outcome.OutcomeType;
 import dev.creoii.luckyblock.recipe.LuckyRecipe;
+import dev.creoii.luckyblock.util.provider.string.StringProviderType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import net.minecraft.block.entity.BlockEntityType;
@@ -39,6 +40,9 @@ public final class LuckyBlockMod {
 
     public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(new Identifier(NAMESPACE, "pos_provider_types"));
     public static final Registry<VecProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
+
+    public static final RegistryKey<Registry<StringProviderType<?>>> STRING_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "string_provider_types"));
+    public static final Registry<StringProviderType<?>> STRING_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", STRING_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
     public static BlockEntityType<LuckyBlockEntity> LUCKY_BLOCK_ENTITY;
 

@@ -3,6 +3,7 @@ package dev.creoii.luckyblock.outcome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
@@ -53,7 +54,7 @@ public class EntityOutcome extends Outcome {
     public void run(Context context) {
         Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
         EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
-        for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
+        for (int i = 0; i < ContextualProvider.applyContext(count, context).get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
             if (shouldReinit()) {
