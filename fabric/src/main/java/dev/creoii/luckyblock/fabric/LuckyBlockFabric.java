@@ -3,7 +3,8 @@ package dev.creoii.luckyblock.fabric;
 import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
-import dev.creoii.luckyblock.util.provider.integer.LuckyIntProviderTypes;
+import dev.creoii.luckyblock.util.provider.floatprovider.LuckyFloatProviderTypes;
+import dev.creoii.luckyblock.util.provider.intprovider.LuckyIntProviderTypes;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.fabricmc.api.ModInitializer;
@@ -72,6 +73,7 @@ public final class LuckyBlockFabric implements ModInitializer {
         ShapeType.init();
         VecProviderType.init();
         LuckyIntProviderTypes.register();
+        LuckyFloatProviderTypes.register();
 
         Registry.register(Registries.RECIPE_SERIALIZER, Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);

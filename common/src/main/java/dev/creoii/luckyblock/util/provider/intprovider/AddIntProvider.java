@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.provider.integer;
+package dev.creoii.luckyblock.util.provider.intprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

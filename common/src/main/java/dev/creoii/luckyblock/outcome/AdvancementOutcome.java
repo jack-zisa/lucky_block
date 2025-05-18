@@ -2,7 +2,8 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.luckyblock.util.provider.string.StringProvider;
+import dev.creoii.luckyblock.util.ContextualProvider;
+import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -34,7 +35,7 @@ public class AdvancementOutcome extends Outcome {
 
         MinecraftServer server = context.world().getServer();
         if (server != null && context.player() instanceof ServerPlayerEntity serverPlayer) {
-            AdvancementEntry entry = server.getAdvancementLoader().get(Identifier.tryParse(advancement.get(context.world().getRandom())));
+            AdvancementEntry entry = server.getAdvancementLoader().get(Identifier.tryParse(ContextualProvider.applyStringContext(advancement, context).get(context.world().getRandom())));
             if (entry == null)
                 return;
 

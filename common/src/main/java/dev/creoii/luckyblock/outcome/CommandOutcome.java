@@ -2,8 +2,9 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.FunctionUtils;
-import dev.creoii.luckyblock.util.provider.string.StringProvider;
+import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -36,7 +37,7 @@ public class CommandOutcome extends Outcome {
             if (getPos().isPresent()) {
                 source = source.withPosition(getPos().get().getVec(context));
             }
-            server.getCommandManager().executeWithPrefix(source, FunctionUtils.parseString(command.get(context.world().getRandom()), context));
+            server.getCommandManager().executeWithPrefix(source, FunctionUtils.parseString(ContextualProvider.applyStringContext(command, context).get(context.world().getRandom()), context));
         }
     }
 }

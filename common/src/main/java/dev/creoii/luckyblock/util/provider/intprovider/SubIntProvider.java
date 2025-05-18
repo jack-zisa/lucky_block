@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.provider.integer;
+package dev.creoii.luckyblock.util.provider.intprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -6,23 +6,23 @@ import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.intprovider.IntProviderType;
 import net.minecraft.util.math.random.Random;
 
-public class MulIntProvider extends IntProvider {
-    public static final MapCodec<MulIntProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+public class SubIntProvider extends IntProvider {
+    public static final MapCodec<SubIntProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(IntProvider.VALUE_CODEC.fieldOf("a").forGetter(outcome -> outcome.a),
                 IntProvider.VALUE_CODEC.fieldOf("b").forGetter(outcome -> outcome.b)
-        ).apply(instance, MulIntProvider::new);
+        ).apply(instance, SubIntProvider::new);
     });
     public final IntProvider a;
     public final IntProvider b;
 
-    public MulIntProvider(IntProvider a, IntProvider b) {
+    public SubIntProvider(IntProvider a, IntProvider b) {
         this.a = a;
         this.b = b;
     }
 
     @Override
     public int get(Random random) {
-        return a.get(random) * b.get(random);
+        return a.get(random) - b.get(random);
     }
 
     @Override
@@ -37,6 +37,6 @@ public class MulIntProvider extends IntProvider {
 
     @Override
     public IntProviderType<?> getType() {
-        return LuckyIntProviderTypes.MUL;
+        return LuckyIntProviderTypes.SUB;
     }
 }

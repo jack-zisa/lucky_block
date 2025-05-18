@@ -45,7 +45,10 @@ public class ParticleOutcome extends Outcome {
     @Override
     public void run(Context context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
-        float speed = this.speed.map(floatProvider -> floatProvider.get(context.world().getRandom())).orElse(0f);
+        float speed;
+        if (this.speed.isPresent()) {
+            speed = ContextualProvider.applyFloatContext(this.speed.get(), context).get(context.world().random);
+        } else speed = 0f;
 
         Vec3d velocity = Vec3d.ZERO;
         if (this.velocity.isPresent()) {
@@ -53,7 +56,7 @@ public class ParticleOutcome extends Outcome {
         }
 
         for (ServerPlayerEntity serverPlayer : context.world().getServer().getPlayerManager().getPlayerList()) {
-            IntProvider count = ContextualProvider.applyContext(this.count, context);
+            IntProvider count = ContextualProvider.applyIntContext(this.count, context);
             for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
                 ((ServerWorld) context.world()).spawnParticles(serverPlayer, particle, true, false, pos.x, pos.y, pos.z, 1, velocity.x, velocity.y, velocity.z, speed);
 

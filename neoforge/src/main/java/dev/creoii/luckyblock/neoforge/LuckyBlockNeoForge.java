@@ -5,7 +5,7 @@ import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
-import dev.creoii.luckyblock.util.provider.integer.LuckyIntProviderTypes;
+import dev.creoii.luckyblock.util.provider.intprovider.LuckyIntProviderTypes;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import net.minecraft.block.AbstractBlock;

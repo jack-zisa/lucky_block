@@ -1,10 +1,11 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
+import dev.creoii.luckyblock.util.provider.booleanprovider.BooleanProvider;
+import dev.creoii.luckyblock.util.provider.booleanprovider.FalseBooleanProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 
 import java.util.ArrayList;
@@ -19,14 +20,14 @@ public class RandomOutcome extends Outcome {
                 createGlobalDelayField(outcome -> outcome.delay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
-                Codec.BOOL.fieldOf("duplicates").orElse(false).forGetter(outcome -> outcome.duplicates)
+                BooleanProvider.TYPE_CODEC.fieldOf("duplicates").orElse(FalseBooleanProvider.FALSE).forGetter(outcome -> outcome.duplicates)
         ).apply(instance, RandomOutcome::new);
     });
     private final List<Outcome> outcomes;
     private final IntProvider count;
-    private final boolean duplicates;
+    private final BooleanProvider duplicates;
 
-    public RandomOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, List<Outcome> outcomes, IntProvider count, boolean duplicates) {
+    public RandomOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, List<Outcome> outcomes, IntProvider count, BooleanProvider duplicates) {
         super(OutcomeType.RANDOM, luck, chance, weightProvider, delay, Optional.empty(), false);
         this.outcomes = outcomes;
         this.count = count;
@@ -36,7 +37,8 @@ public class RandomOutcome extends Outcome {
     @Override
     public void run(Context context) {
         List<Outcome> runOutcomes = new ArrayList<>(outcomes);
-        IntProvider countProvider = ContextualProvider.applyContext(this.count, context);
+        boolean duplicates = ContextualProvider.applyBooleanContext(this.duplicates, context).get(context.world().random);
+        IntProvider countProvider = ContextualProvider.applyIntContext(this.count, context);
         int count = countProvider.get(context.world().getRandom());
         if (!duplicates) {
             count = Math.clamp(count, 0, runOutcomes.size());

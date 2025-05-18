@@ -2,6 +2,7 @@ package dev.creoii.luckyblock.outcome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -41,8 +42,8 @@ public class SoundOutcome extends Outcome {
     @Override
     public void run(Context context) {
         Vec3d pos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
-        float volume = this.volume.get(context.world().getRandom());
-        float pitch = this.pitch.get(context.world().getRandom());
+        float volume = ContextualProvider.applyFloatContext(this.volume, context).get(context.world().getRandom());
+        float pitch = ContextualProvider.applyFloatContext(this.pitch, context).get(context.world().getRandom());
 
         double d = MathHelper.square(soundEvent.getDistanceToTravel(volume));
 

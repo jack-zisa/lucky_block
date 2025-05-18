@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import dev.creoii.luckyblock.util.provider.string.StringProvider;
+import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -53,7 +53,7 @@ public class StructureOutcome extends Outcome {
     @Override
     public void run(Context context) {
         if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            Identifier structureId = Identifier.tryParse(this.structureId.get(context.world().getRandom()));
+            Identifier structureId = Identifier.tryParse(ContextualProvider.applyStringContext(this.structureId, context).get(context.world().getRandom()));
             BlockPos pos = getPos(context).getPos(context);
             Optional<StructureTemplate> template = serverWorld.getStructureTemplateManager().getTemplate(structureId);
             Optional<RegistryEntry.Reference<StructurePool>> pool = dynamicRegistryManager.getOptional(RegistryKeys.TEMPLATE_POOL).get().getEntry(structureId);
@@ -62,7 +62,7 @@ public class StructureOutcome extends Outcome {
                     LuckyBlockMod.LOGGER.error("Failed to place template '{}'", structureId);
                 }
             } else if (pool.isPresent()) {
-                IntProvider depth = ContextualProvider.applyContext(this.depth.orElse(LuckyBlockCodecs.ONE), context);
+                IntProvider depth = ContextualProvider.applyIntContext(this.depth.orElse(LuckyBlockCodecs.ONE), context);
                 if (!StructurePoolBasedGenerator.generate(serverWorld, pool.get(), EMPTY_TARGET, depth.get(context.world().getRandom()), pos, false)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate jigsaw '{}'", structureId);
                 }

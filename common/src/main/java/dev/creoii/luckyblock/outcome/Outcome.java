@@ -9,11 +9,16 @@ import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -166,6 +171,20 @@ public abstract class Outcome {
         public Context withPlayer(PlayerEntity player) {
             this.player = player;
             return this;
+        }
+
+        public static World getSourceWorld(RegistryKey<DimensionType> source, Outcome.Context context) {
+            if (context.world() instanceof ServerWorld serverWorld) {
+                MinecraftServer server = serverWorld.getServer();
+                if (source == DimensionTypes.OVERWORLD) {
+                    return server.getOverworld();
+                } else if (source == DimensionTypes.THE_NETHER) {
+                    return server.getWorld(World.NETHER);
+                } else if (source == DimensionTypes.THE_END) {
+                    return server.getWorld(World.END);
+                }
+            }
+            return context.world();
         }
     }
 }

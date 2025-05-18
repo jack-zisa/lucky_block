@@ -1,4 +1,4 @@
-package dev.creoii.luckyblock.util.provider.string;
+package dev.creoii.luckyblock.util.provider.stringprovider;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;

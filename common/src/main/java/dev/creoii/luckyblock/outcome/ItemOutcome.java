@@ -57,7 +57,7 @@ public class ItemOutcome extends Outcome {
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
         }
-        IntProvider count = ContextualProvider.applyContext(this.count.orElse(LuckyBlockCodecs.ONE), context);
+        IntProvider count = ContextualProvider.applyIntContext(this.count.orElse(LuckyBlockCodecs.ONE), context);
         int total = count.get(context.world().getRandom()) * stack.getCount();
 
         if (shouldReinit()) {

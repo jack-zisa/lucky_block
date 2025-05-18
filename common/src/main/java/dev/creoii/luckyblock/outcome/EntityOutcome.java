@@ -6,7 +6,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
-import dev.creoii.luckyblock.util.provider.string.StringProvider;
+import dev.creoii.luckyblock.util.provider.booleanprovider.BooleanProvider;
+import dev.creoii.luckyblock.util.provider.booleanprovider.FalseBooleanProvider;
+import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -35,15 +37,15 @@ public class EntityOutcome extends Outcome {
                 StringProvider.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
                 IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
-                Codec.BOOL.fieldOf("initialize_mobs").orElse(false).forGetter(outcome -> outcome.initializeMobs)
+                BooleanProvider.TYPE_CODEC.fieldOf("initialize_mobs").orElse(FalseBooleanProvider.FALSE).forGetter(outcome -> outcome.initializeMobs)
         ).apply(instance, EntityOutcome::new);
     });
     private final StringProvider entityTypeId;
     private final IntProvider count;
     private final Optional<ContextualNbtCompound> nbt;
-    private final boolean initializeMobs;
+    private final BooleanProvider initializeMobs;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, StringProvider entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, boolean initializeMobs) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, StringProvider entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, BooleanProvider initializeMobs) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
         this.entityTypeId = entityTypeId;
         this.count = count;
@@ -54,8 +56,8 @@ public class EntityOutcome extends Outcome {
     @Override
     public void run(Context context) {
         Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
-        EntityType<?> entityType = Registries.ENTITY_TYPE.get(Identifier.tryParse(entityTypeId.get(context.world().getRandom())));
-        IntProvider count = ContextualProvider.applyContext(this.count, context);
+        EntityType<?> entityType = Registries.ENTITY_TYPE.get(Identifier.tryParse(ContextualProvider.applyStringContext(entityTypeId, context).get(context.world().getRandom())));
+        IntProvider count = ContextualProvider.applyIntContext(this.count, context);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
 
@@ -92,7 +94,8 @@ public class EntityOutcome extends Outcome {
                         passenger.startRiding(entity);
                 } else readNbt(entity, nbtCompound, context);
             }
-            if (entity instanceof MobEntity mob && context.world() instanceof ServerWorld serverWorld && initializeMobs) {
+            if (entity instanceof MobEntity mob && context.world()
+                    instanceof ServerWorld serverWorld && ContextualProvider.applyBooleanContext(initializeMobs, context).get(context.world().random)) {
                 mob.initialize(serverWorld, context.world().getLocalDifficulty(BlockPos.ofFloored(spawnPos.x, spawnPos.y, spawnPos.z)), SpawnReason.NATURAL, null);
             }
             entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
