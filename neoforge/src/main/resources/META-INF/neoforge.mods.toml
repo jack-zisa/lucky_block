@@ -10,7 +10,7 @@ config = "lucky.mixins.json"
 modId = "lucky"
 version = "${version}"
 displayName = "Lucky Block"
-authors = "Me!"
+authors = "creoii"
 description = '''
 A Lucky Block mod recreation for modern Minecraft utilizing the datapack system.
 '''
@@ -26,13 +26,13 @@ side = "BOTH"
 [[dependencies.lucky]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.1,)"
+versionRange = "[1.21.5,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.lucky]]
 modId = "architectury"
 type = "required"
-versionRange = "[12.1.3,)"
+versionRange = "[16.1.4,)"
 ordering = "AFTER"
 side = "BOTH"

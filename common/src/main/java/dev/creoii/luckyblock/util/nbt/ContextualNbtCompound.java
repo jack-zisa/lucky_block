@@ -67,162 +67,171 @@ public class ContextualNbtCompound extends NbtCompound {
         }
     }
 
-    public int getInt(String key) {
+    public Optional<Integer> getInt(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).intValue();
-            } else if (getType(key) == 10 && context != null) {
-                JsonElement element = JsonParser.parseString(entries.get(key).toString());
-                clean(key, element);
-                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 3) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).intValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
+                JsonElement element1 = JsonParser.parseString(entries.get(key).toString());
+                clean(key, element1);
+                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element1);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return Optional.of(intProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0;
+        return Optional.empty();
     }
 
-    public short getShort(String key) {
+    public Optional<Short> getShort(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).shortValue();
-            } else if (getType(key) == 10 && context != null) {
-                JsonElement element = JsonParser.parseString(entries.get(key).toString());
-                clean(key, element);
-                DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, element);
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 2) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).shortValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
+                JsonElement element1 = JsonParser.parseString(entries.get(key).toString());
+                clean(key, element1);
+                DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, element1);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (short) intProvider.get().get(context.world().getRandom());
+                    return Optional.of((short) intProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0;
+        return Optional.empty();
     }
 
-    public byte getByte(String key) {
+    public Optional<Byte> getByte(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).byteValue();
-            } else if (getType(key) == 10 && context != null) {
-                JsonElement element = JsonParser.parseString(entries.get(key).toString());
-                clean(key, element);
-                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 1) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).byteValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
+                JsonElement element1 = JsonParser.parseString(entries.get(key).toString());
+                clean(key, element1);
+                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element1);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (byte) intProvider.get().get(context.world().getRandom());
+                    return Optional.of((byte) intProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0;
+        return Optional.empty();
     }
 
-    public long getLong(String key) {
+    public Optional<Long> getLong(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).longValue();
-            } else if (getType(key) == 10 && context != null) {
-                JsonElement element = JsonParser.parseString(entries.get(key).toString());
-                clean(key, element);
-                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element);
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 4) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).longValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
+                JsonElement element1 = JsonParser.parseString(entries.get(key).toString());
+                clean(key, element1);
+                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, element1);
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return Optional.of((long) intProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0L;
+        return Optional.empty();
     }
 
-    public float getFloat(String key) {
+    public Optional<Float> getFloat(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).floatValue();
-            } else if (getType(key) == 10 && context != null) {
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 5) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).floatValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return Optional.of(floatProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0f;
+        return Optional.empty();
     }
 
-    public double getDouble(String key) {
+    public Optional<Double> getDouble(String key) {
         try {
-            if (contains(key, 99)) {
-                return ((AbstractNbtNumber) entries.get(key)).doubleValue();
-            } else if (getType(key) == 10 && context != null) {
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 6) {
+                return Optional.of(((AbstractNbtNumber) entries.get(key)).doubleValue());
+            } else if (element != null && element.getType() == 10 && context != null) {
                 DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return Optional.of((double) floatProvider.get().get(context.world().getRandom()));
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return 0d;
+        return Optional.empty();
     }
 
-    public int[] getIntArray(String key) {
+    public Optional<int[]> getIntArray(String key) {
         try {
-            if (contains(key, 11)) {
-                return ((NbtIntArray) entries.get(key)).getIntArray();
-            } else if (getType(key) == 10 && context != null) {
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 11) {
+                return Optional.of(((NbtIntArray) entries.get(key)).getIntArray());
+            } else if (element != null && element.getType() == 10 && context != null) {
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     BlockPos pos = vecProvider.get().getPos(context);
-                    return new int[]{pos.getX(), pos.getY(), pos.getZ()};
+                    return Optional.of(new int[]{pos.getX(), pos.getY(), pos.getZ()});
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return new int[0];
+        return Optional.empty();
     }
 
-    public long[] getLongArray(String key) {
+    public Optional<long[]> getLongArray(String key) {
         try {
-            if (contains(key, 12)) {
-                return ((NbtLongArray) entries.get(key)).getLongArray();
-            } else if (getType(key) == 10 && context != null) {
+            NbtElement element = get(key);
+            if (contains(key) && element != null && element.getType() == 12) {
+                return Optional.of(((NbtLongArray) entries.get(key)).getLongArray());
+            } else if (element != null && element.getType() == 10 && context != null) {
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     BlockPos pos = vecProvider.get().getPos(context);
-                    return new long[]{pos.getX(), pos.getY(), pos.getZ()};
+                    return Optional.of(new long[]{pos.getX(), pos.getY(), pos.getZ()});
                 }
             }
         } catch (ClassCastException ignored) {}
 
-        return new long[0];
+        return Optional.empty();
     }
 
     @Override
-    public ContextualNbtCompound getCompound(String key) {
-        NbtCompound compound = super.getCompound(key);
-        return new ContextualNbtCompound().copyFrom(compound);
+    public Optional<NbtCompound> getCompound(String key) {
+        Optional<NbtCompound> compound = super.getCompound(key);
+        return compound.map(nbtCompound -> new ContextualNbtCompound().copyFrom(nbtCompound));
     }
 
     public ContextualNbtList getList(String key, int type) {
         try {
-            if (getType(key) == 9) {
+            NbtElement element = get(key);
+            if (element != null && element.getType() == 9) {
                 ContextualNbtList nbtList = new ContextualNbtList().copyFrom((NbtList) entries.get(key));
-                if (!nbtList.isEmpty() && nbtList.getHeldType() != type) {
+                if (!nbtList.isEmpty() && nbtList.getType() != type) {
                     ContextualNbtList list = new ContextualNbtList();
                     list.setContext(context);
                     return list;
                 }
                 nbtList.setContext(context);
                 return nbtList;
-            } else if (getType(key) == 10 && context != null) {
+            } else if (element != null && element.getType() == 10 && context != null) {
                 DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(entries.get(key).toString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {

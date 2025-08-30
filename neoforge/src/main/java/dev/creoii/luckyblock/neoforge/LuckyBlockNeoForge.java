@@ -18,6 +18,8 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.neoforged.bus.api.IEventBus;
@@ -27,6 +29,7 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -46,6 +49,7 @@ public final class LuckyBlockNeoForge {
         NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onAddReloadListeners);
         modBus.addListener(LuckyBlockNeoForge::onBuildCreativeModTabContents);
         NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onServerTick);
+        NeoForge.EVENT_BUS.addListener(LuckyBlockNeoForge::onItemTooltip);
     }
 
     private static void onRegister(RegisterEvent event) {
@@ -91,6 +95,14 @@ public final class LuckyBlockNeoForge {
 
     private static void onAddReloadListeners(AddServerReloadListenersEvent event) {
         event.addListener(Identifier.of(LuckyBlockMod.NAMESPACE, "outcome_manager"), LuckyBlockMod.OUTCOME_MANAGER);
+    }
+
+    private static void onItemTooltip(ItemTooltipEvent event) {
+        if (event.getItemStack().has(LuckyBlockMod.LUCK_COMPONENT)) {
+            int luck = event.getItemStack().get(LuckyBlockMod.LUCK_COMPONENT);
+            Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
+            event.getToolTip().add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
+        }
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {

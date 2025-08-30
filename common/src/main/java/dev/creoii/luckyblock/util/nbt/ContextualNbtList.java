@@ -1,6 +1,5 @@
 package dev.creoii.luckyblock.util.nbt;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
@@ -16,6 +15,7 @@ import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,13 +24,13 @@ public class ContextualNbtList extends NbtList {
     @Nullable
     private Outcome.Context context;
 
-    public ContextualNbtList(List<NbtElement> list, byte type, @Nullable Outcome.Context context) {
-        super(list, type);
+    public ContextualNbtList(List<NbtElement> list, @Nullable Outcome.Context context) {
+        super(list);
         this.context = context;
     }
 
     public ContextualNbtList() {
-        this(Lists.newArrayList(), (byte) 0, null);
+        this(Lists.newArrayList(), null);
     }
 
     public void setContext(@Nullable Outcome.Context context) {
@@ -41,20 +41,22 @@ public class ContextualNbtList extends NbtList {
         return context;
     }
 
-    public ContextualNbtCompound getCompound(int index) {
-        NbtCompound compound = super.getCompound(index);
-        return new ContextualNbtCompound().copyFrom(compound);
+    @Override
+    public Optional<NbtCompound> getCompound(int index) {
+        Optional<NbtCompound> compound = super.getCompound(index);
+        return compound.map(nbtCompound -> new ContextualNbtCompound().copyFrom(nbtCompound));
     }
 
-    public ContextualNbtList getList(int index) {
+    public Optional<NbtList> getList(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 9) {
                 ((ContextualNbtList) nbtElement).setContext(context);
-                return (ContextualNbtList) nbtElement;
+                return Optional.of((ContextualNbtList) nbtElement);
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     ContextualNbtList nbtList = new ContextualNbtList();
@@ -63,127 +65,137 @@ public class ContextualNbtList extends NbtList {
                     nbtList.add(NbtDouble.of(vec3d.x));
                     nbtList.add(NbtDouble.of(vec3d.y));
                     nbtList.add(NbtDouble.of(vec3d.z));
-                    return nbtList;
+                    return Optional.of(nbtList);
                 }
             }
         }
 
-        ContextualNbtList list = new ContextualNbtList();
-        list.setContext(context);
-        return list;
+        return Optional.empty();
     }
 
-    public short getShort(int index) {
+    public Optional<Short> getShort(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 3) {
-                return ((NbtShort) nbtElement).shortValue();
+                return Optional.of(((NbtShort) nbtElement).shortValue());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<IntProvider> dataResult = IntProvider.createValidatingCodec(-32768, 32767).parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return (short) intProvider.get().get(context.world().getRandom());
+                    return Optional.of((short) intProvider.get().get(context.world().getRandom()));
                 }
             }
         }
-        return 0;
+        return Optional.empty();
     }
 
-    public int getInt(int index) {
+    public Optional<Integer> getInt(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 3) {
-                return ((NbtInt) nbtElement).intValue();
+                return Optional.of(((NbtInt) nbtElement).intValue());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<IntProvider> dataResult = IntProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<IntProvider> intProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing int provider: {}", string));
                 if (intProvider.isPresent()) {
-                    return intProvider.get().get(context.world().getRandom());
+                    return Optional.of(intProvider.get().get(context.world().getRandom()));
                 }
             }
         }
-        return 0;
+        return Optional.empty();
     }
 
-    public int[] getIntArray(int index) {
+    public Optional<int[]> getIntArray(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 11) {
-                return ((NbtIntArray)nbtElement).getIntArray();
+                return Optional.of(((NbtIntArray)nbtElement).getIntArray());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     BlockPos pos = vecProvider.get().getPos(context);
-                    return new int[]{pos.getX(), pos.getY(), pos.getZ()};
+                    return Optional.of(new int[]{pos.getX(), pos.getY(), pos.getZ()});
                 }
             }
         }
 
-        return new int[0];
+        return Optional.empty();
     }
 
-    public long[] getLongArray(int index) {
+    public Optional<long[]> getLongArray(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 12) {
-                return ((NbtLongArray) nbtElement).getLongArray();
+                return Optional.of(((NbtLongArray) nbtElement).getLongArray());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<VecProvider> dataResult = VecProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<VecProvider> vecProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing vec provider: {}", string));
                 if (vecProvider.isPresent()) {
                     BlockPos pos = vecProvider.get().getPos(context);
-                    return new long[]{pos.getX(), pos.getY(), pos.getZ()};
+                    return Optional.of(new long[]{pos.getX(), pos.getY(), pos.getZ()});
                 }
             }
         }
 
-        return new long[0];
+        return Optional.empty();
     }
 
-    public double getDouble(int index) {
+    public Optional<Double> getDouble(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 6) {
-                return ((NbtDouble)nbtElement).doubleValue();
+                return Optional.of(((NbtDouble)nbtElement).doubleValue());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return Optional.of((double) floatProvider.get().get(context.world().getRandom()));
                 }
             }
         }
 
-        return 0d;
+        return Optional.empty();
     }
 
-    public float getFloat(int index) {
+    public Optional<Float> getFloat(int index) {
         if (index >= 0 && index < value.size()) {
             NbtElement nbtElement = value.get(index);
             if (nbtElement.getType() == 5) {
-                return ((NbtFloat)nbtElement).floatValue();
+                return Optional.of(((NbtFloat)nbtElement).floatValue());
             } else if (nbtElement.getType() == 10 && context != null) {
                 StringNbtWriter writer = new StringNbtWriter();
-                DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.apply(getCompound(index))));
+                writer.visitCompound(getCompound(index).get());
+                DataResult<FloatProvider> dataResult = FloatProvider.VALUE_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(writer.getString()));
                 Optional<FloatProvider> floatProvider = dataResult.resultOrPartial(string -> LuckyBlockMod.LOGGER.error("Error parsing float provider: {}", string));
                 if (floatProvider.isPresent()) {
-                    return floatProvider.get().get(context.world().getRandom());
+                    return Optional.of(floatProvider.get().get(context.world().getRandom()));
                 }
             }
         }
 
-        return 0f;
+        return Optional.empty();
     }
 
+    @Override
     public ContextualNbtList copy() {
-        Iterable<NbtElement> iterable = NbtTypes.byId(type).isImmutable() ? value : Iterables.transform(value, NbtElement::copy);
-        return new ContextualNbtList(Lists.newArrayList(iterable), type, context);
+        List<NbtElement> list = new ArrayList<>(value.size());
+
+        for(NbtElement nbtElement : value) {
+            list.add(nbtElement.copy());
+        }
+
+        return new ContextualNbtList(list, context);
     }
 
     @Override

@@ -9,3 +9,7 @@ accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TY
 accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
 accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
 accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILnet/minecraft/component/MergedComponentMap;)V
+extendable class net/minecraft/nbt/NbtCompound
+extendable class net/minecraft/nbt/NbtList
+accessible method net/minecraft/nbt/NbtCompound <init> (Ljava/util/Map;)V
+accessible method net/minecraft/nbt/NbtList <init> (Ljava/util/List;)V

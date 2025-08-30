@@ -34,6 +34,6 @@ public class SqrtFloatProvider extends FloatProvider {
 
     @Override
     public FloatProviderType<?> getType() {
-        return FloatProviderType.SIN;
+        return LuckyFloatProviderTypes.SIN;
     }
 }

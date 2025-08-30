@@ -8,7 +8,6 @@ import dev.creoii.luckyblock.util.resource.LuckyBlockAddonsResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.texture.atlas.AtlasSource;
-import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -67,7 +66,7 @@ public class AddonAtlasSource implements AtlasSource {
     }
 
     @Override
-    public AtlasSourceType getType() {
-        return LuckyBlockClient.ADDON_ATLAS_SOURCE;
+    public MapCodec<? extends AtlasSource> getCodec() {
+        return CODEC;
     }
 }

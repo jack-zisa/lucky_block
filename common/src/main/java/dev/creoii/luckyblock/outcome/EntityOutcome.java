@@ -1,6 +1,5 @@
 package dev.creoii.luckyblock.outcome;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.ContextualProvider;
@@ -16,6 +15,8 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -73,23 +74,33 @@ public class EntityOutcome extends Outcome {
             if (nbtCompound != null) {
                 nbtCompound.setContext(context);
 
-                if (nbtCompound.contains("nbt", 10)) {
-                    ContextualNbtCompound nbt = nbtCompound.getCompound("nbt");
+                if (nbtCompound.contains("nbt")) {
+                    Optional<NbtCompound> nbt = nbtCompound.getCompound("nbt");
+                    if (nbt.isEmpty())
+                        return entity;
+
+                    NbtCompound compound = nbt.get();
                     readNbt(entity, nbtCompound, context);
 
-                    if (nbt.contains(Entity.PASSENGERS_KEY, 9)) {
-                        ContextualNbtCompound passengerCompound = nbt.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
-                        EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
+                    if (compound.contains(Entity.PASSENGERS_KEY)) {
+                        NbtList list = compound.getList(Entity.PASSENGERS_KEY).get();
+                        if (list.isEmpty())
+                            return entity;
+                        NbtCompound passengerCompound = list.getCompound(0).get();
+                        EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
+                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? (ContextualNbtCompound) passengerCompound.getCompound("nbt").get() : null);
                         if (passenger != null)
                             passenger.startRiding(entity);
                     }
-                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY, 9)) {
+                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY)) {
                     readNbt(entity, nbtCompound, context);
 
-                    ContextualNbtCompound passengerCompound = nbtCompound.getList(Entity.PASSENGERS_KEY, 10).getCompound(0);
-                    EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? passengerCompound.getCompound("nbt") : null);
+                    NbtList list = nbtCompound.getList(Entity.PASSENGERS_KEY).get();
+                    if (list.isEmpty())
+                        return entity;
+                    NbtCompound passengerCompound = list.getCompound(0).get();
+                    EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
+                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? (ContextualNbtCompound) passengerCompound.getCompound("nbt").get() : null);
                     if (passenger != null)
                         passenger.startRiding(entity);
                 } else readNbt(entity, nbtCompound, context);
@@ -108,7 +119,7 @@ public class EntityOutcome extends Outcome {
         entity.readNbt(nbtCompound);
 
         if (entity instanceof TameableEntity tameable) {
-            boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting");
+            boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting", false);
             tameable.setSitting(sitting);
             tameable.setInSittingPose(sitting);
             tameable.setJumping(false);

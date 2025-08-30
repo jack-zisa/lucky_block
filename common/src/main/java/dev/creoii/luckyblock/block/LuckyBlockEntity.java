@@ -28,8 +28,8 @@ public class LuckyBlockEntity extends BlockEntity {
 
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.readNbt(nbt, registryLookup);
-        if (nbt.contains("outcome", 8)) {
-            outcomeId = Identifier.tryParse(nbt.getString("outcome"));
+        if (nbt.contains("outcome")) {
+            outcomeId = Identifier.tryParse(nbt.getString("outcome", "lucky:none"));
         }
     }
 

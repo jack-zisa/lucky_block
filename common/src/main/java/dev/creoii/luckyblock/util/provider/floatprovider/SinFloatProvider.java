@@ -34,6 +34,6 @@ public class SinFloatProvider extends FloatProvider {
 
     @Override
     public FloatProviderType<?> getType() {
-        return FloatProviderType.SIN;
+        return LuckyFloatProviderTypes.SIN;
     }
 }
