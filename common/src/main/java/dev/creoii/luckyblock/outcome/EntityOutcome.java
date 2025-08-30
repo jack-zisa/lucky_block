@@ -116,7 +116,7 @@ public class EntityOutcome extends Outcome {
     }
 
     private void readNbt(Entity entity, ContextualNbtCompound nbtCompound, Context context) {
-        entity.readNbt(nbtCompound);
+        entity.readData(nbtCompound);
 
         if (entity instanceof TameableEntity tameable) {
             boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting", false);

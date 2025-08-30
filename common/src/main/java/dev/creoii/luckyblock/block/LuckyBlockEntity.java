@@ -3,9 +3,9 @@ package dev.creoii.luckyblock.block;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
@@ -26,17 +26,17 @@ public class LuckyBlockEntity extends BlockEntity {
         return outcomeId;
     }
 
-    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(nbt, registryLookup);
-        if (nbt.contains("outcome")) {
-            outcomeId = Identifier.tryParse(nbt.getString("outcome", "lucky:none"));
-        }
+    @Override
+    protected void readData(ReadView view) {
+        super.readData(view);
+        outcomeId = view.read("outcome", Identifier.CODEC).orElse(Identifier.of("lucky:none"));
     }
 
-    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.writeNbt(nbt, registryLookup);
+    @Override
+    protected void writeData(WriteView view) {
+        super.writeData(view);
         if (outcomeId != null) {
-            nbt.putString("outcome", outcomeId.toString());
+            view.putString("outcome", outcomeId.toString());
         }
     }
 }

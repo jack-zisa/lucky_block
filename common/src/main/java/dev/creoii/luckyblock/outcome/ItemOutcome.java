@@ -69,7 +69,7 @@ public class ItemOutcome extends Outcome {
                     entity.setStack(newStack);
                     nbt.ifPresent(compound -> {
                         compound.setContext(context);
-                        entity.readNbt(compound);
+                        entity.readData(compound);
                     });
                     entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 
@@ -95,7 +95,7 @@ public class ItemOutcome extends Outcome {
                 entity.setStack(newStack);
                 nbt.ifPresent(compound -> {
                     compound.setContext(context);
-                    entity.readNbt(compound);
+                    entity.readData(compound);
                 });
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 
@@ -116,7 +116,7 @@ public class ItemOutcome extends Outcome {
                 entity.setStack(remainder);
                 nbt.ifPresent(compound -> {
                     compound.setContext(context);
-                    entity.readNbt(compound);
+                    entity.readData(compound);
                 });
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 

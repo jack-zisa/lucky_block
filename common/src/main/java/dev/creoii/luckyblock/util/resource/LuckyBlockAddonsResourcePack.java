@@ -36,7 +36,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     }
 
     public PackResourceMetadata getMetadata() {
-        return new PackResourceMetadata(DESCRIPTION_TEXT, SharedConstants.getGameVersion().getResourceVersion(ResourceType.CLIENT_RESOURCES), Optional.empty());
+        return new PackResourceMetadata(DESCRIPTION_TEXT, SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES), Optional.empty());
     }
 
     @Nullable
