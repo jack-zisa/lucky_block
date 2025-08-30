@@ -260,6 +260,11 @@ public class ContextualNbtCompound extends NbtCompound {
         return new ContextualNbtCompound(map, context);
     }
 
+    public static ContextualNbtCompound copyWith(NbtCompound compound, Outcome.Context context) {
+        Map<String, NbtElement> map = Maps.newHashMap(Maps.transformValues(compound.entries, NbtElement::copy));
+        return new ContextualNbtCompound(map, context);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

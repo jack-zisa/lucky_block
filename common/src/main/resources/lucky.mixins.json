@@ -6,6 +6,7 @@
     "ResourcePackManagerMixin"
   ],
   "client": [
+    "AtlasSourceManagerMixin",
     "CreateWorldScreenMixin",
     "GameOptionsMixin",
     "VanillaResourcePackProviderMixin"

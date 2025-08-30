@@ -88,7 +88,7 @@ public class EntityOutcome extends Outcome {
                             return entity;
                         NbtCompound passengerCompound = list.getCompound(0).get();
                         EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? (ContextualNbtCompound) passengerCompound.getCompound("nbt").get() : null);
+                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? ContextualNbtCompound.copyWith(passengerCompound.getCompound("nbt").get(), context) : null);
                         if (passenger != null)
                             passenger.startRiding(entity);
                     }
@@ -100,7 +100,7 @@ public class EntityOutcome extends Outcome {
                         return entity;
                     NbtCompound passengerCompound = list.getCompound(0).get();
                     EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? (ContextualNbtCompound) passengerCompound.getCompound("nbt").get() : null);
+                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? ContextualNbtCompound.copyWith(passengerCompound.getCompound("nbt").get(), context) : null);
                     if (passenger != null)
                         passenger.startRiding(entity);
                 } else readNbt(entity, nbtCompound, context);
