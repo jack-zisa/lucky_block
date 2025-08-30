@@ -1,7 +1,5 @@
 accessWidener v2 named
 
 accessible field net/minecraft/nbt/NbtCompound entries Ljava/util/Map;
-accessible method net/minecraft/nbt/NbtList <init> (Ljava/util/List;B)V
 accessible field net/minecraft/nbt/NbtList value Ljava/util/List;
-accessible field net/minecraft/nbt/NbtList type B
 accessible field net/minecraft/entity/projectile/WindChargeEntity EXPLOSION_BEHAVIOR Lnet/minecraft/world/explosion/ExplosionBehavior;

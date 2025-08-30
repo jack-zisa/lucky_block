@@ -1,11 +1,8 @@
 accessWidener v2 named
 
 accessible field net/minecraft/nbt/NbtCompound entries Ljava/util/Map;
-accessible method net/minecraft/nbt/NbtList <init> (Ljava/util/List;B)V
 accessible field net/minecraft/nbt/NbtList value Ljava/util/List;
-accessible field net/minecraft/nbt/NbtList type B
 accessible field net/minecraft/entity/projectile/WindChargeEntity EXPLOSION_BEHAVIOR Lnet/minecraft/world/explosion/ExplosionBehavior;
-accessible field net/minecraft/client/texture/atlas/AtlasSourceManager SOURCE_TYPE_BY_ID Lcom/google/common/collect/BiMap;
 accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
 accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
 accessible method net/minecraft/item/ItemStack <init> (Lnet/minecraft/item/ItemConvertible;ILnet/minecraft/component/MergedComponentMap;)V
