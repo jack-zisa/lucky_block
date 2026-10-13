@@ -7,24 +7,18 @@ import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.luckyblock.util.provider.booleanprovider.FalseBooleanProvider;
-import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class EntityOutcome extends Outcome {
@@ -35,29 +29,31 @@ public class EntityOutcome extends Outcome {
                 createGlobalDelayField(outcome -> outcome.delay),
                 createGlobalPosField(Outcome::getPos),
                 createGlobalReinitField(Outcome::shouldReinit),
-                StringProvider.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityTypeId),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
+                EntityType.CODEC.fieldOf("entity_type").forGetter(outcome -> outcome.entityType),
                 ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
+                EntityType.CODEC.listOf().fieldOf("passengers").orElse(List.of()).forGetter(outcome -> outcome.passengers),
+                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 BooleanProvider.TYPE_CODEC.fieldOf("initialize_mobs").orElse(FalseBooleanProvider.FALSE).forGetter(outcome -> outcome.initializeMobs)
         ).apply(instance, EntityOutcome::new);
     });
-    private final StringProvider entityTypeId;
-    private final IntProvider count;
+    private final EntityType<?> entityType;
     private final Optional<ContextualNbtCompound> nbt;
+    private final List<EntityType<?>> passengers;
+    private final IntProvider count;
     private final BooleanProvider initializeMobs;
 
-    public EntityOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, StringProvider entityTypeId, IntProvider count, Optional<ContextualNbtCompound> nbt, BooleanProvider initializeMobs) {
+    public EntityOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, EntityType<?> entityType, Optional<ContextualNbtCompound> nbt, List<EntityType<?>> passengers, IntProvider count, BooleanProvider initializeMobs) {
         super(OutcomeType.ENTITY, luck, chance, weightProvider, delay, pos, reinit);
-        this.entityTypeId = entityTypeId;
-        this.count = count;
+        this.entityType = entityType;
         this.nbt = nbt;
+        this.passengers = passengers;
+        this.count = count;
         this.initializeMobs = initializeMobs;
     }
 
     @Override
     public void run(Context context) {
         Vec3d spawnPos = Vec3d.ofBottomCenter(getPos(context).getPos(context));
-        EntityType<?> entityType = Registries.ENTITY_TYPE.get(Identifier.tryParse(ContextualProvider.applyStringContext(entityTypeId, context).get(context.world().getRandom())));
         IntProvider count = ContextualProvider.applyIntContext(this.count, context);
         for (int i = 0; i < count.get(context.world().getRandom()); ++i) {
             spawnEntity(entityType, context, spawnPos, nbt.orElse(null));
@@ -71,68 +67,20 @@ public class EntityOutcome extends Outcome {
     private Entity spawnEntity(EntityType<?> entityType, Context context, Vec3d spawnPos, @Nullable ContextualNbtCompound nbtCompound) {
         Entity entity = entityType.create(context.world(), SpawnReason.NATURAL);
         if (entity != null) {
-            if (nbtCompound != null) {
-                nbtCompound.setContext(context);
-
-                if (nbtCompound.contains("nbt")) {
-                    Optional<NbtCompound> nbt = nbtCompound.getCompound("nbt");
-                    if (nbt.isEmpty())
-                        return entity;
-
-                    NbtCompound compound = nbt.get();
-                    readNbt(entity, nbtCompound, context);
-
-                    if (compound.contains(Entity.PASSENGERS_KEY)) {
-                        NbtList list = compound.getList(Entity.PASSENGERS_KEY).get();
-                        if (list.isEmpty())
-                            return entity;
-                        NbtCompound passengerCompound = list.getCompound(0).get();
-                        EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
-                        Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? ContextualNbtCompound.copyWith(passengerCompound.getCompound("nbt").get(), context) : null);
-                        if (passenger != null)
-                            passenger.startRiding(entity);
-                    }
-                } else if (nbtCompound.contains(Entity.PASSENGERS_KEY)) {
-                    readNbt(entity, nbtCompound, context);
-
-                    NbtList list = nbtCompound.getList(Entity.PASSENGERS_KEY).get();
-                    if (list.isEmpty())
-                        return entity;
-                    NbtCompound passengerCompound = list.getCompound(0).get();
-                    EntityType<?> passengerType = Registries.ENTITY_TYPE.get(Identifier.tryParse(passengerCompound.getString("id", "minecraft:pig")));
-                    Entity passenger = spawnEntity(passengerType, context, spawnPos, passengerCompound.contains("nbt") ? ContextualNbtCompound.copyWith(passengerCompound.getCompound("nbt").get(), context) : null);
-                    if (passenger != null)
-                        passenger.startRiding(entity);
-                } else readNbt(entity, nbtCompound, context);
-            }
-            if (entity instanceof MobEntity mob && context.world()
-                    instanceof ServerWorld serverWorld && ContextualProvider.applyBooleanContext(initializeMobs, context).get(context.world().random)) {
+            if (entity instanceof MobEntity mob && context.world() instanceof ServerWorld serverWorld && ContextualProvider.applyBooleanContext(initializeMobs, context).get(context.world().random)) {
                 mob.initialize(serverWorld, context.world().getLocalDifficulty(BlockPos.ofFloored(spawnPos.x, spawnPos.y, spawnPos.z)), SpawnReason.NATURAL, null);
             }
             entity.refreshPositionAndAngles(spawnPos.x, spawnPos.y, spawnPos.z, context.world().getRandom().nextFloat() * 360f, 0f);
+
+            Entity toRide = entity;
+            for (EntityType<?> passengerType : passengers) {
+                Entity passenger = spawnEntity(passengerType, context, spawnPos, nbtCompound);
+                passenger.startRiding(toRide);
+                toRide = passenger;
+            }
+
             context.world().spawnEntity(entity);
         }
         return entity;
-    }
-
-    private void readNbt(Entity entity, ContextualNbtCompound nbtCompound, Context context) {
-        entity.readData(nbtCompound);
-
-        if (entity instanceof TameableEntity tameable) {
-            boolean sitting = nbtCompound.contains("Sitting") && nbtCompound.getBoolean("Sitting", false);
-            tameable.setSitting(sitting);
-            tameable.setInSittingPose(sitting);
-            tameable.setJumping(false);
-            tameable.getNavigation().stop();
-            tameable.setTarget(null);
-        }
-
-        if (nbtCompound.contains("Owner") && context.player() != null) {
-            if (entity instanceof ProjectileEntity projectile) {
-                projectile.setOwner(context.player());
-            } else if (entity instanceof TameableEntity tameable) {
-                tameable.setOwner(context.player());
-            }
-        }
     }
 }

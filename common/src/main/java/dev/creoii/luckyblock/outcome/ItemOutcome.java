@@ -6,8 +6,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
-import dev.creoii.luckyblock.util.nbt.ContextualNbtCompound;
 import dev.creoii.luckyblock.util.vec.VecProvider;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.component.MergedComponentMap;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -33,20 +33,20 @@ public class ItemOutcome extends Outcome {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
                 }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
                 IntProvider.NON_NEGATIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count),
-                ContextualNbtCompound.CODEC.optionalFieldOf("nbt").forGetter(outcome -> outcome.nbt),
+                ComponentMap.CODEC.optionalFieldOf("components").forGetter(outcome -> outcome.componentMap),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
     });
     private final ItemStack stack;
     private final Optional<IntProvider> count;
-    private final Optional<ContextualNbtCompound> nbt;
+    private final Optional<ComponentMap> componentMap;
     private final Optional<VecProvider> velocity;
 
-    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, Optional<IntProvider> count, Optional<ContextualNbtCompound> nbt, Optional<VecProvider> velocity) {
+    public ItemOutcome(int luck, float chance, IntProvider weightProvider, IntProvider delay, Optional<VecProvider> pos, boolean reinit, ItemStack stack, Optional<IntProvider> count, Optional<ComponentMap> componentMap, Optional<VecProvider> velocity) {
         super(OutcomeType.ITEM, luck, chance, weightProvider, delay, pos, reinit);
         this.stack = stack;
         this.count = count;
-        this.nbt = nbt;
+        this.componentMap = componentMap;
         this.velocity = velocity;
     }
 
@@ -66,11 +66,8 @@ public class ItemOutcome extends Outcome {
                 if (entity != null) {
                     ItemStack newStack = copyStack(stack);
 
+                    componentMap.ifPresent(newStack::applyComponentsFrom);
                     entity.setStack(newStack);
-                    nbt.ifPresent(compound -> {
-                        compound.setContext(context);
-                        entity.readData(compound);
-                    });
                     entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 
                     if (velocity != null) {
@@ -92,11 +89,8 @@ public class ItemOutcome extends Outcome {
                 ItemStack newStack = copyStack(stack);
 
                 newStack.setCount(stack.getMaxCount());
+                componentMap.ifPresent(newStack::applyComponentsFrom);
                 entity.setStack(newStack);
-                nbt.ifPresent(compound -> {
-                    compound.setContext(context);
-                    entity.readData(compound);
-                });
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 
                 if (velocity != null) {
@@ -114,10 +108,8 @@ public class ItemOutcome extends Outcome {
 
                 remainder.setCount(total % stack.getMaxCount());
                 entity.setStack(remainder);
-                nbt.ifPresent(compound -> {
-                    compound.setContext(context);
-                    entity.readData(compound);
-                });
+                componentMap.ifPresent(remainder::applyComponentsFrom);
+                entity.setStack(remainder);
                 entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
 
                 if (velocity != null) {
