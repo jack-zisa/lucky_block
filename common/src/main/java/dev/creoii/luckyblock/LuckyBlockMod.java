@@ -10,16 +10,10 @@ import dev.creoii.luckyblock.util.provider.booleanprovider.BooleanProviderType;
 import dev.creoii.luckyblock.util.provider.stringprovider.StringProviderType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
 import dev.creoii.luckyblock.util.shape.ShapeType;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.component.ComponentType;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleDefaultedRegistry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.slf4j.Logger;
 
 public final class LuckyBlockMod {
@@ -33,19 +27,19 @@ public final class LuckyBlockMod {
 
     public static final ComponentType<Integer> LUCK_COMPONENT = new ComponentType.Builder<Integer>().codec(Codecs.rangedInt(-100, 100)).packetCodec(PacketCodecs.VAR_INT).build();
 
-    public static final RegistryKey<Registry<OutcomeType>> OUTCOME_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "outcome_types"));
+    public static final RegistryKey<Registry<OutcomeType>> OUTCOME_TYPES_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath(NAMESPACE, "outcome_types"));
     public static final Registry<OutcomeType> OUTCOME_TYPES = new SimpleDefaultedRegistry<>("lucky:none", OUTCOME_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static final RegistryKey<Registry<ShapeType>> SHAPE_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "shape_types"));
+    public static final RegistryKey<Registry<ShapeType>> SHAPE_TYPES_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath(NAMESPACE, "shape_types"));
     public static final Registry<ShapeType> SHAPE_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", SHAPE_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "pos_provider_types"));
+    public static final RegistryKey<Registry<VecProviderType<?>>> POS_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath(NAMESPACE, "pos_provider_types"));
     public static final Registry<VecProviderType<?>> POS_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:zero", POS_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static final RegistryKey<Registry<StringProviderType<?>>> STRING_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "string_provider_types"));
+    public static final RegistryKey<Registry<StringProviderType<?>>> STRING_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath(NAMESPACE, "string_provider_types"));
     public static final Registry<StringProviderType<?>> STRING_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:empty", STRING_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
-    public static final RegistryKey<Registry<BooleanProviderType<?>>> BOOLEAN_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.of(NAMESPACE, "boolean_provider_types"));
+    public static final RegistryKey<Registry<BooleanProviderType<?>>> BOOLEAN_PROVIDER_TYPES_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath(NAMESPACE, "boolean_provider_types"));
     public static final Registry<BooleanProviderType<?>> BOOLEAN_PROVIDER_TYPES = new SimpleDefaultedRegistry<>("lucky:true", BOOLEAN_PROVIDER_TYPES_KEY, Lifecycle.stable(), false);
 
     public static BlockEntityType<LuckyBlockEntity> LUCKY_BLOCK_ENTITY;

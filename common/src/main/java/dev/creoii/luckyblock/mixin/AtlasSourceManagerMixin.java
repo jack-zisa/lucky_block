@@ -5,7 +5,7 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.client.AddonAtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +20,6 @@ public class AtlasSourceManagerMixin {
 
     @Inject(method = "bootstrap", at = @At("TAIL"))
     private static void gbw$bootstrapLuckyAddonAtlas(CallbackInfo ci) {
-        ID_MAPPER.put(Identifier.of(LuckyBlockMod.NAMESPACE, "addon"), AddonAtlasSource.CODEC);
+        ID_MAPPER.put(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "addon"), AddonAtlasSource.CODEC);
     }
 }

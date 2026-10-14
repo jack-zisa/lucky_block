@@ -2,21 +2,20 @@ package dev.creoii.luckyblock.outcome;
 
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.FunctionUtils;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resource.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +41,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
             Identifier identifier2 = resourceFinder.toResourceId(identifier);
 
             try {
-                Reader reader = identifierResourceEntry.getValue().getReader();
+                Reader reader = identifierResourceEntry.getValue().openAsReader();
                 try {
                     JsonElement jsonElement = JsonHelper.deserialize(gson, reader, JsonElement.class);
                     JsonElement jsonElement2 = results.put(identifier2, jsonElement);
@@ -50,12 +49,10 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
                         throw new IllegalStateException("Duplicate data file ignored with ID " + identifier2);
                     }
                 } catch (Throwable var13) {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (Throwable var12) {
-                            var13.addSuppressed(var12);
-                        }
+                    try {
+                        reader.close();
+                    } catch (Throwable var12) {
+                        var13.addSuppressed(var12);
                     }
 
                     throw var13;
@@ -91,7 +88,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
     }
 
     public void tickDelays(MinecraftServer server) {
-        if (server.getTickManager().shouldTick()) {
+        if (!server.tickRateManager().isFrozen()) {
             if (delays.isEmpty())
                 return;
 
@@ -99,7 +96,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
 
             delays.forEach((pair, integer) -> {
                 if (integer.decrementAndGet() <= 0) {
-                    pair.getLeft().run(pair.getRight());
+                    pair.getFirst().run(pair.getSecond());
                     toRemove.add(pair);
                 }
             });
@@ -143,7 +140,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
         throw new IllegalArgumentException("Outcome '" + id + "' does not exist in Lucky Block container " + container.getId().getNamespace());
     }
 
-    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable PlayerEntity player) {
+    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable Player player) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + namespace + "' not found");
@@ -155,8 +152,8 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
         }
 
         if (player != null) {
-            StatusEffectInstance goodLuckEffect = player.getStatusEffect(StatusEffects.LUCK);
-            StatusEffectInstance badLuckEffect = player.getStatusEffect(StatusEffects.UNLUCK);
+            MobEffectInstance goodLuckEffect = player.getEffect(MobEffects.LUCK);
+            MobEffectInstance badLuckEffect = player.getEffect(MobEffects.UNLUCK);
 
             if (goodLuckEffect != null) {
                 luck = Math.min(100, luck + ((goodLuckEffect.getAmplifier() + 1) * 5));

@@ -4,14 +4,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.ContextualProvider;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.util.math.floatprovider.FloatProviderType;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.dimension.DimensionTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -19,15 +17,15 @@ import java.util.function.Function;
 
 public class WorldFloatProvider extends FloatProvider implements ContextualProvider<FloatProvider> {
     public static final MapCodec<WorldFloatProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(RegistryKey.createCodec(RegistryKeys.DIMENSION_TYPE).optionalFieldOf("source").forGetter(worldIntProvider -> worldIntProvider.source),
+        return instance.group(ResourceKey.codec(Registries.DIMENSION_TYPE).optionalFieldOf("source").forGetter(worldIntProvider -> worldIntProvider.source),
                 Value.CODEC.fieldOf("value").forGetter(worldIntProvider -> worldIntProvider.value)
         ).apply(instance, WorldFloatProvider::new);
     });
-    private final Optional<RegistryKey<DimensionType>> source;
+    private final Optional<ResourceKey<Level>> source;
     private final Value value;
     private Outcome.Context context;
 
-    public WorldFloatProvider(Optional<RegistryKey<DimensionType>> source, Value value) {
+    public WorldFloatProvider(Optional<ResourceKey<Level>> source, Value value) {
         this.source = source;
         this.value = value;
     }
@@ -39,15 +37,15 @@ public class WorldFloatProvider extends FloatProvider implements ContextualProvi
     }
 
     @Override
-    public float get(Random random) {
+    public float get(RandomSource random) {
         if (context == null) {
             throw new IllegalStateException("Cannot get value from WorldFloatProvider when context is null");
         }
 
         if (source.isPresent()) {
-            return value.function.apply(source.orElse(DimensionTypes.OVERWORLD), context);
+            return value.function.apply(source.orElse(Level.OVERWORLD), context);
         } else {
-            return value.function.apply(DimensionTypes.OVERWORLD, context);
+            return value.function.apply(Level.OVERWORLD, context);
         }
     }
 
@@ -71,7 +69,7 @@ public class WorldFloatProvider extends FloatProvider implements ContextualProvi
         return Type.FLOAT;
     }
 
-    public enum Value implements StringIdentifiable {
+    public enum Value implements StringRepresentable {
         MOON_PHASE(0, 7, (key, context1) -> {
             return Outcome.Context.getSourceWorld(key, context1).getRainGradient(1f);
         }),
@@ -124,23 +122,23 @@ public class WorldFloatProvider extends FloatProvider implements ContextualProvi
             return Outcome.Context.getSourceWorld(key, context1).getTickManager().getTickRate();
         });
 
-        public static final EnumCodec<Value> CODEC = StringIdentifiable.createCodec(Value::values);
+        public static final EnumCodec<Value> CODEC = StringRepresentable.fromEnum(Value::values);
         private final Function<Outcome.Context, Float> min;
         private final Function<Outcome.Context, Float> max;
-        private final BiFunction<RegistryKey<DimensionType>, Outcome.Context, Float> function;
+        private final BiFunction<ResourceKey<Level>, Outcome.Context, Float> function;
 
-        Value(float min, float max, BiFunction<RegistryKey<DimensionType>, Outcome.Context, Float> function) {
+        Value(float min, float max, BiFunction<ResourceKey<Level>, Outcome.Context, Float> function) {
             this(context -> min, context -> max, function);
         }
 
-        Value(Function<Outcome.Context, Float> min, Function<Outcome.Context, Float> max, BiFunction<RegistryKey<DimensionType>, Outcome.Context, Float> function) {
+        Value(Function<Outcome.Context, Float> min, Function<Outcome.Context, Float> max, BiFunction<ResourceKey<Level>, Outcome.Context, Float> function) {
             this.min = min;
             this.max = max;
             this.function = function;
         }
 
         @Override
-        public String asString() {
+        public String getSerializedName() {
             return name().toLowerCase();
         }
     }

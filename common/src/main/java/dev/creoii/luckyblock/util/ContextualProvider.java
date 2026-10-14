@@ -6,8 +6,8 @@ import dev.creoii.luckyblock.util.provider.floatprovider.*;
 import dev.creoii.luckyblock.util.provider.intprovider.*;
 import dev.creoii.luckyblock.util.provider.stringprovider.RandomStringProvider;
 import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.IntProvider;
 
 public interface ContextualProvider<P> {
     P withContext(Outcome.Context context);

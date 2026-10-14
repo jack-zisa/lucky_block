@@ -5,12 +5,12 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.block.LuckyBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ public class LuckyBlockContainer {
         return instance.group(Identifier.CODEC.fieldOf("id").forGetter(container -> container.id),
                 Activation.CODEC.listOf().fieldOf("activations").orElse(DEFAULT_ACTIVATIONS).forGetter(container -> container.activations),
                 Settings.CODEC.fieldOf("settings").orElse(Settings.DEFAULT).forGetter(container -> container.settings),
-                Codec.dispatchedMap(Registries.ITEM.getCodec(), item -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck),
+                Codec.dispatchedMap(BuiltInRegistries.ITEM.byNameCodec(), _ -> Codec.INT).fieldOf("item_luck").orElse(Maps.newHashMap()).forGetter(container -> container.itemLuck),
                 Codec.BOOL.fieldOf("debug").orElse(false).forGetter(container -> container.debug)
         ).apply(instance, LuckyBlockContainer::new);
     });
@@ -120,16 +120,16 @@ public class LuckyBlockContainer {
         });
     }
 
-    public enum Activation implements StringIdentifiable {
+    public enum Activation implements StringRepresentable {
         BREAK_CREATIVE,
         BREAK_SURVIVAL,
         RIGHT_CLICK,
         POWER;
 
-        public static final Codec<Activation> CODEC = StringIdentifiable.createCodec(Activation::values);
+        public static final Codec<Activation> CODEC = StringRepresentable.fromEnum(Activation::values);
 
         @Override
-        public String asString() {
+        public String getSerializedName() {
             return name().toLowerCase();
         }
     }

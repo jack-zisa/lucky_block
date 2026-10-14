@@ -1,39 +1,40 @@
 package dev.creoii.luckyblock.block;
 
 import com.google.gson.JsonObject;
-import com.mojang.serialization.MapCodec;
+import com.mojang.datafixers.util.Pair;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.block.WireOrientation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class LuckyBlock extends BlockWithEntity {
-    public static final IntProperty LUCK = IntProperty.of("luck", 0, 200);
+public class LuckyBlock extends BaseEntityBlock {
+    public static final IntegerProperty LUCK = IntegerProperty.create("luck", 0, 200);
     private final String namespace;
 
-    public LuckyBlock(String namespace, Settings settings) {
+    public LuckyBlock(String namespace, BlockBehaviour.Properties settings) {
         super(settings);
         this.namespace = namespace;
-        setDefaultState(stateManager.getDefaultState().with(LUCK, 100));
+        registerDefaultState(defaultBlockState().setValue(LUCK, 100));
     }
 
     public String getNamespace() {
@@ -41,36 +42,26 @@ public class LuckyBlock extends BlockWithEntity {
     }
 
     @Override
-    protected MapCodec<? extends BlockWithEntity> getCodec() {
-        return null;
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
-    }
-
-    @Nullable
-    protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        return null;
-    }
-
-    @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public @org.jspecify.annotations.Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LuckyBlockEntity(pos, state);
     }
 
     @Override
-    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
-        ItemStack stack = ctx.getStack();
+    public @org.jspecify.annotations.Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        ItemStack stack = ctx.getItemInHand();
         Integer luck = stack.get(LuckyBlockMod.LUCK_COMPONENT);
         if (luck != null) {
-            return getDefaultState().with(LUCK, luck + 100);
+            return defaultBlockState().setValue(LUCK, luck + 100);
         }
-        return super.getPlacementState(ctx);
+        return super.getStateForPlacement(ctx);
     }
 
-    private JsonObject getOutcomeFromState(World world, BlockState state, BlockPos pos, @Nullable PlayerEntity player) {
+    private JsonObject getOutcomeFromState(Level world, BlockState state, BlockPos pos, @Nullable Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof LuckyBlockEntity luckyBlockEntity && luckyBlockEntity.getOutcomeId() != null) {
             JsonObject outcome = LuckyBlockMod.OUTCOME_MANAGER.getOutcomeById(luckyBlockEntity.getOutcomeId());
@@ -85,20 +76,20 @@ public class LuckyBlock extends BlockWithEntity {
 
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.isDebug()) {
-            LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getLeft());
+            LuckyBlockMod.LOGGER.info("Executing outcome: {}", pair.getFirst());
         }
-        return pair.getRight();
+        return pair.getSecond();
     }
 
     @Override
-    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @org.jspecify.annotations.Nullable BlockEntity blockEntity, ItemStack destroyedWith) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && ((container.hasActivation(LuckyBlockContainer.Activation.BREAK_SURVIVAL) && !player.isCreative()) || (container.hasActivation(LuckyBlockContainer.Activation.BREAK_CREATIVE) && player.isCreative()))) {
-            if (!world.isClient) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, player);
+            if (!level.isClientSide()) {
+                Outcome.Context context = new Outcome.Context(level, pos, state, player);
+                JsonObject outcomeElement = getOutcomeFromState(level, state, pos, player);
                 if (outcomeElement == null)
-                    return super.onBreak(world, pos, state, player);
+                    super.playerDestroy(level, player, pos, state, blockEntity, destroyedWith);
 
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
@@ -106,44 +97,44 @@ public class LuckyBlock extends BlockWithEntity {
                 }
             }
         }
-        return super.onBreak(world, pos, state, player);
+        super.playerDestroy(level, player, pos, state, blockEntity, destroyedWith);
     }
 
     @Override
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.RIGHT_CLICK)) {
-            if (!world.isClient) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, player);
-                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, player);
+            if (!level.isClientSide()) {
+                Outcome.Context context = new Outcome.Context(level, pos, state, player);
+                JsonObject outcomeElement = getOutcomeFromState(level, state, pos, player);
                 if (outcomeElement == null)
-                    return super.onUse(state, world, pos, player, hit);
+                    return super.useWithoutItem(state, level, pos, player, hitResult);
 
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
-                    world.breakBlock(pos, false);
+                    level.destroyBlock(pos, false);
                     outcome.runOutcome(context);
                 }
-                return ActionResult.SUCCESS_SERVER;
+                return InteractionResult.SUCCESS_SERVER;
             }
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return super.onUse(state, world, pos, player, hit);
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @org.jspecify.annotations.Nullable Orientation orientation, boolean movedByPiston) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
-            if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, null);
-                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, null);
+            if (!level.isClientSide() && level.isReceivingRedstonePower(pos)) {
+                Outcome.Context context = new Outcome.Context(level, pos, state, null);
+                JsonObject outcomeElement = getOutcomeFromState(level, state, pos, null);
                 if (outcomeElement == null)
                     return;
 
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
-                    world.breakBlock(pos, false);
+                    level.destroyBlock(pos, false);
                     outcome.runOutcome(context);
                 }
             }
@@ -151,27 +142,27 @@ public class LuckyBlock extends BlockWithEntity {
     }
 
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @org.jspecify.annotations.Nullable LivingEntity by, ItemStack itemStack) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
-            if (!world.isClient && world.isReceivingRedstonePower(pos)) {
-                Outcome.Context context = new Outcome.Context(world, pos, state, placer instanceof PlayerEntity player ? player : null);
-                JsonObject outcomeElement = getOutcomeFromState(world, state, pos, placer instanceof PlayerEntity player ? player : null);
+            if (!level.isClientSide() && level.isReceivingRedstonePower(pos)) {
+                Outcome.Context context = new Outcome.Context(level, pos, state, by instanceof Player player ? player : null);
+                JsonObject outcomeElement = getOutcomeFromState(level, state, pos, by instanceof Player player ? player : null);
                 if (outcomeElement == null)
                     return;
 
                 Outcome outcome = LuckyBlockMod.OUTCOME_MANAGER.parseJsonOutcome(outcomeElement, context);
                 if (outcome != null) {
-                    world.breakBlock(pos, false);
+                    level.destroyBlock(pos, false);
                     outcome.runOutcome(context);
                 }
             }
         }
-        super.onPlaced(world, pos, state, placer, itemStack);
+        super.setPlacedBy(level, pos, state, by, itemStack);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LUCK);
     }
 }

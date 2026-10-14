@@ -3,7 +3,8 @@ package dev.creoii.luckyblock.util;
 import com.ezylang.evalex.Expression;
 import com.google.common.collect.ImmutableMap;
 import dev.creoii.luckyblock.outcome.Outcome;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Map;
@@ -17,17 +18,17 @@ public class FunctionUtils {
     private static final List<String> COLORS = List.of("brown", "red", "orange", "yellow", "lime", "green", "cyan", "blue", "light_blue", "pink", "magenta", "purple", "black", "gray", "light_gray", "white");
     private static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "dark_oak", "acacia", "mangrove", "cherry");
     public static final Map<String, Function<Outcome.Context, String>> STRING_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, String>>()
-            .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().getName())
-            .put("playerUUID", context -> context.player() == null ? "" : String.valueOf(context.player().getUuidAsString()))
+            .put("playerName", context -> context.player() == null ? "" : context.player().getGameProfile().name())
+            .put("playerUUID", context -> context.player() == null ? "" : context.player().getStringUUID())
             .put("playerDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getFacing().asString()))
             .put("playerHorizontalDirection", context -> context.player() == null ? "" : String.valueOf(context.player().getHorizontalFacing().asString()))
-            .put("randomDirection", context -> String.valueOf(Direction.random(context.world().getRandom())))
-            .put("randomHorizontalDirection", context -> String.valueOf(Direction.Type.HORIZONTAL.random(context.world().getRandom())))
+            .put("randomDirection", context -> String.valueOf(Direction.getRandom(context.world().getRandom())))
+            .put("randomHorizontalDirection", context -> String.valueOf(Direction.Plane.HORIZONTAL.getRandomDirection(context.world().getRandom())))
             .put("randomDyeColor", context -> String.valueOf(COLORS.get(context.world().getRandom().nextInt(COLORS.size()))))
             .put("randomDye", context -> String.valueOf(COLORS.get(context.world().getRandom().nextInt(COLORS.size()))))
             .put("randomWoodType", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
             .put("randomWood", context -> String.valueOf(WOODS.get(context.world().getRandom().nextInt(WOODS.size()))))
-            .put("randomAxis", context -> String.valueOf(Direction.Axis.pickRandomAxis(context.world().getRandom())))
+            .put("randomAxis", context -> String.valueOf(Direction.Axis.getRandom(context.world().getRandom())))
             .build();
     public static final Map<String, Function<Outcome.Context, Integer>> INT_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Integer>>()
             .put("playerPosX", context -> context.player() == null ? context.pos().getX() : context.player().getBlockX())
@@ -39,21 +40,21 @@ public class FunctionUtils {
             .put("randomRGBColor", context -> context.world().getRandom().nextInt(16777215))
             .build();
     public static final Map<String, Function<Outcome.Context, Double>> DOUBLE_PARAMS = new ImmutableMap.Builder<String, Function<Outcome.Context, Double>>()
-            .put("playerVecX", context -> context.player() == null ? context.pos().toCenterPos().getX() : context.player().getX())
-            .put("playerVecY", context -> context.player() == null ? context.pos().toCenterPos().getY() : context.player().getY())
-            .put("playerVecZ", context -> context.player() == null ? context.pos().toCenterPos().getZ() : context.player().getZ())
-            .put("playerX", context -> context.player() == null ? context.pos().toCenterPos().getX() : context.player().getX())
-            .put("playerY", context -> context.player() == null ? context.pos().toCenterPos().getY() : context.player().getY())
-            .put("playerZ", context -> context.player() == null ? context.pos().toCenterPos().getZ() : context.player().getZ())
-            .put("blockVecX", context -> context.pos().toCenterPos().getX())
-            .put("blockVecY", context -> context.pos().toCenterPos().getY())
-            .put("blockVecZ", context -> context.pos().toCenterPos().getZ())
-            .put("blockX", context -> context.pos().toCenterPos().getX())
-            .put("blockY", context -> context.pos().toCenterPos().getY())
-            .put("blockZ", context -> context.pos().toCenterPos().getZ())
-            .put("playerDistance", context -> context.player() == null ? 0d : context.player().getPos().distanceTo(context.pos().toCenterPos()))
-            .put("playerSquaredDistance", context -> context.player() == null ? 0d : context.player().getPos().squaredDistanceTo(context.pos().toCenterPos()))
-            .put("playerDistance2", context -> context.player() == null ? 0d : context.player().getPos().squaredDistanceTo(context.pos().toCenterPos()))
+            .put("playerVecX", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).x : context.player().getX())
+            .put("playerVecY", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).y : context.player().getY())
+            .put("playerVecZ", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).z : context.player().getZ())
+            .put("playerX", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).x : context.player().getX())
+            .put("playerY", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).y : context.player().getY())
+            .put("playerZ", context -> context.player() == null ? Vec3.atCenterOf(context.pos()).z : context.player().getZ())
+            .put("blockVecX", context -> Vec3.atCenterOf(context.pos()).x)
+            .put("blockVecY", context -> Vec3.atCenterOf(context.pos()).y)
+            .put("blockVecZ", context -> Vec3.atCenterOf(context.pos()).z)
+            .put("blockX", context -> Vec3.atCenterOf(context.pos()).x)
+            .put("blockY", context -> Vec3.atCenterOf(context.pos()).y)
+            .put("blockZ", context -> Vec3.atCenterOf(context.pos()).z)
+            .put("playerDistance", context -> context.player() == null ? 0d : context.player().position().distanceTo(Vec3.atCenterOf(context.pos())))
+            .put("playerSquaredDistance", context -> context.player() == null ? 0d : context.player().position().distanceToSqr(Vec3.atCenterOf(context.pos())))
+            .put("playerDistance2", context -> context.player() == null ? 0d : context.player().position().distanceToSqr(Vec3.atCenterOf(context.pos())))
             .put("playerPitch", context -> context.player() == null ? 0d : context.player().getPitch())
             .put("playerYaw", context -> context.player() == null ? 0d : context.player().getYaw())
             .build();

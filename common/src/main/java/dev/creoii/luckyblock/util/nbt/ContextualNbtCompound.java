@@ -13,10 +13,6 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.nbt.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.util.math.intprovider.IntProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

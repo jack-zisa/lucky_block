@@ -1,13 +1,12 @@
 package dev.creoii.luckyblock.block;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 public class LuckyBlockEntity extends BlockEntity {
@@ -18,25 +17,19 @@ public class LuckyBlockEntity extends BlockEntity {
         outcomeId = null;
     }
 
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }
-
     public @Nullable Identifier getOutcomeId() {
         return outcomeId;
     }
 
     @Override
-    protected void readData(ReadView view) {
-        super.readData(view);
-        outcomeId = view.read("outcome", Identifier.CODEC).orElse(Identifier.of("lucky:none"));
+    protected void loadAdditional(ValueInput input) {
+        outcomeId = input.read("outcome", Identifier.CODEC).orElse(Identifier.parse("lucky:none"));
     }
 
     @Override
-    protected void writeData(WriteView view) {
-        super.writeData(view);
+    protected void saveAdditional(ValueOutput output) {
         if (outcomeId != null) {
-            view.putString("outcome", outcomeId.toString());
+            output.putString("outcome", outcomeId.toString());
         }
     }
 }

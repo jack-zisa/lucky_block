@@ -2,9 +2,8 @@ package dev.creoii.luckyblock.util.provider.floatprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.util.math.floatprovider.FloatProviderType;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.FloatProvider;
 
 public class SqrtFloatProvider extends FloatProvider {
     public static final MapCodec<SqrtFloatProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -18,17 +17,17 @@ public class SqrtFloatProvider extends FloatProvider {
     }
 
     @Override
-    public float get(Random random) {
+    public float sample(RandomSource random) {
         return (float) Math.sqrt(value.get(random));
     }
 
     @Override
-    public float getMin() {
+    public float min() {
         return value.getMin();
     }
 
     @Override
-    public float getMax() {
+    public float max() {
         return value.getMax();
     }
 

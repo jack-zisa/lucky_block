@@ -1,13 +1,13 @@
 package dev.creoii.luckyblock.util.resource;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
-import net.minecraft.resource.*;
+import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class LuckyBlockAddonsResourcePackCreator implements ResourcePackProvider {
+public class LuckyBlockAddonsResourcePackCreator implements RepositorySource {
     public static final LuckyBlockAddonsResourcePackCreator CLIENT_INSTANCE = new LuckyBlockAddonsResourcePackCreator(ResourceType.CLIENT_RESOURCES);
     public static final LuckyBlockAddonsResourcePackCreator SERVER_INSTANCE = new LuckyBlockAddonsResourcePackCreator(ResourceType.SERVER_DATA);
     public static final ResourcePackInfo RESOURCE_PACK_INFO = new ResourcePackInfo(LuckyBlockMod.NAMESPACE, LuckyBlockAddonsResourcePack.DESCRIPTION_TEXT, ResourcePackSource.BUILTIN, Optional.empty());

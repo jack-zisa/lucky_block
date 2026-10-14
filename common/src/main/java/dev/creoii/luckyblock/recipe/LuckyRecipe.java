@@ -3,14 +3,10 @@ package dev.creoii.luckyblock.recipe;
 import dev.creoii.luckyblock.LuckyBlockContainer;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.block.LuckyBlock;
-import net.minecraft.item.*;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,10 +17,10 @@ public class LuckyRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public boolean matches(CraftingRecipeInput input, World world) {
+    public boolean matches(CraftingRecipeInput input, Level world) {
         Set<ItemStack> luckyBlocks = input.getStacks().stream().filter(stack -> stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof LuckyBlock).collect(Collectors.toSet());
         if (luckyBlocks.size() == 1) {
-            LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(Registries.ITEM.getId(luckyBlocks.iterator().next().getItem()).getNamespace());
+            LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(luckyBlocks.iterator().next().getItem().arch$registryName().getNamespace());
             Set<ItemStack> luckItems = input.getStacks().stream().filter(stack -> container.getItemLuck().containsKey(stack.getItem())).collect(Collectors.toSet());
             return !luckItems.isEmpty();
         }

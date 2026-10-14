@@ -7,12 +7,9 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.resource.LuckyBlockAddonsResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.texture.atlas.AtlasSource;
-import net.minecraft.resource.InputSupplier;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +42,7 @@ public class AddonAtlasSource implements AtlasSource {
                             try {
                                 Files.walk(resourcesPath).forEach(resourcePath -> {
                                     if (!resourcePath.equals(resourcesPath) && LuckyBlockAddonsResourcePack.hasAcceptableFileExtension(resourcePath.toString())) {
-                                        Identifier id = Identifier.of(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
+                                        Identifier id = Identifier.fromNamespaceAndPath(namespace, "textures/" + source + "/" + resourcesPath.relativize(resourcePath));
                                         Optional<ResourcePack> optionalResourcePack = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getId().equals(LuckyBlockMod.NAMESPACE)).findFirst();
                                         optionalResourcePack.ifPresent(resourcePack -> {
                                             Resource texture = new Resource(resourcePack, InputSupplier.create(resourcePath));
