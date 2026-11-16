@@ -7,7 +7,9 @@ import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class Cube extends Shape {
     public List<BlockPos> getBlockPositions(Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
         Vec3 size = this.size.getVec(context);
-        BlockPos to = new BlockPos(Math.max(MathHelper.floor(size.x) - 1, 0), Math.max(MathHelper.floor(size.y) - 1, 0), Math.max(MathHelper.floor(size.z) - 1, 0));
+        BlockPos to = new BlockPos(Math.max(Mth.floor(size.x) - 1, 0), Math.max(Mth.floor(size.y) - 1, 0), Math.max(Mth.floor(size.z) - 1, 0));
 
         for (int z = 0; z <= to.getZ(); ++z) {
             for (int y = 0; y <= to.getY(); ++y) {
@@ -59,7 +61,7 @@ public class Cube extends Shape {
         Vec3 size = this.size.getVec(context);
         BlockPos from = VecProvider.fromVec(center.subtract(size.x / 2d, size.y / 2d, size.z / 2d));
         if (context.world() instanceof ServerLevel serverWorld) {
-            for (Entity entity : serverWorld.getEntitiesByClass(Entity.class, Box.of(center, size.x, size.y, size.z), filter)) {
+            for (Entity entity : serverWorld.getEntitiesOfClass(Entity.class, AABB.ofSize(center, size.x, size.y, size.z), filter)) {
                 for (BlockPos pos : getBlockPositions(context)) {
                     if (entity.distanceToSqr(Vec3.atCenterOf(pos.offset(from))) <= 1d) {
                         entities.add(entity);

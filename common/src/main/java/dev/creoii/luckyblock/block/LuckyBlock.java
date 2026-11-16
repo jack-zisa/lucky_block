@@ -70,7 +70,7 @@ public class LuckyBlock extends BaseEntityBlock {
             }
         }
 
-        Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.get(LUCK) - 100, player);
+        Pair<Identifier, JsonObject> pair = LuckyBlockMod.OUTCOME_MANAGER.getRandomOutcome(namespace, world.getRandom(), state.getValue(LUCK) - 100, player);
         if (pair == null)
             return null;
 
@@ -126,7 +126,7 @@ public class LuckyBlock extends BaseEntityBlock {
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @org.jspecify.annotations.Nullable Orientation orientation, boolean movedByPiston) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
-            if (!level.isClientSide() && level.isReceivingRedstonePower(pos)) {
+            if (!level.isClientSide() && level.hasNeighborSignal(pos)) {
                 Outcome.Context context = new Outcome.Context(level, pos, state, null);
                 JsonObject outcomeElement = getOutcomeFromState(level, state, pos, null);
                 if (outcomeElement == null)
@@ -145,7 +145,7 @@ public class LuckyBlock extends BaseEntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @org.jspecify.annotations.Nullable LivingEntity by, ItemStack itemStack) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container != null && container.hasActivation(LuckyBlockContainer.Activation.POWER)) {
-            if (!level.isClientSide() && level.isReceivingRedstonePower(pos)) {
+            if (!level.isClientSide() && level.hasNeighborSignal(pos)) {
                 Outcome.Context context = new Outcome.Context(level, pos, state, by instanceof Player player ? player : null);
                 JsonObject outcomeElement = getOutcomeFromState(level, state, pos, by instanceof Player player ? player : null);
                 if (outcomeElement == null)

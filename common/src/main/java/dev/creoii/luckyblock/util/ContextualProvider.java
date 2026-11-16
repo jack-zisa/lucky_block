@@ -20,43 +20,43 @@ public interface ContextualProvider<P> {
         }
 
         if (provider instanceof AddIntProvider addIntProvider) {
-            applyIntContext(addIntProvider.a, context);
-            applyIntContext(addIntProvider.b, context);
+            applyIntContext(addIntProvider.a(), context);
+            applyIntContext(addIntProvider.b(), context);
         }
 
         else if (provider instanceof SubIntProvider subIntProvider) {
-            applyIntContext(subIntProvider.a, context);
-            applyIntContext(subIntProvider.b, context);
+            applyIntContext(subIntProvider.a(), context);
+            applyIntContext(subIntProvider.b(), context);
         }
 
         else if (provider instanceof MulIntProvider mulIntProvider) {
-            applyIntContext(mulIntProvider.a, context);
-            applyIntContext(mulIntProvider.b, context);
+            applyIntContext(mulIntProvider.a(), context);
+            applyIntContext(mulIntProvider.b(), context);
         }
 
         else if (provider instanceof DivIntProvider divIntProvider) {
-            applyIntContext(divIntProvider.a, context);
-            applyIntContext(divIntProvider.b, context);
+            applyIntContext(divIntProvider.a(), context);
+            applyIntContext(divIntProvider.b(), context);
         }
 
         else if (provider instanceof ModIntProvider modIntProvider) {
-            applyIntContext(modIntProvider.a, context);
-            applyIntContext(modIntProvider.b, context);
+            applyIntContext(modIntProvider.a(), context);
+            applyIntContext(modIntProvider.b(), context);
         }
 
         else if (provider instanceof PowIntProvider powIntProvider) {
-            applyIntContext(powIntProvider.a, context);
-            applyIntContext(powIntProvider.b, context);
+            applyIntContext(powIntProvider.a(), context);
+            applyIntContext(powIntProvider.b(), context);
         }
 
         else if (provider instanceof AbsIntProvider absIntProvider) {
-            applyIntContext(absIntProvider.value, context);
+            applyIntContext(absIntProvider.value(), context);
         }
 
         else if (provider instanceof ClampIntProvider clampIntProvider) {
-            applyIntContext(clampIntProvider.value, context);
-            applyIntContext(clampIntProvider.min, context);
-            applyIntContext(clampIntProvider.max, context);
+            applyIntContext(clampIntProvider.value(), context);
+            applyIntContext(clampIntProvider.min(), context);
+            applyIntContext(clampIntProvider.max(), context);
         }
 
         return provider;

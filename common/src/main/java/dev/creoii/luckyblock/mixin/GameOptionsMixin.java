@@ -1,6 +1,7 @@
 package dev.creoii.luckyblock.mixin;
 
 import dev.creoii.luckyblock.LuckyBlockMod;
+import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mixin(GameOptions.class)
+@Mixin(Options.class)
 public class GameOptionsMixin {
     @Shadow
     public List<String> resourcePacks;

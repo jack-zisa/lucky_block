@@ -2,8 +2,8 @@ package dev.creoii.luckyblock.util.shape;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.luckyblock.LuckyBlockMod;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 public record ShapeType(MapCodec<? extends Shape> codec) {
     public static final ShapeType EMPTY = new ShapeType(Empty.CODEC);
@@ -13,11 +13,11 @@ public record ShapeType(MapCodec<? extends Shape> codec) {
     public static final ShapeType TRIANGLE = new ShapeType(Triangle.CODEC);
 
     public static void init() {
-        registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
-        registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "cube"), CUBE);
-        registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "sphere"), SPHERE);
-        registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "line"), LINE);
-        registerShapeType(Identifier.of(LuckyBlockMod.NAMESPACE, "triangle"), TRIANGLE);
+        registerShapeType(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "empty"), EMPTY);
+        registerShapeType(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "cube"), CUBE);
+        registerShapeType(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "sphere"), SPHERE);
+        registerShapeType(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "line"), LINE);
+        registerShapeType(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "triangle"), TRIANGLE);
     }
 
     public static void registerShapeType(Identifier id, ShapeType shapeType) {

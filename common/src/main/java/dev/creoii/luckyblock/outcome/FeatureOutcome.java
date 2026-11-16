@@ -6,15 +6,17 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.placementmodifier.PlacementModifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,20 +43,21 @@ public class FeatureOutcome extends Outcome {
 
     @Override
     public void run(Context context) {
-        if (context.world() instanceof ServerWorld serverWorld && serverWorld.getServer().getRegistryManager() instanceof DynamicRegistryManager dynamicRegistryManager) {
-            Identifier featureId = Identifier.tryParse(ContextualProvider.applyStringContext(this.featureId, context).get(context.world().getRandom()));
-            ConfiguredFeature<?, ?> configuredFeature = dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().get(featureId);
-            if (configuredFeature == null) {
+        Level level = context.world();
+        if (!level.isClientSide()) {
+            Identifier featureId = Identifier.tryParse(ContextualProvider.applyStringContext(this.featureId, context).get(level.getRandom()));
+            Optional<Holder.Reference<Feature>> configuredFeature = level.registryAccess().lookup(Registries.FEATURE).get().get(featureId);
+            if (configuredFeature.isEmpty()) {
                 LuckyBlockMod.LOGGER.error("Feature identifier '{}' is invalid", featureId);
                 return;
             }
             BlockPos place = getPos(context).getPos(context);
             if (!placementModifiers.isEmpty()) {
-                PlacedFeature placedFeature = new PlacedFeature(dynamicRegistryManager.getOptional(RegistryKeys.CONFIGURED_FEATURE).get().getEntry(featureId).get(), placementModifiers);
-                if (!placedFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {
+                PlacedFeature placedFeature = new PlacedFeature(level.registryAccess().lookup(Registries.FEATURE).get().get(featureId).get(), placementModifiers);
+                if (!placedFeature.place((WorldGenLevel) level, ((ServerLevel) level).getChunkSource().getGenerator(), level.getRandom(), place)) {
                     LuckyBlockMod.LOGGER.error("Failed to generate feature '{}' at '{}'", featureId, place.toShortString());
                 }
-            } else if (!configuredFeature.generate(serverWorld, serverWorld.getChunkManager().getChunkGenerator(), serverWorld.getRandom(), place)) {
+            } else if (!configuredFeature.get().value().place((WorldGenLevel) level, ((ServerLevel) level).getChunkSource().getGenerator(), level.getRandom(), place)) {
                 LuckyBlockMod.LOGGER.error("Failed to generate feature '{}' at '{}'", featureId, place.toShortString());
             }
         }

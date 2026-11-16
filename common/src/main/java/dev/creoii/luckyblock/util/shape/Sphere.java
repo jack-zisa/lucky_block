@@ -5,11 +5,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Sphere extends Shape {
     @Override
     public List<BlockPos> getBlockPositions(Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
-        Vec3d size = this.size.getVec(context);
+        Vec3 size = this.size.getVec(context);
 
         for (int x = (int) Math.round(-size.x) + 1; x <= Math.round(size.x) - 1; x++) {
             for (int y = (int) Math.round(-size.y) + 1; y <= Math.round(size.y) - 1; y++) {
@@ -56,21 +56,21 @@ public class Sphere extends Shape {
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome.Context context) {
+    public List<Vec3> getVecPositions(Outcome.Context context) {
         return List.of();
     }
 
     @Override
-    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3 center, Predicate<Entity> filter) {
         List<Entity> entities = new ArrayList<>();
-        Vec3d size = this.size.getVec(context);
+        Vec3 size = this.size.getVec(context);
         double x = size.x / 2d;
         double y = size.y / 2d;
         double z = size.z / 2d;
 
-        if (context.world() instanceof ServerWorld serverWorld) {
-            for (Entity entity : serverWorld.getEntitiesByClass(Entity.class, Box.of(center, size.x, size.y, size.z), filter)) {
-                Vec3d vec3d = entity.getPos().subtract(center);
+        if (context.world() instanceof ServerLevel serverWorld) {
+            for (Entity entity : serverWorld.getEntitiesOfClass(Entity.class, AABB.ofSize(center, size.x, size.y, size.z), filter)) {
+                Vec3 vec3d = entity.position().subtract(center);
 
                 double normalizedX = vec3d.x / x;
                 double normalizedY = vec3d.y / y;
