@@ -12,8 +12,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -24,30 +25,29 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 
-public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
+public class OutcomeManager extends SimplePreparableReloadListener<Map<Identifier, JsonElement>> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private final Map<Pair<Outcome, Outcome.Context>, MutableInt> delays = Maps.newHashMap();
 
     @Override
-    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
+    protected Map<Identifier, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
         Map<Identifier, JsonElement> prepared = new HashMap<>();
-        load(resourceManager, GSON, prepared);
+        load(manager, GSON, prepared);
         return prepared;
     }
 
-    public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {
-        ResourceFinder resourceFinder = ResourceFinder.json("outcome");
-        for (Map.Entry<Identifier, Resource> identifierResourceEntry : resourceFinder.findResources(manager).entrySet()) {
+    public static void load(ResourceManager manager, Gson gson, Map<Identifier, JsonElement> results) {;
+        for (Map.Entry<Identifier, Resource> identifierResourceEntry : manager.listResources("outcome", resourceId -> resourceId.getPath().endsWith(".json")).entrySet()) {
             Identifier identifier = identifierResourceEntry.getKey();
-            Identifier identifier2 = resourceFinder.toResourceId(identifier);
 
             try {
                 Reader reader = identifierResourceEntry.getValue().openAsReader();
                 try {
-                    JsonElement jsonElement = JsonHelper.deserialize(gson, reader, JsonElement.class);
-                    JsonElement jsonElement2 = results.put(identifier2, jsonElement);
+
+                    JsonElement jsonElement = gson.fromJson(reader, JsonElement.class);
+                    JsonElement jsonElement2 = results.put(identifier, jsonElement);
                     if (jsonElement2 != null) {
-                        throw new IllegalStateException("Duplicate data file ignored with ID " + identifier2);
+                        throw new IllegalStateException("Duplicate data file ignored with ID " + identifier);
                     }
                 } catch (Throwable var13) {
                     try {
@@ -61,14 +61,14 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
 
                 reader.close();
             } catch (IllegalArgumentException | IOException | JsonParseException var14) {
-                LuckyBlockMod.LOGGER.error("Couldn't parse data file {} from {}", identifier2, identifier, (Exception) var14);
+                LuckyBlockMod.LOGGER.error("Couldn't parse data file {} from {}", identifier, identifier, var14);
             }
         }
     }
 
     @Override
-    protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
-        for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
+    protected void apply(Map<Identifier, JsonElement> preparations, ResourceManager manager, ProfilerFiller profiler) {
+        for (Map.Entry<Identifier, JsonElement> entry : preparations.entrySet()) {
             if (!entry.getValue().isJsonObject())
                 continue;
 

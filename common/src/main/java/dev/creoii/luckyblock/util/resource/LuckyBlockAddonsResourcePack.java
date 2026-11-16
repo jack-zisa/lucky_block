@@ -3,12 +3,15 @@ package dev.creoii.luckyblock.util.resource;
 import com.mojang.serialization.JsonOps;
 import dev.creoii.luckyblock.LuckyBlockMod;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.*;
-import net.minecraft.resource.metadata.PackResourceMetadata;
-import net.minecraft.resource.metadata.ResourceMetadataMap;
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.util.InclusiveRange;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,12 +25,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
-public class LuckyBlockAddonsResourcePack implements ResourcePack {
-    public static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.luckyBlockAddonResources");
+public class LuckyBlockAddonsResourcePack implements PackResources {
+    public static final Component DESCRIPTION_TEXT = Component.translatable("pack.description.luckyBlockAddonResources");
     private static final long MAX_IN_MEMORY_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-    private final ResourceType type;
+    private final PackType type;
 
-    public LuckyBlockAddonsResourcePack(ResourceType type) {
+    public LuckyBlockAddonsResourcePack(PackType type) {
         this.type = type;
     }
 
@@ -35,8 +38,9 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
         return s.endsWith(".json") || s.endsWith(".png") || s.endsWith(".nbt") || s.endsWith(".png.mcmeta") || s.endsWith(".mcfunction");
     }
 
-    public PackResourceMetadata getMetadata() {
-        return new PackResourceMetadata(DESCRIPTION_TEXT, SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES), Optional.empty());
+    @Override
+    public @org.jspecify.annotations.Nullable <T> T getMetadataSection(MetadataSectionType<T> metadataSerializer) throws IOException {
+        return new PackMetadataSection(DESCRIPTION_TEXT, new InclusiveRange<>(PackFormat.of(0, 0)));
     }
 
     @Nullable
@@ -59,7 +63,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
 
     @Nullable
     @Override
-    public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+    public InputSupplier<InputStream> open(PackType type, Identifier id) {
         Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             for (Path addonPath : Files.walk(addonsPath, 1).toList()) {
@@ -67,13 +71,13 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                     continue;
 
                 if (Files.isDirectory(addonPath)) {
-                    Path assetPath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
+                    Path assetPath = addonPath.resolve(this.type == PackType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                     if (Files.exists(assetPath)) {
                         return InputSupplier.create(assetPath);
                     }
                 } else if (addonPath.toString().endsWith(".zip")) {
                     try (FileSystem fileSystem = FileSystems.newFileSystem(addonPath, (ClassLoader) null)) {
-                        Path assetPath = fileSystem.getPath(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
+                        Path assetPath = fileSystem.getPath(this.type == PackType.SERVER_DATA ? "data" : "assets").resolve(id.getNamespace()).resolve(id.getPath());
                         if (Files.exists(assetPath)) {
                             long fileSize = Files.size(assetPath);
                             Path tempFile;
@@ -104,13 +108,13 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     }
 
     @Override
-    public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
+    public void findResources(PackType type, String namespace, String prefix, ResultConsumer consumer) {
         Path addonsPath = LuckyBlockMod.luckyBlockManager.getAddonsPath();
         try {
             Files.walk(addonsPath, 1).forEach(addonPath -> {
                 if (!addonPath.equals(addonsPath)) {
                     if (Files.isDirectory(addonPath)) {
-                        Path namespacePath = addonPath.resolve(this.type == ResourceType.SERVER_DATA ? "data" : "assets").resolve(namespace);
+                        Path namespacePath = addonPath.resolve(this.type == PackType.SERVER_DATA ? "data" : "assets").resolve(namespace);
                         Path prefixPath = namespacePath.resolve(prefix);
                         String separator = addonsPath.getFileSystem().getSeparator();
                         if (Files.isDirectory(prefixPath)) {
@@ -127,7 +131,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                         }
                     } else if (addonPath.toString().endsWith(".zip")) {
                         try (ZipFile zipFile = new ZipFile(addonPath.toFile())) {
-                            String prefixDir = (type == ResourceType.SERVER_DATA ? "data/" : "assets/") + namespace + "/" + prefix + "/";
+                            String prefixDir = (type == PackType.SERVER_DATA ? "data/" : "assets/") + namespace + "/" + prefix + "/";
 
                             zipFile.stream().filter(entry -> !entry.isDirectory() && entry.getName().startsWith(prefixDir)).forEach(zipEntry -> {
                                 String asset = zipEntry.getName().substring(prefixDir.length());
@@ -146,7 +150,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
                                             Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
                                         }
 
-                                        consumer.accept(Identifier.of(namespace, prefix + "/" + asset), InputSupplier.create(tempFile));
+                                        consumer.accept(Identifier.fromNamespaceAndPath(namespace, prefix + "/" + asset), InputSupplier.create(tempFile));
                                     } catch (IOException e) {
                                         throw new RuntimeException("Error processing ZIP entry: " + zipEntry.getName(), e);
                                     }
@@ -164,7 +168,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     }
 
     @Override
-    public Set<String> getNamespaces(ResourceType type) {
+    public Set<String> getNamespaces(PackType type) {
         return Arrays.stream(LuckyBlockMod.luckyBlockManager.getAllContainers()).map(container -> container.getId().getNamespace()).collect(Collectors.toSet());
     }
 
@@ -186,7 +190,7 @@ public class LuckyBlockAddonsResourcePack implements ResourcePack {
     @Override
     public void close() {}
 
-    public record Factory(ResourceType type) implements ResourcePackProfile.PackFactory {
+    public record Factory(PackType type) implements ResourcePackProfile.PackFactory {
         @Override
         public ResourcePack open(ResourcePackInfo info) {
             return new LuckyBlockAddonsResourcePack(type);
