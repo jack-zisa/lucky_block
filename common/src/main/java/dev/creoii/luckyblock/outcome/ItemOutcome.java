@@ -7,16 +7,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.MergedComponentMap;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -32,7 +31,7 @@ public class ItemOutcome extends Outcome {
                 Codec.either(Identifier.CODEC, ItemStack.CODEC).xmap(either -> {
                     return either.map(identifier -> Registries.ITEM.get(identifier).getDefaultStack(), Function.identity());
                 }, Either::right).fieldOf("item").forGetter(outcome -> outcome.stack),
-                IntProvider.NON_NEGATIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count),
+                IntProviders.POSITIVE_CODEC.optionalFieldOf("count").forGetter(outcome -> outcome.count),
                 ComponentMap.CODEC.optionalFieldOf("components").forGetter(outcome -> outcome.componentMap),
                 VecProvider.VALUE_CODEC.optionalFieldOf("velocity").forGetter(outcome -> outcome.velocity)
         ).apply(instance, ItemOutcome::new);
@@ -52,71 +51,70 @@ public class ItemOutcome extends Outcome {
 
     @Override
     public void run(Context context) {
-        Vec3d spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
-        Vec3d velocity = null;
+        Vec3 spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : Vec3.atCenterOf(context.pos());
+        Vec3 velocity = null;
         if (this.velocity.isPresent()) {
             velocity = this.velocity.get().getVec(context);
         }
         IntProvider count = ContextualProvider.applyIntContext(this.count.orElse(LuckyBlockCodecs.ONE), context);
-        int total = count.get(context.world().getRandom()) * stack.getCount();
+        int total = count.sample(context.world().getRandom()) * stack.getCount();
 
         if (shouldReinit()) {
             for (int i = 0; i < total; ++i) {
-                ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
+                ItemEntity entity = EntityTypes.ITEM.create(context.world(), EntitySpawnReason.NATURAL);
                 if (entity != null) {
                     ItemStack newStack = copyStack(stack);
 
                     componentMap.ifPresent(newStack::applyComponentsFrom);
-                    entity.setStack(newStack);
-                    entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
+                    entity.setItem(newStack);
+                    entity.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
 
                     if (velocity != null) {
-                        entity.setVelocity(velocity);
+                        entity.setDeltaMovement(velocity);
                         velocity = this.velocity.get().getVec(context);
-                    } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
+                    } else entity.setDeltaMovement(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
 
-                    context.world().spawnEntity(entity);
+                    context.world().addFreshEntity(entity);
 
-                    spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : context.pos().toCenterPos();
+                    spawnPos = getPos().isPresent() ? getPos().get().getVec(context) : Vec3.atCenterOf(context.pos());
                 }
             }
             return;
         }
 
-        for (int i = 0; i < total / stack.getMaxCount(); ++i) {
-            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
+        for (int i = 0; i < total / stack.getMaxStackSize(); ++i) {
+            ItemEntity entity = EntityTypes.ITEM.create(context.world(), EntitySpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack newStack = copyStack(stack);
 
-                newStack.setCount(stack.getMaxCount());
+                newStack.setCount(stack.getMaxStackSize());
                 componentMap.ifPresent(newStack::applyComponentsFrom);
-                entity.setStack(newStack);
-                entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
+                entity.setItem(newStack);
+                entity.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
 
                 if (velocity != null) {
-                    entity.setVelocity(velocity);
-                } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
+                    entity.setDeltaMovement(velocity);
+                } else entity.setDeltaMovement(context.world().getRandom().nextDouble() * .2d - .1d, .2d, context.world().getRandom().nextDouble() * .2d - .1d);
 
-                context.world().spawnEntity(entity);
+                context.world().addFreshEntity(entity);
             }
         }
 
-        if (total % stack.getMaxCount() > 0) {
-            ItemEntity entity = EntityType.ITEM.create(context.world(), SpawnReason.NATURAL);
+        if (total % stack.getMaxStackSize() > 0) {
+            ItemEntity entity = EntityTypes.ITEM.create(context.world(), EntitySpawnReason.NATURAL);
             if (entity != null) {
                 ItemStack remainder = copyStack(stack);
 
-                remainder.setCount(total % stack.getMaxCount());
-                entity.setStack(remainder);
+                remainder.setCount(total % stack.getMaxStackSize());
+                entity.setItem(remainder);
                 componentMap.ifPresent(remainder::applyComponentsFrom);
-                entity.setStack(remainder);
-                entity.setPosition(spawnPos.x, spawnPos.y, spawnPos.z);
+                entity.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
 
                 if (velocity != null) {
-                    entity.setVelocity(this.velocity.get().getVec(context));
-                } else entity.setVelocity(context.world().random.nextDouble() * .2d - .1d, .2d, context.world().random.nextDouble() * .2d - .1d);
+                    entity.setDeltaMovement(this.velocity.get().getVec(context));
+                } else entity.setDeltaMovement(context.world().getRandom().nextDouble() * .2d - .1d, .2d, context.world().getRandom().nextDouble() * .2d - .1d);
 
-                context.world().spawnEntity(entity);
+                context.world().addFreshEntity(entity);
             }
         }
     }
@@ -126,7 +124,7 @@ public class ItemOutcome extends Outcome {
             return ItemStack.EMPTY;
         } else {
             ItemStack itemStack = new ItemStack(stack.getItem(), stack.getCount(), MergedComponentMap.create(stack.getItem().getComponents(), stack.getComponentChanges()));
-            itemStack.setBobbingAnimationTime(stack.getBobbingAnimationTime());
+            itemStack.setPopTime(stack.getPopTime());
             return itemStack;
         }
     }

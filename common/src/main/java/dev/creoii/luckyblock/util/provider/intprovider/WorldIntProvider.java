@@ -7,6 +7,7 @@ import dev.creoii.luckyblock.util.ContextualProvider;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.intprovider.IntProviderType;
 import net.minecraft.util.math.random.Random;
@@ -72,7 +73,7 @@ public class WorldIntProvider extends IntProvider implements ContextualProvider<
         return Type.INT;
     }
 
-    public enum Value implements StringIdentifiable {
+    public enum Value implements StringRepresentable {
         MOON_PHASE(0, 7, (key, context1) -> {
             return Outcome.Context.getSourceWorld(key, context1).getMoonPhase();
         }),
@@ -158,13 +159,13 @@ public class WorldIntProvider extends IntProvider implements ContextualProvider<
             return Outcome.Context.getSourceWorld(key, context1).getTickManager().getStepTicks();
         });
 
-        public static final StringIdentifiable.EnumCodec<Value> CODEC = StringIdentifiable.createCodec(Value::values);
+        public static final StringRepresentable.EnumCodec<Value> CODEC = StringRepresentable.fromEnum(Value::values);
         private final Function<Outcome.Context, Integer> min;
         private final Function<Outcome.Context, Integer> max;
         private final BiFunction<RegistryKey<DimensionType>, Outcome.Context, Integer> function;
 
         Value(int min, int max, BiFunction<RegistryKey<DimensionType>, Outcome.Context, Integer> function) {
-            this(context -> min, context -> max, function);
+            this(_ -> min, _ -> max, function);
         }
 
         Value(Function<Outcome.Context, Integer> min, Function<Outcome.Context, Integer> max, BiFunction<RegistryKey<DimensionType>, Outcome.Context, Integer> function) {
@@ -174,7 +175,7 @@ public class WorldIntProvider extends IntProvider implements ContextualProvider<
         }
 
         @Override
-        public String asString() {
+        public String getSerializedName() {
             return name().toLowerCase();
         }
     }
