@@ -6,7 +6,8 @@ import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.LuckyBlockCodecs;
 import dev.creoii.luckyblock.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.luckyblock.util.provider.booleanprovider.FalseBooleanProvider;
-import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class RandomOutcome extends Outcome {
                 createGlobalWeightField(Outcome::getWeightProvider),
                 createGlobalDelayField(outcome -> outcome.delay),
                 Outcome.CODEC.listOf().fieldOf("outcomes").forGetter(outcome -> outcome.outcomes),
-                IntProvider.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
+                IntProviders.POSITIVE_CODEC.fieldOf("count").orElse(LuckyBlockCodecs.ONE).forGetter(outcome -> outcome.count),
                 BooleanProvider.TYPE_CODEC.fieldOf("duplicates").orElse(FalseBooleanProvider.FALSE).forGetter(outcome -> outcome.duplicates)
         ).apply(instance, RandomOutcome::new);
     });
@@ -37,9 +38,9 @@ public class RandomOutcome extends Outcome {
     @Override
     public void run(Context context) {
         List<Outcome> runOutcomes = new ArrayList<>(outcomes);
-        boolean duplicates = ContextualProvider.applyBooleanContext(this.duplicates, context).get(context.world().random);
+        boolean duplicates = ContextualProvider.applyBooleanContext(this.duplicates, context).get(context.world().getRandom());
         IntProvider countProvider = ContextualProvider.applyIntContext(this.count, context);
-        int count = countProvider.get(context.world().getRandom());
+        int count = countProvider.sample(context.world().getRandom());
         if (!duplicates) {
             count = Math.clamp(count, 0, runOutcomes.size());
         }

@@ -16,16 +16,17 @@ import java.util.Set;
 
 @Mixin(PackRepository.class)
 public class ResourcePackManagerMixin {
+    @Mutable
     @Shadow
     @Final
     private Set<RepositorySource> sources;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    public void lucky$addBuiltInDataPacks(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
-        sources = new LinkedHashSet<>(sources);
+    public void lucky$addBuiltInDataPacks(RepositorySource[] sources, CallbackInfo ci) {
+        this.sources = new LinkedHashSet<>(sources);
 
-        if (sources.stream().anyMatch(resourcePackProvider -> resourcePackProvider instanceof FileResourcePackProvider fileResourcePackProvider && (fileResourcePackProvider.source == ResourcePackSource.WORLD || fileResourcePackProvider.source == ResourcePackSource.SERVER))) {
-            sources.add(new LuckyBlockAddonsResourcePackCreator(ResourceType.SERVER_DATA));
+        if (this.sources.stream().anyMatch(resourcePackProvider -> resourcePackProvider instanceof FileResourcePackProvider fileResourcePackProvider && (fileResourcePackProvider.source == ResourcePackSource.WORLD || fileResourcePackProvider.source == ResourcePackSource.SERVER))) {
+            this.sources.add(new LuckyBlockAddonsResourcePackCreator(ResourceType.SERVER_DATA));
         }
     }
 }

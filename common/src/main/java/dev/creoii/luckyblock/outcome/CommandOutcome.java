@@ -6,9 +6,10 @@ import dev.creoii.luckyblock.util.ContextualProvider;
 import dev.creoii.luckyblock.util.FunctionUtils;
 import dev.creoii.luckyblock.util.provider.stringprovider.StringProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.valueproviders.IntProvider;
 
 import java.util.Optional;
 
@@ -33,11 +34,12 @@ public class CommandOutcome extends Outcome {
     public void run(Context context) {
         MinecraftServer server = context.world().getServer();
         if (server != null) {
-            ServerCommandSource source = server.getCommandSource();
+            Commands commands = server.getCommands();
+            CommandSourceStack commandSourceStack = server.createCommandSourceStack();
             if (getPos().isPresent()) {
-                source = source.withPosition(getPos().get().getVec(context));
+                commandSourceStack = commandSourceStack.withPosition(getPos().get().getVec(context));
             }
-            server.getCommandManager().executeWithPrefix(source, FunctionUtils.parseString(ContextualProvider.applyStringContext(command, context).get(context.world().getRandom()), context));
+            commands.performPrefixedCommand(commandSourceStack, FunctionUtils.parseString(ContextualProvider.applyStringContext(command, context).get(context.world().getRandom()), context));
         }
     }
 }

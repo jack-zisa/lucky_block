@@ -15,8 +15,13 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import org.jetbrains.annotations.Nullable;
 
 public class LuckyBlockCodecs {
@@ -60,28 +65,27 @@ public class LuckyBlockCodecs {
         }
     }
 
-    public record StructurePlacementData(BlockMirror mirror, BlockRotation rotation, boolean ignoreEntities, boolean placeFluids, @Nullable RegistryEntry<StructureProcessorList> processor, boolean updateNeighbors, boolean initializeMobs) {
-        public static final StructurePlacementData DEFAULT = new StructurePlacementData(BlockMirror.NONE, BlockRotation.NONE, false, true, null, false, false);
+    public record StructurePlacementData(Mirror mirror, Rotation rotation, LiquidSettings liquidSettings, boolean ignoreEntities, boolean placeFluids, Holder<StructureProcessorList> processor, boolean initializeMobs) {
+        public static final StructurePlacementData DEFAULT = new StructurePlacementData(Mirror.NONE, Rotation.NONE, LiquidSettings.APPLY_WATERLOGGING, false, true, null, false);
         public static final MapCodec<StructurePlacementData> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-            return instance.group(BlockMirror.CODEC.fieldOf("mirror").orElse(BlockMirror.NONE).forGetter(structurePlacementData -> structurePlacementData.mirror),
-                    BlockRotation.CODEC.fieldOf("rotation").forGetter(structurePlacementData -> structurePlacementData.rotation),
+            return instance.group(Mirror.CODEC.fieldOf("mirror").orElse(Mirror.NONE).forGetter(structurePlacementData -> structurePlacementData.mirror),
+                    Rotation.CODEC.fieldOf("rotation").orElse(Rotation.NONE).forGetter(structurePlacementData -> structurePlacementData.rotation),
+                    LiquidSettings.CODEC.fieldOf("liquid_settings").orElse(LiquidSettings.APPLY_WATERLOGGING).forGetter(structurePlacementData -> structurePlacementData.liquidSettings),
                     Codec.BOOL.fieldOf("ignore_entities").orElse(false).forGetter(structurePlacementData -> structurePlacementData.ignoreEntities),
                     Codec.BOOL.fieldOf("place_fluids").orElse(true).forGetter(structurePlacementData -> structurePlacementData.placeFluids),
-                    StructureProcessorType.REGISTRY_CODEC.fieldOf("processor").orElse(null).forGetter(structurePlacementData -> structurePlacementData.processor),
-                    Codec.BOOL.fieldOf("update_neighbors").orElse(false).forGetter(structurePlacementData -> structurePlacementData.updateNeighbors),
+                    StructureProcessorType.LIST_CODEC.fieldOf("processor").forGetter(structurePlacementData -> structurePlacementData.processor),
                     Codec.BOOL.fieldOf("initialize_mobs").orElse(false).forGetter(structurePlacementData -> structurePlacementData.initializeMobs)
             ).apply(instance, StructurePlacementData::new);
         });
 
-        public net.minecraft.structure.StructurePlacementData create() {
-            net.minecraft.structure.StructurePlacementData structurePlacementData = new net.minecraft.structure.StructurePlacementData();
+        public StructurePlaceSettings create() {
+            StructurePlaceSettings structurePlacementData = new StructurePlaceSettings();
             structurePlacementData.setMirror(mirror);
             structurePlacementData.setRotation(rotation);
+            structurePlacementData.setLiquidSettings(liquidSettings);
             structurePlacementData.setIgnoreEntities(ignoreEntities);
-            structurePlacementData.setUpdateNeighbors(updateNeighbors);
-            structurePlacementData.setInitializeMobs(initializeMobs);
-            if (processor != null)
-                processor.value().getList().forEach(structurePlacementData::addProcessor);
+            structurePlacementData.setFinalizeEntities(initializeMobs);
+            processor.value().list().forEach(structurePlacementData::addProcessor);
             return structurePlacementData;
         }
     }

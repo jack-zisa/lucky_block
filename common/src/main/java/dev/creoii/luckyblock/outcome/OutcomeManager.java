@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -140,7 +141,7 @@ public class OutcomeManager extends SinglePreparationResourceReloader<Map<Identi
         throw new IllegalArgumentException("Outcome '" + id + "' does not exist in Lucky Block container " + container.getId().getNamespace());
     }
 
-    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, Random random, int luck, @Nullable Player player) {
+    public Pair<Identifier, JsonObject> getRandomOutcome(String namespace, RandomSource random, int luck, @Nullable Player player) {
         LuckyBlockContainer container = LuckyBlockMod.luckyBlockManager.getContainer(namespace);
         if (container == null) {
             throw new IllegalArgumentException("Lucky Block container '" + namespace + "' not found");

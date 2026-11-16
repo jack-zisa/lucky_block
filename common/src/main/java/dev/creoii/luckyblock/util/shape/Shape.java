@@ -6,16 +6,16 @@ import dev.creoii.luckyblock.LuckyBlockMod;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.ConstantVecProvider;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class Shape {
-    public static final Codec<Shape> CODEC = LuckyBlockMod.SHAPE_TYPES.getCodec().dispatch(Shape::getType, ShapeType::codec);
+    public static final Codec<Shape> CODEC = LuckyBlockMod.SHAPE_TYPES.byNameCodec().dispatch(Shape::getType, ShapeType::codec);
     private final ShapeType type;
     protected final VecProvider size;
 
@@ -38,7 +38,7 @@ public abstract class Shape {
 
     public abstract List<BlockPos> getBlockPositions(Outcome.Context context);
 
-    public abstract List<Vec3d> getVecPositions(Outcome.Context context);
+    public abstract List<Vec3> getVecPositions(Outcome.Context context);
 
-    public abstract List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter);
+    public abstract List<Entity> getEntitiesWithin(Outcome.Context context, Vec3 center, Predicate<Entity> filter);
 }

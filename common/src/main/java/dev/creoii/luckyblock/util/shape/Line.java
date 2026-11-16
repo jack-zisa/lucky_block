@@ -4,9 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.luckyblock.outcome.Outcome;
 import dev.creoii.luckyblock.util.vec.VecProvider;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +32,21 @@ public class Line extends Shape {
     public List<BlockPos> getBlockPositions(Outcome.Context context) {
         List<BlockPos> positions = new ArrayList<>();
 
-        Vec3d direction = to.getVec(context).subtract(from.getVec(context)).normalize();
+        Vec3 direction = to.getVec(context).subtract(from.getVec(context)).normalize();
         for (int i = 0; i <= size.getPos(context).getX(); ++i) {
-            positions.add(VecProvider.fromVec(direction.multiply(i)));
+            positions.add(VecProvider.fromVec(direction.scale(i)));
         }
 
         return positions;
     }
 
     @Override
-    public List<Vec3d> getVecPositions(Outcome.Context context) {
+    public List<Vec3> getVecPositions(Outcome.Context context) {
         return List.of();
     }
 
     @Override
-    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3d center, Predicate<Entity> filter) {
+    public List<Entity> getEntitiesWithin(Outcome.Context context, Vec3 center, Predicate<Entity> filter) {
         return List.of();
     }
 }
