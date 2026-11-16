@@ -2,38 +2,37 @@ package dev.creoii.luckyblock.util.provider.intprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.util.math.intprovider.IntProviderType;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 
-public class AbsIntProvider extends IntProvider {
+public record AbsIntProvider(IntProvider value) implements IntProvider {
     public static final MapCodec<AbsIntProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(IntProvider.VALUE_CODEC.fieldOf("value").forGetter(outcome -> outcome.value)
+        return instance.group(IntProviders.CODEC.fieldOf("value").forGetter(outcome -> outcome.value)
         ).apply(instance, AbsIntProvider::new);
     });
-    public final IntProvider value;
 
     public AbsIntProvider(IntProvider value) {
         this.value = value;
     }
 
     @Override
-    public int get(Random random) {
-        return Math.abs(value.get(random));
+    public int sample(RandomSource random) {
+        return Math.abs(value.sample(random));
     }
 
     @Override
-    public int getMin() {
-        return value.getMin();
+    public int minInclusive() {
+        return 0;
     }
 
     @Override
-    public int getMax() {
-        return value.getMax();
+    public int maxInclusive() {
+        return value.maxInclusive();
     }
 
     @Override
-    public IntProviderType<?> getType() {
-        return LuckyIntProviderTypes.ABS;
+    public MapCodec<? extends IntProvider> codec() {
+        return CODEC;
     }
 }

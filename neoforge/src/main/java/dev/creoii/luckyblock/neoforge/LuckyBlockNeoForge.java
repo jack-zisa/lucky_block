@@ -5,23 +5,23 @@ import dev.creoii.luckyblock.LuckyBlockManager;
 import dev.creoii.luckyblock.block.LuckyBlock;
 import dev.creoii.luckyblock.block.LuckyBlockEntity;
 import dev.creoii.luckyblock.outcome.OutcomeType;
-import dev.creoii.luckyblock.util.provider.intprovider.LuckyIntProviderTypes;
+import dev.creoii.luckyblock.util.provider.intprovider.*;
 import dev.creoii.luckyblock.util.shape.ShapeType;
 import dev.creoii.luckyblock.util.vec.VecProviderType;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.datafixer.TypeReferences;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
@@ -53,70 +53,74 @@ public final class LuckyBlockNeoForge {
     }
 
     private static void onRegister(RegisterEvent event) {
-        event.register(RegistryKeys.BLOCK, registry -> {
+        event.register(Registries.BLOCK, registry -> {
             for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
-                AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create().hardness(container.getSettings().hardness()).resistance(container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(RegistryKey.of(RegistryKeys.BLOCK, container.getId()));
+                BlockBehaviour.Properties blockSettings = BlockBehaviour.Properties.of().strength(container.getSettings().hardness(), container.getSettings().resistance()).mapColor(MapColor.TERRACOTTA_YELLOW).registryKey(ResourceKey.create(Registries.BLOCK, container.getId()));
                 container.setBlock(new LuckyBlock(container.getId().getNamespace(), blockSettings));
                 registry.register(container.getId(), container.getBlock());
             }
         });
 
-        event.register(RegistryKeys.ITEM, registry -> {
+        event.register(Registries.ITEM, registry -> {
             for (LuckyBlockContainer container : LUCKY_BLOCK_MANAGER.getAllContainers()) {
-                Item.Settings itemSettings = new Item.Settings().rarity(container.getSettings().rarity()).useItemPrefixedTranslationKey().registryKey(RegistryKey.of(RegistryKeys.ITEM, container.getId()));
+                Item.Properties itemSettings = new Item.Properties().rarity(container.getSettings().rarity()).useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, container.getId()));
                 container.setBlockItem(new BlockItem(container.getBlock(), itemSettings.component(LuckyBlockMod.LUCK_COMPONENT, 0).useBlockPrefixedTranslationKey()));
                 registry.register(container.getId(), container.getBlockItem());
             }
         });
 
-        event.register(RegistryKeys.BLOCK_ENTITY_TYPE, registry -> {
+        event.register(Registries.BLOCK_ENTITY_TYPE, registry -> {
             luckyBlockEntity = new BlockEntityType<>(LuckyBlockEntity::new, Set.of(LUCKY_BLOCK_MANAGER.getAllBlocks()));
             Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "lucky:lucky_block");
             LuckyBlockMod.setLuckyBlockEntity(luckyBlockEntity);
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "lucky_block"), luckyBlockEntity);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "lucky_block"), luckyBlockEntity);
         });
 
-        event.register(RegistryKeys.RECIPE_SERIALIZER, registry -> {
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
+        event.register(Registries.RECIPE_SERIALIZER, registry -> {
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "crafting_special_lucky"), LuckyBlockMod.LUCKY_RECIPE_SERIALIZER);
         });
 
-        event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry -> {
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
+        event.register(Registries.DATA_COMPONENT_TYPE, registry -> {
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "luck"), LuckyBlockMod.LUCK_COMPONENT);
         });
 
-        event.register(RegistryKeys.INT_PROVIDER_TYPE, registry -> {
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "add"), LuckyIntProviderTypes.ADD);
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "sub"), LuckyIntProviderTypes.SUB);
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "mul"), LuckyIntProviderTypes.MUL);
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "div"), LuckyIntProviderTypes.DIV);
-            registry.register(Identifier.of(LuckyBlockMod.NAMESPACE, "world"), LuckyIntProviderTypes.WORLD);
+        event.register(Registries.INT_PROVIDER_TYPE, registry -> {
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "add"), AddIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "sub"), SubIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "mul"), MulIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "div"), DivIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "mod"), ModIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "pow"), PowIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "clamp"), ClampIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "abs"), AbsIntProvider.CODEC);
+            registry.register(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "world"), WorldIntProvider.CODEC);
         });
     }
 
     private static void onAddReloadListeners(AddServerReloadListenersEvent event) {
-        event.addListener(Identifier.of(LuckyBlockMod.NAMESPACE, "outcome_manager"), LuckyBlockMod.OUTCOME_MANAGER);
+        event.addListener(Identifier.fromNamespaceAndPath(LuckyBlockMod.NAMESPACE, "outcome_manager"), LuckyBlockMod.OUTCOME_MANAGER);
     }
 
     private static void onItemTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().has(LuckyBlockMod.LUCK_COMPONENT)) {
             int luck = event.getItemStack().get(LuckyBlockMod.LUCK_COMPONENT);
-            Formatting formatting = luck == 0 ? Formatting.GRAY : luck < 0 ? Formatting.RED : Formatting.GREEN;
-            event.getToolTip().add(Text.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).formatted(formatting));
+            ChatFormatting formatting = luck == 0 ? ChatFormatting.GRAY : luck < 0 ? ChatFormatting.RED : ChatFormatting.GREEN;
+            event.getToolTip().add(Component.translatable("lucky.item.luck", luck > 0 ? "+" + luck : luck).withStyle(formatting));
         }
     }
 
     private static void onBuildCreativeModTabContents(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == ItemGroups.FUNCTIONAL) {
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             for (Item item : LuckyBlockMod.luckyBlockManager.getAllItems()) {
-                event.add(item);
+                event.accept(item);
 
-                ItemStack lucky = item.getDefaultStack();
+                ItemStack lucky = item.getDefaultInstance();
                 lucky.set(LuckyBlockMod.LUCK_COMPONENT, 100);
-                event.add(lucky);
+                event.accept(lucky);
 
-                ItemStack unlucky = item.getDefaultStack();
+                ItemStack unlucky = item.getDefaultInstance();
                 unlucky.set(LuckyBlockMod.LUCK_COMPONENT, -100);
-                event.add(unlucky);
+                event.accept(unlucky);
             }
         }
     }
